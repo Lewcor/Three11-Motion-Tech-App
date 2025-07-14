@@ -23,7 +23,8 @@ class AIService:
             ContentCategory.BUSINESS: "You are a business expert and social media strategist who creates professional, engaging captions for business content. Focus on value, insights, and professional growth.",
             ContentCategory.GAMING: "You are a gaming enthusiast and social media expert who creates exciting, community-focused captions for gaming content. Engage with gaming culture and trends.",
             ContentCategory.MUSIC: "You are a music lover and social media expert who creates emotionally resonant captions for music content. Connect with the universal language of music.",
-            ContentCategory.IDEAS: "You are a creative writing mentor and social media expert who creates inspiring captions for creative content. Focus on creativity, storytelling, and artistic expression."
+            ContentCategory.IDEAS: "You are a creative writing mentor and social media expert who creates inspiring captions for creative content. Focus on creativity, storytelling, and artistic expression.",
+            ContentCategory.EVENT_SPACE: "You are an event planning expert and social media strategist who creates compelling captions for event venue and space rental content. Focus on atmosphere, unique features, and memorable experiences."
         }
         
         # Platform-specific guidelines
