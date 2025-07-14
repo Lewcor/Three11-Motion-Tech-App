@@ -133,6 +133,11 @@ export const mockData = {
       "#CreativeWriting", "#WritingCommunity", "#BookWriter", "#Screenplay", "#WritingTips",
       "#AuthorLife", "#WritingInspiration", "#StoryTelling", "#WritingProcess", "#BookLovers",
       "#WritingMotivation", "#CreativeIdeas", "#WritingChallenge", "#IndieAuthor", "#WritingLife"
+    ],
+    event_space: [
+      "#EventSpace", "#VenueRental", "#EventVenue", "#PartySpace", "#WeddingVenue",
+      "#CorporateEvents", "#EventPlanning", "#VenueHire", "#EventDesign", "#CelebrationSpace",
+      "#EventLocation", "#VenueBooking", "#PrivateEvents", "#EventProfs", "#VenueOwner"
     ]
   },
 
