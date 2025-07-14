@@ -8,7 +8,8 @@ export const mockData = {
     { id: 'business', name: 'Business', icon: '💼', color: 'bg-gray-500' },
     { id: 'gaming', name: 'Gaming', icon: '🎮', color: 'bg-purple-500' },
     { id: 'music', name: 'Music', icon: '🎵', color: 'bg-red-500' },
-    { id: 'ideas', name: 'Ideas', icon: '💡', color: 'bg-yellow-500' }
+    { id: 'ideas', name: 'Ideas', icon: '💡', color: 'bg-yellow-500' },
+    { id: 'event_space', name: 'Event Space', icon: '🏛️', color: 'bg-indigo-500' }
   ],
 
   platforms: [
