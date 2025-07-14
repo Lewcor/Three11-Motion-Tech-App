@@ -18,6 +18,23 @@ const GeneratorPage = () => {
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState('captions');
   const [isFreemium, setIsFreemium] = useState(true);
+  const [user, setUser] = useState(null);
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
+
+  // Mock user for demo (in production, get from auth context)
+  useEffect(() => {
+    const mockUser = {
+      id: 'demo-user-123',
+      email: 'demo@example.com',
+      name: 'Demo User',
+      tier: 'free',
+      daily_generations_used: 3,
+      total_generations: 47
+    };
+    setUser(mockUser);
+  }, []);
 
   const handleGenerate = async () => {
     if (!selectedCategory || !selectedPlatform || !userInput.trim()) {
@@ -32,10 +49,19 @@ const GeneratorPage = () => {
 
     setLoading(true);
     try {
-      const result = await mockAPI.generateCombinedContent(selectedCategory, selectedPlatform, userInput);
+      const response = await axios.post(`${API}/generate`, {
+        user_id: user?.id || 'demo-user-123',
+        category: selectedCategory,
+        platform: selectedPlatform,
+        content_description: userInput,
+        ai_providers: ['openai', 'anthropic', 'gemini']
+      });
+
+      const result = response.data;
       setResults(result);
-      toast.success('Content generated successfully!');
+      toast.success('Content generated successfully by THREE11 MOTION TECH!');
     } catch (error) {
+      console.error('Generation error:', error);
       toast.error('Failed to generate content. Please try again.');
     } finally {
       setLoading(false);
