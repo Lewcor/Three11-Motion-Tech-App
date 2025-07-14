@@ -1,0 +1,280 @@
+import React, { useState } from 'react';
+import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Textarea } from './ui/textarea';
+import { Badge } from './ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Progress } from './ui/progress';
+import { Sparkles, Copy, Heart, RefreshCw, Zap, Crown, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { mockData, mockAPI } from '../mock';
+
+const GeneratorPage = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
+  const [userInput, setUserInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState(null);
+  const [activeTab, setActiveTab] = useState('captions');
+  const [isFreemium, setIsFreemium] = useState(true);
+
+  const handleGenerate = async () => {
+    if (!selectedCategory || !selectedPlatform || !userInput.trim()) {
+      toast.error('Please fill all fields before generating');
+      return;
+    }
+
+    if (isFreemium && mockData.userLimits.free.used >= mockData.userLimits.free.dailyGenerations) {
+      toast.error('Daily limit reached! Upgrade to Premium for unlimited generations');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await mockAPI.generateCombinedContent(selectedCategory, selectedPlatform, userInput);
+      setResults(result);
+      toast.success('Content generated successfully!');
+    } catch (error) {
+      toast.error('Failed to generate content. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard!');
+  };
+
+  const currentLimits = isFreemium ? mockData.userLimits.free : mockData.userLimits.premium;
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          AI Content Generator
+        </h1>
+        <p className="text-lg text-slate-600 dark:text-slate-300">
+          Create viral captions and hashtags with THREE11 MOTION TECH
+        </p>
+      </div>
+
+      {/* Usage Limits */}
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-yellow-500" />
+              <span className="font-semibold">
+                {isFreemium ? 'Free Plan' : 'Premium Plan'}
+              </span>
+            </div>
+            <Badge variant={isFreemium ? 'secondary' : 'default'}>
+              {isFreemium ? 'FREE' : 'PREMIUM'}
+            </Badge>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Daily Generations</span>
+              <span>
+                {isFreemium ? `${currentLimits.used}/${currentLimits.dailyGenerations}` : 'Unlimited'}
+              </span>
+            </div>
+            {isFreemium && (
+              <Progress value={(currentLimits.used / currentLimits.dailyGenerations) * 100} className="h-2" />
+            )}
+          </div>
+          
+          {isFreemium && (
+            <Button className="mt-4 w-full" variant="outline">
+              <Crown className="mr-2 h-4 w-4" />
+              Upgrade to Premium
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Input Section */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Category Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Select Content Category
+              </CardTitle>
+              <CardDescription>Choose the type of content you want to create</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {mockData.contentCategories.map((category) => (
+                  <Button
+                    key={category.id}
+                    variant={selectedCategory === category.id ? 'default' : 'outline'}
+                    className="h-20 flex-col gap-2"
+                    onClick={() => setSelectedCategory(category.id)}
+                  >
+                    <span className="text-2xl">{category.icon}</span>
+                    <span className="text-sm">{category.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Platform Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Choose Platform</CardTitle>
+              <CardDescription>Select where you'll post this content</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {mockData.platforms.map((platform) => (
+                  <Button
+                    key={platform.id}
+                    variant={selectedPlatform === platform.id ? 'default' : 'outline'}
+                    className="h-16 flex-col gap-2"
+                    onClick={() => setSelectedPlatform(platform.id)}
+                  >
+                    <span className="text-2xl">{platform.icon}</span>
+                    <span className="text-sm">{platform.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Content Input */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Describe Your Content</CardTitle>
+              <CardDescription>Tell us about your post, video, or idea</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                placeholder="E.g., 'A workout video showing morning gym routine with high-energy music' or 'Fashion outfit featuring vintage jeans and modern accessories'"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className="min-h-[100px]"
+              />
+              <Button 
+                onClick={handleGenerate}
+                disabled={loading || !selectedCategory || !selectedPlatform || !userInput.trim()}
+                className="mt-4 w-full"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating with THREE11 MOTION TECH...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate Content
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results Section */}
+        <div className="space-y-6">
+          {results ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-yellow-500" />
+                  Generated Content
+                </CardTitle>
+                <CardDescription>
+                  Created by THREE11 MOTION TECH
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="captions">Captions</TabsTrigger>
+                    <TabsTrigger value="hashtags">Hashtags</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="captions" className="mt-4 space-y-4">
+                    {Object.entries(results.captions).map(([provider, caption]) => (
+                      <Card key={provider}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline" className="text-xs">
+                              {provider === 'openai' ? 'OpenAI GPT' : 
+                               provider === 'anthropic' ? 'Anthropic Claude' : 
+                               'Google Gemini'}
+                            </Badge>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => copyToClipboard(caption)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <p className="text-sm">{caption}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </TabsContent>
+                  
+                  <TabsContent value="hashtags" className="mt-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex flex-wrap gap-2">
+                          {results.hashtags.map((hashtag, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="secondary" 
+                              className="cursor-pointer hover:bg-blue-100"
+                              onClick={() => copyToClipboard(hashtag)}
+                            >
+                              {hashtag}
+                            </Badge>
+                          ))}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(results.hashtags.join(' '))}
+                          className="mt-4 w-full"
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy All Hashtags
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Sparkles className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-600 mb-2">
+                  Ready to Generate!
+                </h3>
+                <p className="text-slate-500 text-sm">
+                  Select a category, platform, and describe your content to get started
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default GeneratorPage;
