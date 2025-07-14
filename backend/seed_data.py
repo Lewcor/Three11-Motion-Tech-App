@@ -145,6 +145,23 @@ async def seed_premium_packs():
                 "Leadership thoughts",
                 "Professional achievements"
             ]
+        ),
+        PremiumPack(
+            name="Event Space Pro Pack",
+            category=ContentCategory.EVENT_SPACE,
+            price=8.99,
+            features=[
+                "Venue showcase templates",
+                "Event space marketing",
+                "Booking conversion captions",
+                "Client testimonial formats"
+            ],
+            templates=[
+                "Venue reveals",
+                "Event success stories",
+                "Space availability updates",
+                "Client testimonials"
+            ]
         )
     ]
     
