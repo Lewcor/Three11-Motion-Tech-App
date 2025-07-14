@@ -249,7 +249,7 @@ const GeneratorPage = () => {
                           </div>
                         </CardHeader>
                         <CardContent className="pt-0">
-                          <p className="text-sm">{caption}</p>
+                          <p className="text-sm whitespace-pre-wrap">{caption}</p>
                         </CardContent>
                       </Card>
                     ))}
