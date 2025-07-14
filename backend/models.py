@@ -17,6 +17,7 @@ class ContentCategory(str, Enum):
     GAMING = "gaming"
     MUSIC = "music"
     IDEAS = "ideas"
+    EVENT_SPACE = "event_space"
 
 class Platform(str, Enum):
     TIKTOK = "tiktok"
