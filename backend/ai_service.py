@@ -166,7 +166,8 @@ Hashtags:"""
             ContentCategory.BUSINESS: ["#business", "#entrepreneur", "#success", "#motivation", "#leadership"],
             ContentCategory.GAMING: ["#gaming", "#gamer", "#game", "#esports", "#gameplay"],
             ContentCategory.MUSIC: ["#music", "#musician", "#song", "#artist", "#audio"],
-            ContentCategory.IDEAS: ["#creative", "#ideas", "#inspiration", "#writing", "#art"]
+            ContentCategory.IDEAS: ["#creative", "#ideas", "#inspiration", "#writing", "#art"],
+            ContentCategory.EVENT_SPACE: ["#eventspace", "#venue", "#rental", "#events", "#celebration"]
         }
         
         platform_hashtags = {
