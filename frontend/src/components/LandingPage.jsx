@@ -146,7 +146,7 @@ const LandingPage = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {mockData.contentCategories.map((category, index) => (
               <Card key={category.id} className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
                 <CardContent className="p-6 text-center">
