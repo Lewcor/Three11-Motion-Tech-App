@@ -136,7 +136,7 @@ const GeneratorPage = () => {
               <CardDescription>Choose the type of content you want to create</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {mockData.contentCategories.map((category) => (
                   <Button
                     key={category.id}
