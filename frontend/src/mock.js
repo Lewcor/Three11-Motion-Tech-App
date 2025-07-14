@@ -173,6 +173,14 @@ export const mockData = {
       price: '$6.99',
       features: ['Author-level content', 'Publishing hashtags', 'Creative writing prompts'],
       premium: true
+    },
+    {
+      id: 'event-space-pro',
+      name: 'Event Space Pro Pack',
+      category: 'event_space',
+      price: '$8.99',
+      features: ['Venue showcase templates', 'Event space marketing', 'Booking conversion captions', 'Client testimonial formats'],
+      premium: true
     }
   ],
 
