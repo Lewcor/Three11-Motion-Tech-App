@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Textarea } from './ui/textarea';
@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Progress } from './ui/progress';
 import { Sparkles, Copy, Heart, RefreshCw, Zap, Crown, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { mockData, mockAPI } from '../mock';
+import { mockData } from '../mock';
+import axios from 'axios';
 
 const GeneratorPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
