@@ -93,6 +93,23 @@ export const mockData = {
         "The best ideas come when you're not actively looking for them 💭",
         "Writing is rewriting, and rewriting is where the magic happens ✨"
       ]
+    },
+    event_space: {
+      openai: [
+        "🏛️ Where memories are made and dreams come true... Your perfect event starts here!",
+        "Every celebration deserves a space as special as the moment ✨ What's your vision?",
+        "Transform your event from ordinary to extraordinary in our stunning venue 🎉"
+      ],
+      anthropic: [
+        "The right space doesn't just host events - it elevates them 🌟",
+        "Creating atmospheres where every guest feels the magic ✨",
+        "Your event is unique, and so should be your venue 🏛️"
+      ],
+      gemini: [
+        "Picture perfect moments happen in picture perfect places 📸",
+        "Where elegance meets functionality - your event space awaits 🎭",
+        "From intimate gatherings to grand celebrations - we've got the perfect space 🎊"
+      ]
     }
   },
 
