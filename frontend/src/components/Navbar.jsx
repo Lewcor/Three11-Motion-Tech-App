@@ -40,9 +40,26 @@ const Navbar = () => {
                   variant={location.pathname === '/generator' ? 'default' : 'ghost'}
                   className="relative"
                 >
-                  Generate
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Generator
                   {location.pathname === '/generator' && (
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/content-creation">
+                <Button 
+                  variant={location.pathname === '/content-creation' ? 'default' : 'ghost'}
+                  className="relative"
+                >
+                  <Brain className="h-4 w-4 mr-2" />
+                  Content Suite
+                  <Badge className="ml-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
+                    NEW
+                  </Badge>
+                  {location.pathname === '/content-creation' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
                   )}
                 </Button>
               </Link>
@@ -55,7 +72,7 @@ const Navbar = () => {
                   <Crown className="h-4 w-4 mr-2" />
                   Premium
                   <Badge className="ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                    NEW
+                    Pro
                   </Badge>
                 </Button>
               </Link>
