@@ -169,15 +169,143 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Content Categories Section */}
+      {/* New Content Creation Features Section */}
+      <div className="py-16 bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Complete Content Creation Suite
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Beyond captions - create complete content strategies with our revolutionary 7-tool suite
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500 text-white text-2xl mx-auto mb-4">
+                  💡
+                </div>
+                <h3 className="font-semibold mb-2">Content Ideas</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Unlimited creative inspiration tailored to your niche
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-500 text-white text-2xl mx-auto mb-4">
+                  🎬
+                </div>
+                <h3 className="font-semibold mb-2">Video Scripts</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Complete scripts with hooks, content, and CTAs
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-500 text-white text-2xl mx-auto mb-4">
+                  📈
+                </div>
+                <h3 className="font-semibold mb-2">Trending Topics</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Real-time trend analysis for viral content
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white text-2xl mx-auto mb-4">
+                  📊
+                </div>
+                <h3 className="font-semibold mb-2">Strategy Planner</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Comprehensive content strategies for growth
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Platform Support Section */}
       <div className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Perfect for Every Creator & Platform
+              Optimized for Every Platform
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              From fashion to fitness, music to event spaces - create content for TikTok, Instagram, YouTube, and Facebook
+              Platform-specific optimization for maximum engagement across all major social networks
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-black text-white text-2xl mx-auto mb-4">
+                  📱
+                </div>
+                <h3 className="font-semibold mb-2">TikTok</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Short, trendy, viral content optimized for the For You Page
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-2xl mx-auto mb-4">
+                  📸
+                </div>
+                <h3 className="font-semibold mb-2">Instagram</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Visual storytelling with perfect captions and hashtags
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-600 text-white text-2xl mx-auto mb-4">
+                  📺
+                </div>
+                <h3 className="font-semibold mb-2">YouTube</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Educational and entertaining content for discoverability
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white text-2xl mx-auto mb-4">
+                  👥
+                </div>
+                <h3 className="font-semibold mb-2">Facebook</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Community-focused content that sparks conversations
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Categories Section */}
+      <div className="py-16 bg-gradient-to-r from-slate-50 to-purple-50 dark:from-slate-800 dark:to-purple-900/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              9 Specialized Content Categories
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              From fashion to event spaces - specialized content for every creator niche
             </p>
           </div>
           
