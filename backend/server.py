@@ -356,10 +356,243 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
         popular_platforms=popular_platforms
     )
 
+# Content Creation Routes
+@api_router.post("/content/ideas", response_model=ContentIdeaResponse)
+async def generate_content_ideas(
+    request: ContentIdeaRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate content ideas using AI"""
+    db = get_database()
+    
+    # Check generation limit
+    await check_generation_limit(current_user)
+    
+    try:
+        result = await content_creation_service.generate_content_ideas(request)
+        
+        # Save to database
+        await db.content_ideas.insert_one(result.dict())
+        
+        # Update user usage
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$inc": {"daily_generations_used": 1, "total_generations": 1},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error generating content ideas: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate content ideas")
+
+@api_router.post("/content/video-script", response_model=VideoScriptResponse)
+async def generate_video_script(
+    request: VideoScriptRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate video script using AI"""
+    db = get_database()
+    
+    # Check generation limit
+    await check_generation_limit(current_user)
+    
+    try:
+        result = await content_creation_service.generate_video_script(request)
+        
+        # Save to database
+        await db.video_scripts.insert_one(result.dict())
+        
+        # Update user usage
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$inc": {"daily_generations_used": 1, "total_generations": 1},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error generating video script: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate video script")
+
+@api_router.post("/content/strategy", response_model=ContentStrategyResponse)
+async def generate_content_strategy(
+    request: ContentStrategyRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate content strategy using AI"""
+    db = get_database()
+    
+    # Check generation limit (premium feature)
+    if current_user.tier != UserTier.PREMIUM:
+        raise HTTPException(status_code=403, detail="Content strategy is a premium feature")
+    
+    try:
+        result = await content_creation_service.generate_content_strategy(request)
+        
+        # Save to database
+        await db.content_strategies.insert_one(result.dict())
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error generating content strategy: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate content strategy")
+
+@api_router.get("/content/trending/{category}/{platform}")
+async def get_trending_topics(
+    category: ContentCategory,
+    platform: Platform,
+    current_user: User = Depends(get_current_user)
+):
+    """Get trending topics for category and platform"""
+    try:
+        topics = await content_creation_service.get_trending_topics(category, platform)
+        return {"trending_topics": topics}
+        
+    except Exception as e:
+        logger.error(f"Error getting trending topics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get trending topics")
+
+@api_router.post("/content/hooks")
+async def generate_hooks(
+    topic: str,
+    platform: Platform,
+    quantity: int = 5,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate attention-grabbing hooks"""
+    db = get_database()
+    
+    # Check generation limit
+    await check_generation_limit(current_user)
+    
+    try:
+        hooks = await content_creation_service.generate_hooks(topic, platform, quantity)
+        
+        # Save to database
+        await db.content_hooks.insert_one({
+            "user_id": current_user.id,
+            "topic": topic,
+            "platform": platform.value,
+            "hooks": hooks,
+            "created_at": datetime.utcnow()
+        })
+        
+        # Update user usage
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$inc": {"daily_generations_used": 1, "total_generations": 1},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return {"hooks": hooks}
+        
+    except Exception as e:
+        logger.error(f"Error generating hooks: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate hooks")
+
+@api_router.post("/content/cta")
+async def generate_cta(
+    goal: str,
+    platform: Platform,
+    quantity: int = 3,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate compelling calls-to-action"""
+    db = get_database()
+    
+    # Check generation limit
+    await check_generation_limit(current_user)
+    
+    try:
+        ctas = await content_creation_service.generate_cta(goal, platform, quantity)
+        
+        # Save to database
+        await db.content_ctas.insert_one({
+            "user_id": current_user.id,
+            "goal": goal,
+            "platform": platform.value,
+            "ctas": ctas,
+            "created_at": datetime.utcnow()
+        })
+        
+        # Update user usage
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$inc": {"daily_generations_used": 1, "total_generations": 1},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return {"ctas": ctas}
+        
+    except Exception as e:
+        logger.error(f"Error generating CTAs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate CTAs")
+
+# Content Calendar Routes
+@api_router.get("/content/calendar")
+async def get_content_calendar(
+    current_user: User = Depends(get_current_user),
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None
+):
+    """Get user's content calendar"""
+    db = get_database()
+    
+    try:
+        query = {"user_id": current_user.id}
+        
+        if start_date and end_date:
+            query["date"] = {
+                "$gte": datetime.fromisoformat(start_date),
+                "$lte": datetime.fromisoformat(end_date)
+            }
+        
+        cursor = db.content_calendar.find(query).sort("date", 1)
+        calendar_items = []
+        
+        async for doc in cursor:
+            calendar_items.append(ContentCalendar(**doc))
+        
+        return {"calendar": calendar_items}
+        
+    except Exception as e:
+        logger.error(f"Error getting content calendar: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get content calendar")
+
+@api_router.post("/content/calendar", response_model=ContentCalendar)
+async def create_calendar_item(
+    calendar_item: ContentCalendar,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new calendar item"""
+    db = get_database()
+    
+    try:
+        calendar_item.user_id = current_user.id
+        await db.content_calendar.insert_one(calendar_item.dict())
+        
+        return calendar_item
+        
+    except Exception as e:
+        logger.error(f"Error creating calendar item: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create calendar item")
+
 # Basic Routes
 @api_router.get("/")
 async def root():
-    return {"message": "THREE11 MOTION TECH - AI-Powered Caption & Hashtag Generator API"}
+    return {"message": "THREE11 MOTION TECH - Complete Content Creation Suite API"}
 
 @api_router.get("/health")
 async def health_check():
