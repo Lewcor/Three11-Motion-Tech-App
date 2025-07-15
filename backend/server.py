@@ -431,7 +431,7 @@ async def generate_content_strategy(
     db = get_database()
     
     # Check generation limit (premium feature)
-    if current_user.tier != UserTier.PREMIUM:
+    if current_user.tier not in [UserTier.PREMIUM, UserTier.ADMIN, UserTier.SUPER_ADMIN]:
         raise HTTPException(status_code=403, detail="Content strategy is a premium feature")
     
     try:
