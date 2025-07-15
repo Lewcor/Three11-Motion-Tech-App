@@ -7,6 +7,8 @@ import uuid
 class UserTier(str, Enum):
     FREE = "free"
     PREMIUM = "premium"
+    ADMIN = "admin"
+    SUPER_ADMIN = "super_admin"
 
 class ContentCategory(str, Enum):
     FASHION = "fashion"
