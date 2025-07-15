@@ -24,15 +24,15 @@ const LandingPage = () => {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent mb-6">
-              AI-Powered Caption &
+              Complete Content Creation
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Hashtag Generator
+                Suite & AI Generator
               </span>
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto">
-              Generate viral captions and trending hashtags for TikTok, Instagram, and YouTube. 
+              From viral captions to video scripts, content ideas to trending topics - everything creators need. 
               Powered by OpenAI GPT, Anthropic Claude, and Google Gemini working together.
             </p>
             
