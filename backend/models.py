@@ -119,6 +119,99 @@ class GenerationResultResponse(BaseModel):
     combined_result: str
     created_at: datetime
 
+# Content Creation Models
+class ContentIdeaRequest(BaseModel):
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    content_type: ContentType
+    template: Optional[ContentTemplate] = None
+    quantity: int = 5
+    audience_focus: Optional[str] = None
+
+class ContentIdeaResponse(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_type: ContentType
+    ideas: List[str]
+    trending_topics: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class VideoScriptRequest(BaseModel):
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    topic: str
+    duration: int = 60  # seconds
+    style: ContentTemplate = ContentTemplate.EDUCATIONAL
+
+class VideoScriptResponse(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    hook: str
+    main_content: str
+    call_to_action: str
+    timestamps: List[Dict[str, Any]]
+    estimated_duration: int
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ContentStrategyRequest(BaseModel):
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    audience_size: Optional[int] = None
+    posting_frequency: int = 7  # posts per week
+    goals: List[str] = []
+
+class ContentStrategyResponse(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    weekly_plan: List[Dict[str, Any]]
+    best_posting_times: List[PostTiming]
+    content_mix: Dict[str, float]  # percentage of each content type
+    trending_opportunities: List[str]
+    growth_recommendations: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ContentCalendar(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    date: datetime
+    content_type: ContentType
+    category: ContentCategory
+    platform: Platform
+    title: str
+    description: str
+    status: str = "planned"  # planned, created, published
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class TrendingTopic(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    category: ContentCategory
+    platform: Platform
+    topic: str
+    engagement_score: float
+    relevance_score: float
+    expiry_date: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ContentTemplateModel(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    category: ContentCategory
+    template_type: ContentTemplate
+    template_content: str
+    variables: List[str]
+    is_premium: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class BrandVoice(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    tone: str  # professional, casual, funny, inspiring
+    style: str  # formal, conversational, energetic
+    keywords: List[str]
+    avoid_words: List[str]
+    sample_content: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Premium Pack Models
 class PremiumPack(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
