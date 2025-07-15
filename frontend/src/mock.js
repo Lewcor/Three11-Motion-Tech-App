@@ -15,7 +15,8 @@ export const mockData = {
   platforms: [
     { id: 'tiktok', name: 'TikTok', icon: '📱', color: 'bg-black' },
     { id: 'instagram', name: 'Instagram', icon: '📸', color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
-    { id: 'youtube', name: 'YouTube', icon: '📺', color: 'bg-red-600' }
+    { id: 'youtube', name: 'YouTube', icon: '📺', color: 'bg-red-600' },
+    { id: 'facebook', name: 'Facebook', icon: '👥', color: 'bg-blue-600' }
   ],
 
   aiProviders: [
