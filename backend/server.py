@@ -590,6 +590,245 @@ async def create_calendar_item(
         logger.error(f"Error creating calendar item: {e}")
         raise HTTPException(status_code=500, detail="Failed to create calendar item")
 
+# Stripe Payment Routes
+@api_router.post("/payments/create-customer")
+async def create_stripe_customer(
+    current_user: User = Depends(get_current_user)
+):
+    """Create a Stripe customer for the user"""
+    db = get_database()
+    
+    try:
+        # Check if customer already exists
+        user_doc = await db.users.find_one({"id": current_user.id})
+        if user_doc.get("stripe_customer_id"):
+            return {"customer_id": user_doc["stripe_customer_id"]}
+        
+        # Create new Stripe customer
+        customer_id = await stripe_service.create_customer(current_user)
+        
+        # Save customer ID to user record
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": {"stripe_customer_id": customer_id}}
+        )
+        
+        return {"customer_id": customer_id}
+        
+    except Exception as e:
+        logger.error(f"Error creating Stripe customer: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create customer")
+
+@api_router.post("/payments/create-subscription")
+async def create_subscription(
+    plan_type: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a premium subscription"""
+    db = get_database()
+    
+    try:
+        # Get or create Stripe customer
+        user_doc = await db.users.find_one({"id": current_user.id})
+        customer_id = user_doc.get("stripe_customer_id")
+        
+        if not customer_id:
+            customer_id = await stripe_service.create_customer(current_user)
+            await db.users.update_one(
+                {"id": current_user.id},
+                {"$set": {"stripe_customer_id": customer_id}}
+            )
+        
+        # Create subscription
+        subscription_data = await stripe_service.create_subscription(customer_id, plan_type)
+        
+        # Update user tier to premium
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$set": {
+                    "tier": UserTier.PREMIUM,
+                    "stripe_subscription_id": subscription_data["subscription_id"],
+                    "subscription_expires_at": subscription_data["current_period_end"],
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        return subscription_data
+        
+    except Exception as e:
+        logger.error(f"Error creating subscription: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create subscription")
+
+@api_router.post("/payments/create-payment-intent")
+async def create_payment_intent(
+    amount: int,
+    pack_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a payment intent for one-time purchases"""
+    db = get_database()
+    
+    try:
+        # Get or create Stripe customer
+        user_doc = await db.users.find_one({"id": current_user.id})
+        customer_id = user_doc.get("stripe_customer_id")
+        
+        if not customer_id:
+            customer_id = await stripe_service.create_customer(current_user)
+            await db.users.update_one(
+                {"id": current_user.id},
+                {"$set": {"stripe_customer_id": customer_id}}
+            )
+        
+        if pack_id:
+            # Premium pack purchase
+            payment_data = await stripe_service.create_premium_pack_purchase(customer_id, pack_id)
+        else:
+            # Generic payment
+            payment_data = await stripe_service.create_payment_intent(amount, customer_id=customer_id)
+        
+        return payment_data
+        
+    except Exception as e:
+        logger.error(f"Error creating payment intent: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create payment intent")
+
+@api_router.post("/payments/cancel-subscription")
+async def cancel_subscription(
+    current_user: User = Depends(get_current_user)
+):
+    """Cancel user's subscription"""
+    db = get_database()
+    
+    try:
+        user_doc = await db.users.find_one({"id": current_user.id})
+        subscription_id = user_doc.get("stripe_subscription_id")
+        
+        if not subscription_id:
+            raise HTTPException(status_code=400, detail="No active subscription found")
+        
+        # Cancel subscription
+        cancellation_data = await stripe_service.cancel_subscription(subscription_id)
+        
+        # Update user record
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$set": {
+                    "subscription_cancel_at_period_end": True,
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        return cancellation_data
+        
+    except Exception as e:
+        logger.error(f"Error canceling subscription: {e}")
+        raise HTTPException(status_code=500, detail="Failed to cancel subscription")
+
+@api_router.get("/payments/billing-portal")
+async def create_billing_portal_session(
+    current_user: User = Depends(get_current_user)
+):
+    """Create a billing portal session for customer self-service"""
+    db = get_database()
+    
+    try:
+        user_doc = await db.users.find_one({"id": current_user.id})
+        customer_id = user_doc.get("stripe_customer_id")
+        
+        if not customer_id:
+            raise HTTPException(status_code=400, detail="No customer record found")
+        
+        # Create billing portal session
+        portal_url = await stripe_service.create_billing_portal_session(
+            customer_id, 
+            "https://your-domain.com/account"  # Replace with your domain
+        )
+        
+        return {"url": portal_url}
+        
+    except Exception as e:
+        logger.error(f"Error creating billing portal session: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create billing portal session")
+
+@api_router.get("/payments/history")
+async def get_payment_history(
+    current_user: User = Depends(get_current_user)
+):
+    """Get user's payment history"""
+    db = get_database()
+    
+    try:
+        user_doc = await db.users.find_one({"id": current_user.id})
+        customer_id = user_doc.get("stripe_customer_id")
+        
+        if not customer_id:
+            return {"payments": []}
+        
+        payments = await stripe_service.get_customer_payments(customer_id)
+        
+        return {"payments": payments}
+        
+    except Exception as e:
+        logger.error(f"Error getting payment history: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get payment history")
+
+@api_router.get("/payments/config")
+async def get_payment_config():
+    """Get Stripe configuration for frontend"""
+    return {
+        "publishable_key": stripe_service.get_publishable_key(),
+        "plans": {
+            "monthly": {"amount": 999, "currency": "usd"},
+            "yearly": {"amount": 7999, "currency": "usd"}
+        }
+    }
+
+@api_router.post("/payments/webhook")
+async def handle_stripe_webhook(request):
+    """Handle Stripe webhook events"""
+    try:
+        payload = await request.body()
+        signature = request.headers.get("stripe-signature")
+        
+        webhook_data = await stripe_service.handle_webhook(payload, signature)
+        
+        # Process webhook data based on event type
+        if webhook_data["status"] == "premium_pack_purchased":
+            # Handle premium pack purchase
+            await process_premium_pack_purchase(webhook_data)
+        elif webhook_data["status"] == "subscription_payment_succeeded":
+            # Handle subscription renewal
+            await process_subscription_renewal(webhook_data)
+        elif webhook_data["status"] == "subscription_cancelled":
+            # Handle subscription cancellation
+            await process_subscription_cancellation(webhook_data)
+        
+        return {"status": "success"}
+        
+    except Exception as e:
+        logger.error(f"Error handling webhook: {e}")
+        raise HTTPException(status_code=400, detail="Webhook error")
+
+async def process_premium_pack_purchase(webhook_data: Dict):
+    """Process premium pack purchase"""
+    # Implementation depends on your business logic
+    pass
+
+async def process_subscription_renewal(webhook_data: Dict):
+    """Process subscription renewal"""
+    # Implementation depends on your business logic
+    pass
+
+async def process_subscription_cancellation(webhook_data: Dict):
+    """Process subscription cancellation"""
+    # Implementation depends on your business logic
+    pass
+
 # Basic Routes
 @api_router.get("/")
 async def root():
