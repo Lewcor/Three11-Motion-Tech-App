@@ -104,9 +104,45 @@ async def signup(user_data: SignupRequest):
     # Check if user already exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        # If admin account already exists, just login
+        if existing_user.get("tier") in ["admin", "super_admin"]:
+            user = User(**existing_user)
+            access_token = create_access_token(data={"sub": user.id})
+            return Token(
+                access_token=access_token,
+                expires_in=86400,  # 24 hours
+                user=UserResponse(**user.dict())
+            )
+        else:
+            raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Create new user
+    # Check if this is an admin email
+    admin_emails = [
+        "ceo@three11motiontech.com",
+        "admin1@three11motiontech.com",
+        "admin2@three11motiontech.com", 
+        "admin3@three11motiontech.com",
+        "admin4@three11motiontech.com",
+        "admin5@three11motiontech.com",
+        "admin6@three11motiontech.com",
+        "admin7@three11motiontech.com",
+        "admin8@three11motiontech.com",
+        "admin9@three11motiontech.com"
+    ]
+    
+    if user_data.email in admin_emails:
+        # This is an admin account, find the pre-created account
+        admin_user = await db.users.find_one({"email": user_data.email})
+        if admin_user:
+            user = User(**admin_user)
+            access_token = create_access_token(data={"sub": user.id})
+            return Token(
+                access_token=access_token,
+                expires_in=86400,  # 24 hours
+                user=UserResponse(**user.dict())
+            )
+    
+    # Create new regular user
     user = User(
         email=user_data.email,
         name=user_data.name,
