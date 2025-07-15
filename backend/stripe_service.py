@@ -3,7 +3,11 @@ import os
 from typing import Dict, Optional, List
 from datetime import datetime, timedelta
 import logging
+from dotenv import load_dotenv
 from models import User, UserTier, SubscriptionPlan, SubscriptionCreate
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
