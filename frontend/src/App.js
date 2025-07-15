@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import './App.css';
 import LandingPage from './components/LandingPage';
 import GeneratorPage from './components/GeneratorPage';
+import ContentCreationPage from './components/ContentCreationPage';
 import PremiumPage from './components/PremiumPage';
 import Navbar from './components/Navbar';
 
