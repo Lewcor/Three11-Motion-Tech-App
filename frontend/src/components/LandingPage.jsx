@@ -27,14 +27,33 @@ const LandingPage = () => {
               Complete Content Creation
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Suite & AI Generator
+                Suite for All Platforms
               </span>
             </h1>
             
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto">
-              From viral captions to video scripts, content ideas to trending topics - everything creators need. 
+              From viral captions to video scripts, content ideas to trending topics - everything creators need for TikTok, Instagram, YouTube, and Facebook. 
               Powered by OpenAI GPT, Anthropic Claude, and Google Gemini working together.
             </p>
+            
+            <div className="flex items-center justify-center gap-8 text-sm text-slate-500 mb-8">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">📱</span>
+                <span>TikTok</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">📸</span>
+                <span>Instagram</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">📺</span>
+                <span>YouTube</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">👥</span>
+                <span>Facebook</span>
+              </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Link to="/generator">
