@@ -174,7 +174,8 @@ Hashtags:"""
         platform_hashtags = {
             Platform.TIKTOK: ["#tiktok", "#viral", "#fyp", "#trending"],
             Platform.INSTAGRAM: ["#instagram", "#insta", "#photo", "#instagood"],
-            Platform.YOUTUBE: ["#youtube", "#video", "#subscribe", "#content"]
+            Platform.YOUTUBE: ["#youtube", "#video", "#subscribe", "#content"],
+            Platform.FACEBOOK: ["#facebook", "#community", "#share", "#engage"]
         }
         
         hashtags = base_hashtags.get(category, ["#content", "#creative", "#social"])
