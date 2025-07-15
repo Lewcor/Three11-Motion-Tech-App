@@ -97,7 +97,11 @@ const LandingPage = () => {
               </div>
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-green-500" />
-                <span>1M+ Captions Generated</span>
+                <span>10M+ Posts Generated</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Brain className="h-4 w-4 text-purple-500" />
+                <span>7 Content Tools</span>
               </div>
             </div>
           </div>
