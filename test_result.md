@@ -242,7 +242,7 @@ frontend:
     status_history:
       - working: "NA"
         agent: "main"
-        comment: "Updated generator page to use real AI backend instead of mock data. Category/platform selection and content generation form ready."
+        comment: "Updated generator page to use real AI backend instead of mock data. Category/platform selection and content generation form ready. Added Event Space category integration."
 
   - task: "Premium Page"
     implemented: true
