@@ -331,38 +331,157 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Why Choose Our AI Generator?
+              Why THREE11 MOTION TECH Dominates the Market
             </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Revolutionary features that no competitor can match
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <Brain className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <Brain className="h-16 w-16 text-blue-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Triple AI Power</h3>
                 <p className="text-slate-600 dark:text-slate-300">
-                  Combined intelligence from OpenAI, Anthropic, and Google for unmatched creativity
+                  First-ever platform combining OpenAI, Anthropic, and Google Gemini for unmatched creativity
                 </p>
+                <div className="mt-4 flex justify-center gap-2">
+                  <Badge variant="outline" className="text-xs">OpenAI GPT</Badge>
+                  <Badge variant="outline" className="text-xs">Claude</Badge>
+                  <Badge variant="outline" className="text-xs">Gemini</Badge>
+                </div>
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <Zap className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Instant Results</h3>
+                <Zap className="h-16 w-16 text-yellow-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">7-Tool Content Suite</h3>
                 <p className="text-slate-600 dark:text-slate-300">
-                  Generate viral captions and trending hashtags in seconds, not hours
+                  Complete content creation workflow from ideas to strategy planning
                 </p>
+                <div className="mt-4 flex justify-center gap-2">
+                  <Badge variant="outline" className="text-xs">Ideas</Badge>
+                  <Badge variant="outline" className="text-xs">Scripts</Badge>
+                  <Badge variant="outline" className="text-xs">Strategy</Badge>
+                </div>
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
-                <TrendingUp className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Always Current</h3>
+                <TrendingUp className="h-16 w-16 text-green-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">4-Platform Optimization</h3>
                 <p className="text-slate-600 dark:text-slate-300">
-                  Auto-updates every 2 weeks with latest trends and platform changes
+                  Specialized optimization for TikTok, Instagram, YouTube, and Facebook algorithms
                 </p>
+                <div className="mt-4 flex justify-center gap-2">
+                  <Badge variant="outline" className="text-xs">📱 TikTok</Badge>
+                  <Badge variant="outline" className="text-xs">📸 Instagram</Badge>
+                  <Badge variant="outline" className="text-xs">📺 YouTube</Badge>
+                  <Badge variant="outline" className="text-xs">👥 Facebook</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Unique Features Section */}
+      <div className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Exclusive Features Nobody Else Has
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Revolutionary capabilities that set us apart from every competitor
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500 text-white text-2xl flex-shrink-0">
+                    🏛️
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Event Space Category</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
+                      First and only platform with specialized content for event venues, wedding halls, and corporate spaces
+                    </p>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">Wedding Venues</Badge>
+                      <Badge variant="secondary" className="text-xs">Corporate Events</Badge>
+                      <Badge variant="secondary" className="text-xs">Party Spaces</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white text-2xl flex-shrink-0">
+                    🎯
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Real-Time Trend Analysis</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
+                      AI-powered trend detection that keeps your content ahead of the curve on all platforms
+                    </p>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">Viral Trends</Badge>
+                      <Badge variant="secondary" className="text-xs">Hashtag Analysis</Badge>
+                      <Badge variant="secondary" className="text-xs">Auto-Updates</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500 text-white text-2xl flex-shrink-0">
+                    📝
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Complete Video Scripts</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
+                      Full video scripts with hooks, timestamps, and CTAs - not just captions
+                    </p>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">Hooks</Badge>
+                      <Badge variant="secondary" className="text-xs">Timestamps</Badge>
+                      <Badge variant="secondary" className="text-xs">CTAs</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500 text-white text-2xl flex-shrink-0">
+                    📊
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Content Strategy Planner</h3>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
+                      Comprehensive content strategies with posting schedules and performance optimization
+                    </p>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">Weekly Plans</Badge>
+                      <Badge variant="secondary" className="text-xs">Best Times</Badge>
+                      <Badge variant="secondary" className="text-xs">Analytics</Badge>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
