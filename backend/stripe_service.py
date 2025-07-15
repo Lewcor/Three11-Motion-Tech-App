@@ -1,6 +1,6 @@
 import stripe
 import os
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from datetime import datetime, timedelta
 import logging
 from models import User, UserTier, SubscriptionPlan, SubscriptionCreate
