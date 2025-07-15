@@ -29,6 +29,36 @@ class AIProvider(str, Enum):
     ANTHROPIC = "anthropic"
     GEMINI = "gemini"
 
+class ContentType(str, Enum):
+    CAPTION = "caption"
+    HASHTAGS = "hashtags"
+    CONTENT_IDEA = "content_idea"
+    VIDEO_SCRIPT = "video_script"
+    BLOG_OUTLINE = "blog_outline"
+    STORY_ARC = "story_arc"
+    HOOK = "hook"
+    CTA = "cta"
+    TRENDING_TOPIC = "trending_topic"
+    CONTENT_STRATEGY = "content_strategy"
+
+class ContentTemplate(str, Enum):
+    EDUCATIONAL = "educational"
+    ENTERTAINING = "entertaining"
+    PROMOTIONAL = "promotional"
+    INSPIRATIONAL = "inspirational"
+    TUTORIAL = "tutorial"
+    BEHIND_SCENES = "behind_scenes"
+    USER_GENERATED = "user_generated"
+    SEASONAL = "seasonal"
+
+class PostTiming(str, Enum):
+    MORNING = "morning"
+    AFTERNOON = "afternoon"
+    EVENING = "evening"
+    LATE_NIGHT = "late_night"
+    WEEKEND = "weekend"
+    WEEKDAY = "weekday"
+
 # User Models
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
