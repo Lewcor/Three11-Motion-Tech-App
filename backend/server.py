@@ -865,6 +865,136 @@ async def process_subscription_cancellation(webhook_data: Dict):
     # Implementation depends on your business logic
     pass
 
+# Admin Routes
+@api_router.get("/admin/users")
+async def get_all_users(
+    current_user: User = Depends(get_current_user),
+    limit: int = 100,
+    skip: int = 0
+):
+    """Get all users (admin only)"""
+    if current_user.tier not in [UserTier.ADMIN, UserTier.SUPER_ADMIN]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    db = get_database()
+    
+    cursor = db.users.find({}).skip(skip).limit(limit)
+    users = []
+    
+    async for user_doc in cursor:
+        users.append(UserResponse(**user_doc))
+    
+    return {"users": users}
+
+@api_router.get("/admin/stats")
+async def get_admin_stats(
+    current_user: User = Depends(get_current_user)
+):
+    """Get admin dashboard statistics"""
+    if current_user.tier not in [UserTier.ADMIN, UserTier.SUPER_ADMIN]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    db = get_database()
+    
+    # Get user statistics
+    total_users = await db.users.count_documents({})
+    free_users = await db.users.count_documents({"tier": "free"})
+    premium_users = await db.users.count_documents({"tier": "premium"})
+    admin_users = await db.users.count_documents({"tier": {"$in": ["admin", "super_admin"]}})
+    
+    # Get generation statistics
+    total_generations = await db.generation_results.count_documents({})
+    today_generations = await db.generation_results.count_documents({
+        "created_at": {"$gte": datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)}
+    })
+    
+    # Get popular categories
+    pipeline = [
+        {"$group": {"_id": "$category", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ]
+    
+    popular_categories = []
+    async for doc in db.generation_results.aggregate(pipeline):
+        popular_categories.append({"category": doc["_id"], "count": doc["count"]})
+    
+    return {
+        "users": {
+            "total": total_users,
+            "free": free_users,
+            "premium": premium_users,
+            "admin": admin_users
+        },
+        "generations": {
+            "total": total_generations,
+            "today": today_generations
+        },
+        "popular_categories": popular_categories
+    }
+
+@api_router.put("/admin/users/{user_id}/tier")
+async def update_user_tier(
+    user_id: str,
+    new_tier: UserTier,
+    current_user: User = Depends(get_current_user)
+):
+    """Update user tier (admin only)"""
+    if current_user.tier not in [UserTier.ADMIN, UserTier.SUPER_ADMIN]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    db = get_database()
+    
+    # Update user tier
+    result = await db.users.update_one(
+        {"id": user_id},
+        {
+            "$set": {
+                "tier": new_tier,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": f"User tier updated to {new_tier}"}
+
+@api_router.get("/admin/generations")
+async def get_all_generations(
+    current_user: User = Depends(get_current_user),
+    limit: int = 100,
+    skip: int = 0
+):
+    """Get all generations (admin only)"""
+    if current_user.tier not in [UserTier.ADMIN, UserTier.SUPER_ADMIN]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    db = get_database()
+    
+    cursor = db.generation_results.find({}).sort("created_at", -1).skip(skip).limit(limit)
+    generations = []
+    
+    async for doc in cursor:
+        # Convert ai_responses to captions dict
+        captions = {}
+        for response in doc.get("ai_responses", []):
+            captions[response["provider"]] = response["caption"]
+        
+        generations.append(GenerationResultResponse(
+            id=doc["id"],
+            category=doc["category"],
+            platform=doc["platform"],
+            content_description=doc["content_description"],
+            captions=captions,
+            hashtags=doc["hashtags"],
+            combined_result=doc["combined_result"],
+            created_at=doc["created_at"]
+        ))
+    
+    return {"generations": generations}
+
 # Basic Routes
 @api_router.get("/")
 async def root():
