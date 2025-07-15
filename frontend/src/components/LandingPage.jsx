@@ -492,17 +492,32 @@ const LandingPage = () => {
       <div className="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Ready to Create Viral Content?
+            Ready to Dominate All Platforms?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of creators who trust THREE11 MOTION TECH
+            Join thousands of creators using THREE11 MOTION TECH to create viral content for TikTok, Instagram, YouTube, and Facebook
           </p>
-          <Link to="/generator">
-            <Button size="lg" variant="secondary" className="group">
-              Start Creating Now
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link to="/generator">
+              <Button size="lg" variant="secondary" className="group">
+                Start Creating Now
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/content-creation">
+              <Button size="lg" variant="outline" className="group text-white border-white hover:bg-white hover:text-blue-600">
+                <Brain className="mr-2 h-4 w-4" />
+                Explore Content Suite
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="mt-8 flex items-center justify-center gap-8 text-sm opacity-75">
+            <span>✨ 9 Content Categories</span>
+            <span>🤖 3 AI Providers</span>
+            <span>📱 4 Platforms</span>
+            <span>🎨 7 Creation Tools</span>
+          </div>
         </div>
       </div>
     </div>
