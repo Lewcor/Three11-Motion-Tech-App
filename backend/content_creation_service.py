@@ -54,6 +54,13 @@ class ContentCreationService:
                 "hooks": "Problem-solution focused",
                 "cta": "Subscribe and hit the bell",
                 "best_times": [PostTiming.AFTERNOON, PostTiming.EVENING]
+            },
+            Platform.FACEBOOK: {
+                "video_length": "1-5 minutes",
+                "style": "Community-focused, conversational, engaging",
+                "hooks": "Question-based, relatable",
+                "cta": "Share your experience, Tag a friend",
+                "best_times": [PostTiming.MORNING, PostTiming.AFTERNOON]
             }
         }
         
