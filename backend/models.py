@@ -23,6 +23,7 @@ class Platform(str, Enum):
     TIKTOK = "tiktok"
     INSTAGRAM = "instagram"
     YOUTUBE = "youtube"
+    FACEBOOK = "facebook"
 
 class AIProvider(str, Enum):
     OPENAI = "openai"
