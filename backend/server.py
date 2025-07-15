@@ -83,8 +83,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 async def check_generation_limit(user: User):
     """Check if user has exceeded daily generation limit"""
-    if user.tier == UserTier.PREMIUM:
-        return True  # Premium users have unlimited generations
+    if user.tier in [UserTier.PREMIUM, UserTier.ADMIN, UserTier.SUPER_ADMIN]:
+        return True  # Premium and Admin users have unlimited generations
     
     # Free users have daily limit
     if user.daily_generations_used >= 10:  # Free limit is 10 per day
