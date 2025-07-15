@@ -18,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/generator" element={<GeneratorPage />} />
+            <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
           </Routes>
           <Toaster position="top-right" />
