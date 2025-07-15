@@ -31,7 +31,8 @@ class AIService:
         self.platform_guidelines = {
             Platform.TIKTOK: "Keep it short, trendy, and engaging. Use hashtags that TikTok users love. Include emojis and make it fun.",
             Platform.INSTAGRAM: "Make it visually appealing with emojis. Can be longer but keep it engaging. Perfect for storytelling.",
-            Platform.YOUTUBE: "Can be longer and more descriptive. Focus on compelling hooks and clear value propositions."
+            Platform.YOUTUBE: "Can be longer and more descriptive. Focus on compelling hooks and clear value propositions.",
+            Platform.FACEBOOK: "Focus on community engagement and conversations. Great for longer-form content and storytelling. Encourage comments and shares."
         }
 
     async def create_ai_chat(self, provider: AIProvider, category: ContentCategory) -> LlmChat:
