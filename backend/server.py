@@ -15,6 +15,7 @@ from models import *
 from database import connect_to_mongo, close_mongo_connection, get_database
 from ai_service import ai_service
 from content_creation_service import content_creation_service
+from stripe_service import stripe_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
