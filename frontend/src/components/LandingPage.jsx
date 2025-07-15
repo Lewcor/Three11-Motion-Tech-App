@@ -40,10 +40,22 @@ const LandingPage = () => {
               <Link to="/generator">
                 <Button size="lg" className="group relative overflow-hidden">
                   <span className="relative z-10 flex items-center">
-                    Start Creating
+                    Caption Generator
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </Button>
+              </Link>
+              
+              <Link to="/content-creation">
+                <Button size="lg" variant="outline" className="group relative overflow-hidden">
+                  <span className="relative z-10 flex items-center">
+                    <Brain className="mr-2 h-4 w-4" />
+                    Content Suite
+                    <Badge className="ml-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
+                      NEW
+                    </Badge>
+                  </span>
                 </Button>
               </Link>
               
