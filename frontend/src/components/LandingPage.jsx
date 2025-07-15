@@ -174,10 +174,10 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Perfect for Every Creator
+              Perfect for Every Creator & Platform
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              From fashion to fitness, music to creative writing - we've got you covered
+              From fashion to fitness, music to event spaces - create content for TikTok, Instagram, YouTube, and Facebook
             </p>
           </div>
           
