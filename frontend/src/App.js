@@ -8,6 +8,7 @@ import GeneratorPage from './components/GeneratorPage';
 import ContentCreationPage from './components/ContentCreationPage';
 import PremiumPage from './components/PremiumPage';
 import VoiceStudio from './components/VoiceStudio';
+import TrendsAnalyzer from './components/TrendsAnalyzer';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
