@@ -38,6 +38,7 @@ function App() {
             <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/voice-studio" element={<VoiceStudio />} />
+            <Route path="/trends-analyzer" element={<TrendsAnalyzer />} />
           </Routes>
           <Toaster position="top-right" />
         </div>
