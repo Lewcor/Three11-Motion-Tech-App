@@ -186,5 +186,21 @@
                 person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
             });
         </script>
+        
+        <!-- Service Worker Registration -->
+        <script>
+            // Register service worker for PWA functionality
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then((registration) => {
+                            console.log('THREE11 MOTION TECH: SW registered', registration);
+                        })
+                        .catch((registrationError) => {
+                            console.log('THREE11 MOTION TECH: SW registration failed', registrationError);
+                        });
+                });
+            }
+        </script>
     </body>
 </html>
