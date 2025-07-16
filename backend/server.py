@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, File, UploadFile, Form
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List, Optional
 from datetime import datetime, timedelta
 import jwt
+import io
 
 # Import our models and services
 from models import *
@@ -16,6 +17,7 @@ from database import connect_to_mongo, close_mongo_connection, get_database
 from ai_service import ai_service
 from content_creation_service import content_creation_service
 from stripe_service import stripe_service
+from voice_service import VoiceService
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
