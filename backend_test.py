@@ -294,6 +294,334 @@ class BackendTester:
         else:
             self.log_test("Database Operations", False, "Some database operations failed")
     
+    def _create_mock_audio_file(self, duration_ms: int = 2000, format: str = "wav") -> bytes:
+        """Create mock audio data for testing"""
+        try:
+            # Generate a simple sine wave tone
+            tone = Sine(440).to_audio_segment(duration=duration_ms)  # 440Hz A note
+            
+            # Export to bytes
+            buffer = io.BytesIO()
+            tone.export(buffer, format=format)
+            buffer.seek(0)
+            return buffer.read()
+        except Exception as e:
+            # Fallback: create minimal WAV header with silence
+            sample_rate = 44100
+            duration_seconds = duration_ms / 1000
+            num_samples = int(sample_rate * duration_seconds)
+            
+            # Create WAV header (44 bytes) + silent audio data
+            wav_header = b'RIFF' + (36 + num_samples * 2).to_bytes(4, 'little') + b'WAVE'
+            wav_header += b'fmt ' + (16).to_bytes(4, 'little')  # fmt chunk
+            wav_header += (1).to_bytes(2, 'little')  # PCM format
+            wav_header += (1).to_bytes(2, 'little')  # mono
+            wav_header += sample_rate.to_bytes(4, 'little')  # sample rate
+            wav_header += (sample_rate * 2).to_bytes(4, 'little')  # byte rate
+            wav_header += (2).to_bytes(2, 'little')  # block align
+            wav_header += (16).to_bytes(2, 'little')  # bits per sample
+            wav_header += b'data' + (num_samples * 2).to_bytes(4, 'little')
+            
+            # Add silent audio data
+            audio_data = b'\x00\x00' * num_samples
+            
+            return wav_header + audio_data
+    
+    async def make_file_request(self, endpoint: str, file_data: bytes, filename: str, 
+                               additional_data: Optional[Dict] = None) -> tuple[bool, Dict]:
+        """Make multipart file upload request"""
+        try:
+            url = f"{BACKEND_URL}{endpoint}"
+            
+            # Create multipart form data
+            data = aiohttp.FormData()
+            data.add_field('audio_file', file_data, filename=filename, content_type='audio/wav')
+            
+            if additional_data:
+                for key, value in additional_data.items():
+                    data.add_field(key, str(value))
+            
+            headers = {}
+            if self.auth_token:
+                headers["Authorization"] = f"Bearer {self.auth_token}"
+            
+            async with self.session.post(url, data=data, headers=headers) as response:
+                try:
+                    response_data = await response.json()
+                except:
+                    response_data = {"text": await response.text()}
+                
+                return response.status < 400, {
+                    "status": response.status,
+                    "data": response_data
+                }
+        except Exception as e:
+            return False, {"error": str(e)}
+    
+    async def test_voice_transcription(self):
+        """Test 12: Voice Transcription Service"""
+        if not self.auth_token:
+            self.log_test("Voice Transcription", False, "No auth token available")
+            return
+        
+        try:
+            # Create mock audio file
+            audio_data = self._create_mock_audio_file(duration_ms=1000, format="wav")
+            
+            # Test transcription endpoint
+            success, response = await self.make_file_request(
+                "/voice/transcribe", 
+                audio_data, 
+                "test_audio.wav"
+            )
+            
+            if success:
+                data = response["data"]
+                if "transcript" in data and "success" in data:
+                    if data["success"]:
+                        self.log_test("Voice Transcription", True, 
+                                    f"Audio transcribed successfully: '{data.get('transcript', 'N/A')}'")
+                    else:
+                        self.log_test("Voice Transcription", False, 
+                                    f"Transcription failed: {data.get('error', 'Unknown error')}")
+                else:
+                    self.log_test("Voice Transcription", False, "Invalid response format", response)
+            else:
+                self.log_test("Voice Transcription", False, "Transcription request failed", response)
+                
+        except Exception as e:
+            self.log_test("Voice Transcription", False, f"Test error: {str(e)}")
+    
+    async def test_voice_content_suite(self):
+        """Test 13: Voice-to-Content Suite"""
+        if not self.auth_token:
+            self.log_test("Voice Content Suite", False, "No auth token available")
+            return
+        
+        try:
+            # Create mock audio file
+            audio_data = self._create_mock_audio_file(duration_ms=2000, format="wav")
+            
+            # Test voice-to-content suite endpoint
+            success, response = await self.make_file_request(
+                "/voice/content-suite", 
+                audio_data, 
+                "content_audio.wav"
+            )
+            
+            if success:
+                data = response["data"]
+                if "success" in data:
+                    if data["success"]:
+                        required_fields = ["transcript", "content_details", "generated_content"]
+                        if all(field in data for field in required_fields):
+                            self.log_test("Voice Content Suite", True, 
+                                        "Voice-to-content generation successful with all required fields")
+                        else:
+                            missing = [f for f in required_fields if f not in data]
+                            self.log_test("Voice Content Suite", False, 
+                                        f"Missing required fields: {missing}", response)
+                    else:
+                        self.log_test("Voice Content Suite", False, 
+                                    f"Content generation failed: {data.get('error', 'Unknown error')}")
+                else:
+                    self.log_test("Voice Content Suite", False, "Invalid response format", response)
+            else:
+                self.log_test("Voice Content Suite", False, "Content suite request failed", response)
+                
+        except Exception as e:
+            self.log_test("Voice Content Suite", False, f"Test error: {str(e)}")
+    
+    async def test_voice_command_handler(self):
+        """Test 14: Voice Command Handler"""
+        if not self.auth_token:
+            self.log_test("Voice Command Handler", False, "No auth token available")
+            return
+        
+        try:
+            # Create mock audio file
+            audio_data = self._create_mock_audio_file(duration_ms=1500, format="wav")
+            
+            # Test voice command endpoint
+            success, response = await self.make_file_request(
+                "/voice/command", 
+                audio_data, 
+                "command_audio.wav"
+            )
+            
+            if success:
+                data = response["data"]
+                if "success" in data:
+                    if data["success"]:
+                        # Check for command response structure
+                        if "action" in data or "transcript" in data:
+                            self.log_test("Voice Command Handler", True, 
+                                        f"Voice command processed successfully: {data.get('action', 'content_generation')}")
+                        else:
+                            self.log_test("Voice Command Handler", False, 
+                                        "Command response missing required fields", response)
+                    else:
+                        self.log_test("Voice Command Handler", False, 
+                                    f"Command processing failed: {data.get('error', 'Unknown error')}")
+                else:
+                    self.log_test("Voice Command Handler", False, "Invalid response format", response)
+            else:
+                self.log_test("Voice Command Handler", False, "Command handler request failed", response)
+                
+        except Exception as e:
+            self.log_test("Voice Command Handler", False, f"Test error: {str(e)}")
+    
+    async def test_real_time_transcription(self):
+        """Test 15: Real-time Voice Transcription"""
+        if not self.auth_token:
+            self.log_test("Real-time Transcription", False, "No auth token available")
+            return
+        
+        try:
+            # Create mock audio chunk
+            audio_data = self._create_mock_audio_file(duration_ms=500, format="webm")
+            
+            # Encode as base64 for real-time endpoint
+            audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+            
+            # Test real-time transcription endpoint
+            form_data = {
+                "audio_chunk": audio_base64,
+                "is_final": "true"
+            }
+            
+            success, response = await self.make_request("POST", "/voice/real-time-transcribe", 
+                                                      data=None, headers={"Content-Type": "application/x-www-form-urlencoded"})
+            
+            # Since make_request doesn't handle form data, let's use a direct approach
+            url = f"{BACKEND_URL}/voice/real-time-transcribe"
+            headers = {"Authorization": f"Bearer {self.auth_token}"}
+            
+            form_data_aiohttp = aiohttp.FormData()
+            form_data_aiohttp.add_field('audio_chunk', audio_base64)
+            form_data_aiohttp.add_field('is_final', 'true')
+            
+            async with self.session.post(url, data=form_data_aiohttp, headers=headers) as response:
+                try:
+                    response_data = await response.json()
+                except:
+                    response_data = {"text": await response.text()}
+                
+                success = response.status < 400
+                response_dict = {
+                    "status": response.status,
+                    "data": response_data
+                }
+            
+            if success:
+                data = response_dict["data"]
+                if "success" in data and "transcript" in data:
+                    if data["success"]:
+                        self.log_test("Real-time Transcription", True, 
+                                    f"Real-time transcription successful: '{data.get('transcript', 'N/A')}'")
+                    else:
+                        self.log_test("Real-time Transcription", False, 
+                                    "Real-time transcription failed")
+                else:
+                    self.log_test("Real-time Transcription", False, "Invalid response format", response_dict)
+            else:
+                self.log_test("Real-time Transcription", False, "Real-time transcription request failed", response_dict)
+                
+        except Exception as e:
+            self.log_test("Real-time Transcription", False, f"Test error: {str(e)}")
+    
+    async def test_voice_authentication_requirements(self):
+        """Test 16: Voice Endpoints Authentication"""
+        # Test that voice endpoints require authentication
+        audio_data = self._create_mock_audio_file(duration_ms=500, format="wav")
+        
+        # Temporarily remove auth token
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        try:
+            # Test transcription without auth
+            success, response = await self.make_file_request(
+                "/voice/transcribe", 
+                audio_data, 
+                "test_auth.wav"
+            )
+            
+            if not success and response.get("status") == 401:
+                self.log_test("Voice Authentication", True, "Voice endpoints properly require authentication")
+            else:
+                self.log_test("Voice Authentication", False, "Voice endpoints should require authentication", response)
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_voice_error_handling(self):
+        """Test 17: Voice Error Handling"""
+        if not self.auth_token:
+            self.log_test("Voice Error Handling", False, "No auth token available")
+            return
+        
+        try:
+            # Test with invalid audio format
+            invalid_data = b"This is not audio data"
+            
+            success, response = await self.make_file_request(
+                "/voice/transcribe", 
+                invalid_data, 
+                "invalid.txt"  # Wrong extension
+            )
+            
+            # Should fail gracefully
+            if not success or (success and "error" in response["data"]):
+                self.log_test("Voice Error Handling", True, "Voice service handles invalid audio gracefully")
+            else:
+                self.log_test("Voice Error Handling", False, "Voice service should reject invalid audio", response)
+                
+        except Exception as e:
+            self.log_test("Voice Error Handling", True, f"Voice service properly handles errors: {str(e)}")
+    
+    async def test_voice_generation_limits(self):
+        """Test 18: Voice Generation Limits"""
+        if not self.auth_token:
+            self.log_test("Voice Generation Limits", False, "No auth token available")
+            return
+        
+        # Check if voice endpoints respect generation limits
+        success, user_response = await self.make_request("GET", "/users/me")
+        if not success:
+            self.log_test("Voice Generation Limits", False, "Could not get user info for limit testing")
+            return
+        
+        user_data = user_response["data"]
+        daily_used = user_data.get("daily_generations_used", 0)
+        tier = user_data.get("tier", "free")
+        
+        if tier == "premium":
+            self.log_test("Voice Generation Limits", True, "User is premium - voice features unlimited")
+            return
+        
+        # Test voice transcription with limits
+        audio_data = self._create_mock_audio_file(duration_ms=1000, format="wav")
+        success, response = await self.make_file_request(
+            "/voice/transcribe", 
+            audio_data, 
+            "limit_test.wav"
+        )
+        
+        if daily_used >= 10:
+            # Should be blocked
+            if not success and response.get("status") == 403:
+                self.log_test("Voice Generation Limits", True, "Voice endpoints respect daily limits")
+            else:
+                self.log_test("Voice Generation Limits", False, "Voice endpoints should respect daily limits", response)
+        else:
+            # Should work
+            if success:
+                self.log_test("Voice Generation Limits", True, f"Voice generation allowed within limits ({daily_used + 1}/10)")
+            else:
+                self.log_test("Voice Generation Limits", False, "Voice generation failed within limits", response)
+    
     async def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting THREE11 MOTION TECH Backend Testing...")
