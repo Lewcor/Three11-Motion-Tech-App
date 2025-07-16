@@ -649,6 +649,17 @@ class BackendTester:
         # Database operations summary
         await self.test_database_operations()
         
+        # Voice Processing Tests (NEW)
+        print("\n🎤 VOICE PROCESSING TESTS")
+        print("-" * 40)
+        await self.test_voice_transcription()
+        await self.test_voice_content_suite()
+        await self.test_voice_command_handler()
+        await self.test_real_time_transcription()
+        await self.test_voice_authentication_requirements()
+        await self.test_voice_error_handling()
+        await self.test_voice_generation_limits()
+        
         # Print summary
         self.print_summary()
     
