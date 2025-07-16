@@ -78,6 +78,18 @@ const LandingPage = () => {
                 </Button>
               </Link>
               
+              <Link to="/trends-analyzer">
+                <Button size="lg" className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                  <span className="relative z-10 flex items-center">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    Trends Analyzer
+                    <Badge className="ml-2 bg-white/20 text-white text-xs">
+                      LIVE
+                    </Badge>
+                  </span>
+                </Button>
+              </Link>
+              
               <Link to="/content-creation">
                 <Button size="lg" variant="outline" className="group relative overflow-hidden">
                   <span className="relative z-10 flex items-center">
