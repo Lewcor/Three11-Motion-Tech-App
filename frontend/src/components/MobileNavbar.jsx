@@ -133,6 +133,10 @@ const MobileNavbar = () => {
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       <span>7 Creation Tools</span>
                     </div>
+                    <div className="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                      <span>Voice Processing</span>
+                    </div>
                   </div>
                 </div>
 
