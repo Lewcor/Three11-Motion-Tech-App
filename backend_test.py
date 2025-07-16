@@ -716,6 +716,22 @@ class BackendTester:
         else:
             print("  ❌ Premium Features: Issues with premium functionality")
         
+        # Voice Processing (NEW)
+        voice_tests = ["Voice Transcription", "Voice Content Suite", "Voice Command Handler", "Real-time Transcription"]
+        voice_working = all(self.test_results.get(test, {}).get("success", False) for test in voice_tests)
+        if voice_working:
+            print("  ✅ Voice Processing: All voice endpoints working with OpenAI Whisper integration")
+        else:
+            voice_failed = [test for test in voice_tests if not self.test_results.get(test, {}).get("success", False)]
+            print(f"  ❌ Voice Processing: Issues with voice functionality - Failed: {voice_failed}")
+        
+        # Voice Security
+        voice_auth_test = self.test_results.get("Voice Authentication", {})
+        if voice_auth_test.get("success"):
+            print("  ✅ Voice Security: Authentication properly enforced on voice endpoints")
+        else:
+            print("  ❌ Voice Security: Issues with voice endpoint authentication")
+        
         print("\n" + "=" * 60)
 
 async def main():
