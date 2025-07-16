@@ -29,6 +29,12 @@ const MobileNavbar = () => {
       badge: 'BETA'
     },
     { 
+      path: '/trends-analyzer', 
+      name: 'Trends Analyzer', 
+      icon: <TrendingUp className="h-4 w-4" />,
+      badge: 'LIVE'
+    },
+    { 
       path: '/premium', 
       name: 'Premium', 
       icon: <Crown className="h-4 w-4" />,
