@@ -38,6 +38,7 @@ JWT_ALGORITHM = "HS256"
 
 # Initialize services
 voice_service = VoiceService()
+trends_service = TrendsService()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
