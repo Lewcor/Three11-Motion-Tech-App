@@ -351,7 +351,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Complete User Experience Testing"
+    - "Voice Transcription Service"
+    - "Voice-to-Content Suite"
+    - "Voice Command Handler"
+    - "Real-time Voice Transcription"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
