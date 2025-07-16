@@ -35,6 +35,12 @@ const MobileNavbar = () => {
       badge: 'LIVE'
     },
     { 
+      path: '/content-remix', 
+      name: 'Content Remix', 
+      icon: <Shuffle className="h-4 w-4" />,
+      badge: 'AI'
+    },
+    { 
       path: '/premium', 
       name: 'Premium', 
       icon: <Crown className="h-4 w-4" />,
