@@ -1000,6 +1000,138 @@ async def get_all_generations(
     
     return {"generations": generations}
 
+# Voice Processing Routes
+@api_router.post("/voice/transcribe")
+async def transcribe_voice(
+    audio_file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Transcribe audio file to text"""
+    await check_generation_limit(current_user)
+    
+    try:
+        # Read audio file
+        audio_data = await audio_file.read()
+        
+        # Get file extension to determine format
+        file_format = audio_file.filename.split('.')[-1].lower()
+        if file_format not in ['wav', 'mp3', 'webm', 'ogg', 'm4a']:
+            raise HTTPException(status_code=400, detail="Unsupported audio format")
+        
+        # Transcribe audio
+        transcript = await voice_service.transcribe_audio(audio_data, file_format)
+        
+        return {
+            "success": True,
+            "transcript": transcript,
+            "file_format": file_format,
+            "file_size": len(audio_data)
+        }
+        
+    except Exception as e:
+        logger.error(f"Voice transcription error: {e}")
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
+
+@api_router.post("/voice/content-suite")
+async def voice_to_content_suite(
+    audio_file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Convert voice input to complete content suite"""
+    await check_generation_limit(current_user)
+    
+    try:
+        # Read audio file
+        audio_data = await audio_file.read()
+        
+        # Get file extension to determine format
+        file_format = audio_file.filename.split('.')[-1].lower()
+        if file_format not in ['wav', 'mp3', 'webm', 'ogg', 'm4a']:
+            raise HTTPException(status_code=400, detail="Unsupported audio format")
+        
+        # Process voice to content suite
+        result = await voice_service.voice_to_content_suite(audio_data, file_format)
+        
+        if result["success"]:
+            # Update user generation count
+            db = get_database()
+            await db.users.update_one(
+                {"id": current_user.id},
+                {"$inc": {"daily_generations_used": 1}}
+            )
+            
+            # Store generation result
+            generation_result = GenerationResult(
+                id=str(uuid.uuid4()),
+                user_id=current_user.id,
+                category=result["content_details"]["category"],
+                platform=result["content_details"]["platform"],
+                content_description=result["transcript"],
+                ai_responses=result["generated_content"]["ai_responses"],
+                hashtags=result["generated_content"]["hashtags"],
+                combined_result=result["generated_content"]["combined_result"],
+                created_at=datetime.utcnow()
+            )
+            
+            await db.generation_results.insert_one(generation_result.dict())
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Voice to content suite error: {e}")
+        raise HTTPException(status_code=500, detail=f"Voice processing failed: {str(e)}")
+
+@api_router.post("/voice/command")
+async def voice_command_handler(
+    audio_file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Handle voice commands for hands-free operation"""
+    try:
+        # Read audio file
+        audio_data = await audio_file.read()
+        
+        # Get file extension to determine format
+        file_format = audio_file.filename.split('.')[-1].lower()
+        if file_format not in ['wav', 'mp3', 'webm', 'ogg', 'm4a']:
+            raise HTTPException(status_code=400, detail="Unsupported audio format")
+        
+        # Process voice command
+        result = await voice_service.voice_command_handler(audio_data, file_format)
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Voice command error: {e}")
+        raise HTTPException(status_code=500, detail=f"Voice command processing failed: {str(e)}")
+
+@api_router.post("/voice/real-time-transcribe")
+async def real_time_transcribe(
+    audio_chunk: str = Form(...),  # Base64 encoded audio chunk
+    is_final: bool = Form(False),
+    current_user: User = Depends(get_current_user)
+):
+    """Real-time transcription for streaming audio"""
+    try:
+        import base64
+        
+        # Decode base64 audio chunk
+        audio_data = base64.b64decode(audio_chunk)
+        
+        # Transcribe chunk
+        transcript = await voice_service.transcribe_audio(audio_data, "webm")
+        
+        return {
+            "success": True,
+            "transcript": transcript,
+            "is_final": is_final,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Real-time transcription error: {e}")
+        raise HTTPException(status_code=500, detail=f"Real-time transcription failed: {str(e)}")
+
 # Basic Routes
 @api_router.get("/")
 async def root():
