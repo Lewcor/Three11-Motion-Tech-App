@@ -116,6 +116,8 @@ const MobileNavbar = () => {
                             ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
                             : item.badge === 'LIVE'
                             ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                            : item.badge === 'AI'
+                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
