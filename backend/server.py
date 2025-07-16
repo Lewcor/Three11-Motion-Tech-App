@@ -34,6 +34,9 @@ security = HTTPBearer()
 JWT_SECRET = os.environ.get('JWT_SECRET')
 JWT_ALGORITHM = "HS256"
 
+# Initialize services
+voice_service = VoiceService()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
