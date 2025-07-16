@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Backend Testing for AI-Powered Caption & Hashtag Generator
-THREE11 MOTION TECH Integration Testing
+THREE11 MOTION TECH Integration Testing - Including Voice Processing
 """
 
 import asyncio
@@ -9,8 +9,13 @@ import aiohttp
 import json
 import os
 import sys
+import base64
+import io
+import tempfile
 from datetime import datetime
 from typing import Dict, Any, Optional
+from pydub import AudioSegment
+from pydub.generators import Sine
 
 # Test configuration
 BACKEND_URL = "https://86a6dac4-7d0c-40b7-a421-1d14cb090ea2.preview.emergentagent.com/api"
