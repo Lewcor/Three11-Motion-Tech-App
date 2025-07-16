@@ -8,13 +8,28 @@ import GeneratorPage from './components/GeneratorPage';
 import ContentCreationPage from './components/ContentCreationPage';
 import PremiumPage from './components/PremiumPage';
 import Navbar from './components/Navbar';
+import MobileNavbar from './components/MobileNavbar';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <Router>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-          <Navbar />
+          {isMobile ? <MobileNavbar /> : <Navbar />}
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/generator" element={<GeneratorPage />} />
