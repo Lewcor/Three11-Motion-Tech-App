@@ -13,7 +13,7 @@ import openai
 import io
 import base64
 from ai_service import AIService
-from models import ContentCreationType, Platform
+from models import ContentCategory, Platform
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
@@ -181,7 +181,7 @@ class VoiceService:
             content_details = self._extract_content_details_from_voice(transcript)
             
             # Step 3: Generate content using AI service
-            category = ContentCreationType(content_details.get("category", "business"))
+            category = ContentCategory(content_details.get("category", "business"))
             platform = Platform(content_details.get("platform", "instagram"))
             
             # Create enhanced prompt with voice context
@@ -200,11 +200,11 @@ class VoiceService:
             """
             
             # Generate content using existing AI service
-            content_result = await self.ai_service.generate_content(
+            content_result = await self.ai_service.generate_combined_content(
                 category=category,
                 platform=platform,
-                user_prompt=enhanced_prompt,
-                user_id=str(uuid.uuid4())  # Generate temp user ID for voice sessions
+                content_description=enhanced_prompt,
+                providers=["openai", "anthropic", "gemini"]
             )
             
             # Step 4: Return comprehensive result
