@@ -23,6 +23,12 @@ const MobileNavbar = () => {
       badge: 'NEW'
     },
     { 
+      path: '/voice-studio', 
+      name: 'Voice Studio', 
+      icon: <Mic className="h-4 w-4" />,
+      badge: 'BETA'
+    },
+    { 
       path: '/premium', 
       name: 'Premium', 
       icon: <Crown className="h-4 w-4" />,
