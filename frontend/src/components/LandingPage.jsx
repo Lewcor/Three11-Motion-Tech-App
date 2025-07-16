@@ -90,6 +90,18 @@ const LandingPage = () => {
                 </Button>
               </Link>
               
+              <Link to="/content-remix">
+                <Button size="lg" className="group relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
+                  <span className="relative z-10 flex items-center">
+                    <Shuffle className="mr-2 h-4 w-4" />
+                    Content Remix
+                    <Badge className="ml-2 bg-white/20 text-white text-xs">
+                      AI
+                    </Badge>
+                  </span>
+                </Button>
+              </Link>
+              
               <Link to="/content-creation">
                 <Button size="lg" variant="outline" className="group relative overflow-hidden">
                   <span className="relative z-10 flex items-center">
