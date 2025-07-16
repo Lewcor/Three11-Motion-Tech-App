@@ -80,6 +80,22 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/trends-analyzer">
+                <Button 
+                  variant={location.pathname === '/trends-analyzer' ? 'default' : 'ghost'}
+                  className="relative"
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Trends
+                  <Badge className="ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                    LIVE
+                  </Badge>
+                  {location.pathname === '/trends-analyzer' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
