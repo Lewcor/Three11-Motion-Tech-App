@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { Sparkles, Crown, Zap, Brain, Menu, X, Mic } from 'lucide-react';
+import { Sparkles, Crown, Zap, Brain, Menu, X, Mic, TrendingUp } from 'lucide-react';
 
 const MobileNavbar = () => {
   const location = useLocation();
