@@ -1135,6 +1135,222 @@ async def real_time_transcribe(
         logger.error(f"Real-time transcription error: {e}")
         raise HTTPException(status_code=500, detail=f"Real-time transcription failed: {str(e)}")
 
+# Real-Time Trends Routes
+@api_router.get("/trends/{platform}")
+async def get_trending_topics(
+    platform: Platform,
+    category: Optional[ContentCategory] = None,
+    limit: int = 20,
+    current_user: User = Depends(get_current_user)
+):
+    """Get real-time trending topics for a platform"""
+    try:
+        trends = await trends_service.get_trending_topics(platform, category, limit)
+        
+        # Convert TrendData objects to dictionaries
+        trends_data = []
+        for trend in trends:
+            trends_data.append({
+                "keyword": trend.keyword,
+                "platform": trend.platform.value,
+                "volume": trend.volume,
+                "growth_rate": trend.growth_rate,
+                "engagement_score": trend.engagement_score,
+                "predicted_duration": trend.predicted_duration,
+                "related_hashtags": trend.related_hashtags,
+                "sentiment": trend.sentiment,
+                "category": trend.category.value,
+                "created_at": trend.created_at.isoformat()
+            })
+        
+        return {
+            "success": True,
+            "trends": trends_data,
+            "platform": platform.value,
+            "category": category.value if category else None,
+            "total_count": len(trends_data)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting trending topics: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get trending topics: {str(e)}")
+
+@api_router.get("/trends/{platform}/predictions")
+async def get_trend_predictions(
+    platform: Platform,
+    days_ahead: int = 7,
+    current_user: User = Depends(get_current_user)
+):
+    """Get predicted future trends for a platform"""
+    await check_generation_limit(current_user)
+    
+    try:
+        predictions = await trends_service.predict_future_trends(platform, days_ahead)
+        
+        # Convert TrendPrediction objects to dictionaries
+        predictions_data = []
+        for prediction in predictions:
+            predictions_data.append({
+                "keyword": prediction.keyword,
+                "platform": prediction.platform.value,
+                "likelihood": prediction.likelihood,
+                "estimated_peak_date": prediction.estimated_peak_date.isoformat(),
+                "recommended_action": prediction.recommended_action,
+                "content_suggestions": prediction.content_suggestions
+            })
+        
+        return {
+            "success": True,
+            "predictions": predictions_data,
+            "platform": platform.value,
+            "days_ahead": days_ahead,
+            "total_predictions": len(predictions_data)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting trend predictions: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get trend predictions: {str(e)}")
+
+@api_router.get("/trends/{platform}/analysis/{keyword}")
+async def get_trend_analysis(
+    platform: Platform,
+    keyword: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get detailed analysis for a specific trend"""
+    await check_generation_limit(current_user)
+    
+    try:
+        analysis = await trends_service.get_trend_analysis(keyword, platform)
+        
+        if "error" in analysis:
+            raise HTTPException(status_code=404, detail=analysis["error"])
+        
+        return {
+            "success": True,
+            "keyword": keyword,
+            "platform": platform.value,
+            "analysis": analysis
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting trend analysis: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get trend analysis: {str(e)}")
+
+@api_router.get("/trends/all/summary")
+async def get_trends_summary(
+    current_user: User = Depends(get_current_user)
+):
+    """Get summary of trends across all platforms"""
+    try:
+        summary = {}
+        
+        # Get top trends for each platform
+        for platform in Platform:
+            try:
+                trends = await trends_service.get_trending_topics(platform, limit=5)
+                summary[platform.value] = {
+                    "top_trends": [
+                        {
+                            "keyword": trend.keyword,
+                            "volume": trend.volume,
+                            "growth_rate": trend.growth_rate,
+                            "category": trend.category.value
+                        }
+                        for trend in trends[:3]
+                    ],
+                    "total_trends": len(trends)
+                }
+            except Exception as e:
+                logger.error(f"Error getting trends for {platform.value}: {e}")
+                summary[platform.value] = {"error": str(e)}
+        
+        return {
+            "success": True,
+            "summary": summary,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting trends summary: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get trends summary: {str(e)}")
+
+@api_router.post("/trends/content-from-trend")
+async def generate_content_from_trend(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate content based on a trending topic"""
+    await check_generation_limit(current_user)
+    
+    try:
+        keyword = request.get("keyword")
+        platform = Platform(request.get("platform"))
+        category = ContentCategory(request.get("category", "business"))
+        
+        if not keyword:
+            raise HTTPException(status_code=400, detail="Keyword is required")
+        
+        # Get trend analysis
+        trend_analysis = await trends_service.get_trend_analysis(keyword, platform)
+        
+        # Create enhanced prompt with trend context
+        trend_context = f"""
+        Trending Topic: {keyword}
+        Platform: {platform.value}
+        Category: {category.value}
+        
+        Trend Analysis: {trend_analysis.get('analysis', {})}
+        Content Suggestions: {trend_analysis.get('content_suggestions', [])}
+        Optimal Timing: {trend_analysis.get('optimal_timing', {})}
+        
+        Create viral content that leverages this trending topic for maximum engagement.
+        """
+        
+        # Generate content using existing AI service
+        content_result = await ai_service.generate_combined_content(
+            category=category,
+            platform=platform,
+            content_description=trend_context,
+            providers=["openai", "anthropic", "gemini"]
+        )
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        # Store generation result
+        generation_result = GenerationResult(
+            id=str(uuid.uuid4()),
+            user_id=current_user.id,
+            category=category,
+            platform=platform,
+            content_description=f"Trend-based content: {keyword}",
+            ai_responses=content_result["ai_responses"],
+            hashtags=content_result["hashtags"],
+            combined_result=content_result["combined_result"],
+            created_at=datetime.utcnow()
+        )
+        
+        await db.generation_results.insert_one(generation_result.dict())
+        
+        return {
+            "success": True,
+            "trend_keyword": keyword,
+            "trend_analysis": trend_analysis,
+            "generated_content": content_result,
+            "timing_recommendation": trend_analysis.get('optimal_timing', {})
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating content from trend: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate content from trend: {str(e)}")
+
 # Basic Routes
 @api_router.get("/")
 async def root():
