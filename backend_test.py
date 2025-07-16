@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 # Test configuration
-BACKEND_URL = "https://949588be-a425-4a1f-b782-95692d254fd8.preview.emergentagent.com/api"
+BACKEND_URL = "https://86a6dac4-7d0c-40b7-a421-1d14cb090ea2.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "fashionista@three11motion.com"
 TEST_USER_NAME = "Fashion Creator"
 TEST_USER_PASSWORD = "SecurePass123!"
