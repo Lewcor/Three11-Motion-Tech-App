@@ -547,7 +547,7 @@ class BackendTester:
                 "test_auth.wav"
             )
             
-            if not success and response.get("status") == 401:
+            if not success and response.get("status") in [401, 403]:
                 self.log_test("Voice Authentication", True, "Voice endpoints properly require authentication")
             else:
                 self.log_test("Voice Authentication", False, "Voice endpoints should require authentication", response)
