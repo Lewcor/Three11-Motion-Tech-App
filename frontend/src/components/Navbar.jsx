@@ -64,6 +64,22 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/voice-studio">
+                <Button 
+                  variant={location.pathname === '/voice-studio' ? 'default' : 'ghost'}
+                  className="relative"
+                >
+                  <Mic className="h-4 w-4 mr-2" />
+                  Voice Studio
+                  <Badge className="ml-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
+                    BETA
+                  </Badge>
+                  {location.pathname === '/voice-studio' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
