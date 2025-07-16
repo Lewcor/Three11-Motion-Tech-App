@@ -20,6 +20,7 @@ from content_creation_service import content_creation_service
 from stripe_service import stripe_service
 from voice_service import VoiceService
 from trends_service import TrendsService
+from content_remix_service import ContentRemixEngine
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
