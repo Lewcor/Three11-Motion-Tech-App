@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Sparkles, Crown, Zap, Brain, Lightbulb, Mic, TrendingUp } from 'lucide-react';
+import { Sparkles, Crown, Zap, Brain, Lightbulb, Mic, TrendingUp, Shuffle } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
