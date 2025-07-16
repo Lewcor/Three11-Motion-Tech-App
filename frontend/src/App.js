@@ -36,6 +36,7 @@ function App() {
             <Route path="/generator" element={<GeneratorPage />} />
             <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/voice-studio" element={<VoiceStudio />} />
           </Routes>
           <Toaster position="top-right" />
         </div>
