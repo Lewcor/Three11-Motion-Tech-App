@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
-import { Sparkles, Zap, Crown, ArrowRight, Star, Users, TrendingUp, Brain, Mic } from 'lucide-react';
+import { Sparkles, Zap, Crown, ArrowRight, Star, Users, TrendingUp, Brain, Mic, Shuffle } from 'lucide-react';
 import { mockData } from '../mock';
 
 const LandingPage = () => {
