@@ -10,6 +10,7 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import jwt
 import io
+import uuid
 
 # Import our models and services
 from models import *
