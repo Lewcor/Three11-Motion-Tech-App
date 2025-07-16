@@ -100,6 +100,8 @@ const MobileNavbar = () => {
                         className={`ml-auto text-xs ${
                           item.badge === 'NEW' 
                             ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                            : item.badge === 'BETA'
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
