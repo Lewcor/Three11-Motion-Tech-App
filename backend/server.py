@@ -1353,6 +1353,182 @@ async def generate_content_from_trend(
         logger.error(f"Error generating content from trend: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate content from trend: {str(e)}")
 
+# Smart Content Remix Routes
+@api_router.post("/remix/platform-adapt")
+async def remix_content_for_platform(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Remix content for a different platform"""
+    await check_generation_limit(current_user)
+    
+    try:
+        content = request.get("content")
+        source_platform = Platform(request.get("source_platform"))
+        target_platform = Platform(request.get("target_platform"))
+        category = ContentCategory(request.get("category", "business"))
+        
+        if not content:
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        # Generate platform remix
+        remix = await content_remix_engine.remix_content_for_platform(
+            content, source_platform, target_platform, category
+        )
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return {
+            "success": True,
+            "original_content": remix.original_content,
+            "original_platform": remix.original_platform.value,
+            "target_platform": remix.target_platform.value,
+            "remixed_content": remix.remixed_content,
+            "adaptation_notes": remix.adaptation_notes,
+            "engagement_prediction": remix.engagement_prediction,
+            "created_at": remix.created_at.isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error remixing content for platform: {e}")
+        raise HTTPException(status_code=500, detail=f"Content remix failed: {str(e)}")
+
+@api_router.post("/remix/generate-variations")
+async def generate_content_variations(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate multiple variations of content"""
+    await check_generation_limit(current_user)
+    
+    try:
+        content = request.get("content")
+        platform = Platform(request.get("platform"))
+        category = ContentCategory(request.get("category", "business"))
+        variation_count = request.get("variation_count", 5)
+        
+        if not content:
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        # Generate variations
+        variations = await content_remix_engine.generate_content_variations(
+            content, platform, category, variation_count
+        )
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        variations_data = []
+        for variation in variations:
+            variations_data.append({
+                "variation_type": variation.variation_type,
+                "variation_content": variation.variation_content,
+                "tone": variation.tone,
+                "target_audience": variation.target_audience,
+                "engagement_score": variation.engagement_score,
+                "created_at": variation.created_at.isoformat()
+            })
+        
+        return {
+            "success": True,
+            "original_content": content,
+            "platform": platform.value,
+            "category": category.value,
+            "variations": variations_data,
+            "total_variations": len(variations_data)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating content variations: {e}")
+        raise HTTPException(status_code=500, detail=f"Content variation generation failed: {str(e)}")
+
+@api_router.post("/remix/cross-platform-suite")
+async def generate_cross_platform_suite(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate complete cross-platform content suite"""
+    await check_generation_limit(current_user)
+    
+    try:
+        content = request.get("content")
+        category = ContentCategory(request.get("category", "business"))
+        
+        if not content:
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        # Generate cross-platform suite
+        suite = await content_remix_engine.cross_platform_content_suite(
+            content, category, current_user.id
+        )
+        
+        if "error" in suite:
+            raise HTTPException(status_code=500, detail=suite["error"])
+        
+        # Update user generation count (this is a premium feature)
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 2}}  # Cross-platform costs 2 generations
+        )
+        
+        return {
+            "success": True,
+            "suite": suite
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating cross-platform suite: {e}")
+        raise HTTPException(status_code=500, detail=f"Cross-platform suite generation failed: {str(e)}")
+
+@api_router.get("/remix/user-remixes")
+async def get_user_remixes(
+    limit: int = 20,
+    current_user: User = Depends(get_current_user)
+):
+    """Get user's content remixes"""
+    try:
+        remixes = await content_remix_engine.get_user_remixes(current_user.id, limit)
+        
+        return {
+            "success": True,
+            "remixes": remixes,
+            "total_count": len(remixes)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting user remixes: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get user remixes: {str(e)}")
+
+@api_router.get("/remix/analytics")
+async def get_remix_analytics(
+    current_user: User = Depends(get_current_user)
+):
+    """Get remix analytics for user"""
+    try:
+        analytics = await content_remix_engine.get_remix_analytics(current_user.id)
+        
+        if "error" in analytics:
+            raise HTTPException(status_code=500, detail=analytics["error"])
+        
+        return {
+            "success": True,
+            "analytics": analytics
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting remix analytics: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get remix analytics: {str(e)}")
+
 # Basic Routes
 @api_router.get("/")
 async def root():
