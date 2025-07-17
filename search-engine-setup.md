@@ -1,23 +1,23 @@
 # Search Engine Submission Guide for THREE11 MOTION TECH
-Website: https://www.gentagai.com
+Website: https://www.app.gentagai.com
 
 ## Major Search Engines Setup URLs:
 
 ### 1. Google Search Console ✅ (Primary - Set up first)
 URL: https://search.google.com/search-console/
 Steps:
-1. Add property: https://www.gentagai.com
+1. Add property: https://www.app.gentagai.com
 2. Verify ownership (meta tag or HTML file)
-3. Submit sitemap: https://www.gentagai.com/sitemap.xml
+3. Submit sitemap: https://www.app.gentagai.com/sitemap.xml
 4. Request indexing for main pages
 
 ### 2. Bing Webmaster Tools
 URL: https://www.bing.com/webmasters/
 Steps:
 1. Sign in with Microsoft account
-2. Add site: https://www.gentagai.com
+2. Add site: https://www.app.gentagai.com
 3. Verify ownership
-4. Submit sitemap: https://www.gentagai.com/sitemap.xml
+4. Submit sitemap: https://www.app.gentagai.com/sitemap.xml
 
 ### 3. Yandex Webmaster
 URL: https://webmaster.yandex.com/
