@@ -1,0 +1,43 @@
+User-agent: *
+Allow: /
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /api/
+Disallow: /admin
+Disallow: /.env
+Disallow: /node_modules/
+Disallow: /build/
+Disallow: /src/
+
+# Allow important pages
+Allow: /generator
+Allow: /voice-studio
+Allow: /trends-analyzer
+Allow: /content-remix
+Allow: /content-creation
+Allow: /premium
+
+# Sitemap location
+Sitemap: https://www.gentagai.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
