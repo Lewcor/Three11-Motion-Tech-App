@@ -22,7 +22,7 @@ Steps:
 ### 3. Yandex Webmaster
 URL: https://webmaster.yandex.com/
 Steps:
-1. Add site: https://www.gentagai.com
+1. Add site: https://www.app.gentagai.com
 2. Verify ownership
 3. Submit sitemap
 
