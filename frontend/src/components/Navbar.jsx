@@ -125,6 +125,16 @@ const Navbar = () => {
                 </Button>
               </Link>
             </div>
+            
+            {/* Authentication Section */}
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
+                Sign In
+              </Button>
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                Get Started
+              </Button>
+            </div>
           </div>
         </div>
       </div>
