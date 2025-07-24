@@ -55,8 +55,11 @@ const MobileNavbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <div className="relative">
-              <Sparkles className="h-6 w-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full animate-pulse"></div>
+              <img 
+                src="/logo.svg" 
+                alt="THREE11 MOTION TECH Logo" 
+                className="h-8 w-8 group-hover:scale-105 transition-transform duration-200"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
