@@ -13,8 +13,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="relative">
-              <Sparkles className="h-8 w-8 text-blue-600 group-hover:text-blue-700 transition-colors" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full animate-pulse"></div>
+              <img 
+                src="/logo.svg" 
+                alt="THREE11 MOTION TECH Logo" 
+                className="h-12 w-12 group-hover:scale-105 transition-transform duration-200"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
