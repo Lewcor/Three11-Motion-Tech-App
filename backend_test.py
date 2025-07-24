@@ -872,7 +872,7 @@ class BackendTester:
         # Database operations summary
         await self.test_database_operations()
         
-        # Voice Processing Tests (NEW)
+        # Voice Processing Tests
         print("\n🎤 VOICE PROCESSING TESTS")
         print("-" * 40)
         await self.test_voice_transcription()
@@ -882,6 +882,26 @@ class BackendTester:
         await self.test_voice_authentication_requirements()
         await self.test_voice_error_handling()
         await self.test_voice_generation_limits()
+        
+        # NEW TESTS - Logo Addition & Pricing Update
+        print("\n💰 PRICING & STATIC FILES TESTS")
+        print("-" * 40)
+        await self.test_stripe_pricing_configuration()
+        await self.test_static_file_serving()
+        await self.test_subscription_endpoints()
+        await self.test_premium_pack_pricing()
+        
+        # Real-Time Trends Service Tests
+        print("\n📈 TRENDS SERVICE TESTS")
+        print("-" * 40)
+        await self.test_trends_service()
+        await self.test_trends_predictions()
+        
+        # Smart Content Remix Engine Tests
+        print("\n🔄 CONTENT REMIX ENGINE TESTS")
+        print("-" * 40)
+        await self.test_content_remix_engine()
+        await self.test_content_variations()
         
         # Print summary
         self.print_summary()
