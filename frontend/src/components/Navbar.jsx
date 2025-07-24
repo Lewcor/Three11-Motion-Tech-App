@@ -29,22 +29,23 @@ const Navbar = () => {
             </div>
           </Link>
 
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
+          <div className="flex items-center space-x-2 lg:space-x-4">
+            <div className="hidden lg:flex items-center space-x-2">
               <Zap className="h-4 w-4 text-yellow-500" />
               <Badge variant="secondary" className="text-xs">
                 THREE11 AI Group 1 + 2 + 3
               </Badge>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="hidden lg:flex items-center space-x-1 xl:space-x-2">
               <Link to="/generator">
                 <Button 
                   variant={location.pathname === '/generator' ? 'default' : 'ghost'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generator
+                  <Sparkles className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Generator</span>
                   {location.pathname === '/generator' && (
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
                   )}
@@ -54,11 +55,12 @@ const Navbar = () => {
               <Link to="/content-creation">
                 <Button 
                   variant={location.pathname === '/content-creation' ? 'default' : 'ghost'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <Brain className="h-4 w-4 mr-2" />
-                  Content Suite
-                  <Badge className="ml-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
+                  <Brain className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Suite</span>
+                  <Badge className="ml-1 xl:ml-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
                     NEW
                   </Badge>
                   {location.pathname === '/content-creation' && (
@@ -70,11 +72,12 @@ const Navbar = () => {
               <Link to="/voice-studio">
                 <Button 
                   variant={location.pathname === '/voice-studio' ? 'default' : 'ghost'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <Mic className="h-4 w-4 mr-2" />
-                  Voice Studio
-                  <Badge className="ml-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
+                  <Mic className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Voice</span>
+                  <Badge className="ml-1 xl:ml-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
                     BETA
                   </Badge>
                   {location.pathname === '/voice-studio' && (
@@ -86,11 +89,12 @@ const Navbar = () => {
               <Link to="/trends-analyzer">
                 <Button 
                   variant={location.pathname === '/trends-analyzer' ? 'default' : 'ghost'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  Trends
-                  <Badge className="ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                  <TrendingUp className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Trends</span>
+                  <Badge className="ml-1 xl:ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
                     LIVE
                   </Badge>
                   {location.pathname === '/trends-analyzer' && (
@@ -102,11 +106,12 @@ const Navbar = () => {
               <Link to="/content-remix">
                 <Button 
                   variant={location.pathname === '/content-remix' ? 'default' : 'ghost'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <Shuffle className="h-4 w-4 mr-2" />
-                  Remix
-                  <Badge className="ml-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs">
+                  <Shuffle className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Remix</span>
+                  <Badge className="ml-1 xl:ml-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs">
                     AI
                   </Badge>
                   {location.pathname === '/content-remix' && (
@@ -118,23 +123,31 @@ const Navbar = () => {
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
-                  className="relative"
+                  className="relative px-2 xl:px-3"
+                  size="sm"
                 >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Premium
-                  <Badge className="ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                  <Crown className="h-4 w-4 xl:mr-2" />
+                  <span className="hidden xl:inline">Premium</span>
+                  <Badge className="ml-1 xl:ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
                     Pro
                   </Badge>
                 </Button>
               </Link>
             </div>
             
-            {/* Authentication Section */}
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
+            {/* Always visible auth buttons */}
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant="ghost" 
+                className="text-slate-600 hover:text-slate-900 px-2 lg:px-4"
+                size="sm"
+              >
                 Sign In
               </Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 lg:px-4"
+                size="sm"
+              >
                 Get Started
               </Button>
             </div>
