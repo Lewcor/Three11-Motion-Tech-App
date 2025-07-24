@@ -33,7 +33,7 @@ const LandingPage = () => {
             
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto">
               From viral captions to video scripts, content ideas to trending topics - everything creators need for TikTok, Instagram, YouTube, and Facebook. 
-              Powered by OpenAI GPT, Anthropic Claude, and Google Gemini working together.
+              Powered by THREE11 AI Group 1, 2, and 3 working together.
             </p>
             
             <div className="flex items-center justify-center gap-8 text-sm text-slate-500 mb-8">
