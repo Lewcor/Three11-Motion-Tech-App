@@ -18,7 +18,7 @@ from pydub import AudioSegment
 from pydub.generators import Sine
 
 # Test configuration
-BACKEND_URL = "https://86a6dac4-7d0c-40b7-a421-1d14cb090ea2.preview.emergentagent.com/api"
+BACKEND_URL = "https://db254f59-b3d6-4091-b08c-a6b2bcd235bc.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "fashionista@three11motion.com"
 TEST_USER_NAME = "Fashion Creator"
 TEST_USER_PASSWORD = "SecurePass123!"
