@@ -975,6 +975,45 @@ class BackendTester:
         else:
             print("  ❌ Voice Security: Issues with voice endpoint authentication")
         
+        # Stripe Pricing Configuration
+        pricing_test = self.test_results.get("Stripe Pricing Configuration", {})
+        if pricing_test.get("success"):
+            print("  ✅ Stripe Pricing: Updated pricing ($9.99/month, $79.99/year) correctly configured")
+        else:
+            print("  ❌ Stripe Pricing: Issues with pricing configuration")
+        
+        # Static File Serving
+        static_test = self.test_results.get("Static File Serving", {})
+        if static_test.get("success"):
+            print("  ✅ Static Files: Logo.svg accessible and serving correctly")
+        else:
+            print("  ❌ Static Files: Issues with logo.svg serving")
+        
+        # Trends Service
+        trends_tests = ["Trends Service", "Trends Predictions"]
+        trends_working = all(self.test_results.get(test, {}).get("success", False) for test in trends_tests)
+        if trends_working:
+            print("  ✅ Trends Service: Real-time trends and predictions working")
+        else:
+            trends_failed = [test for test in trends_tests if not self.test_results.get(test, {}).get("success", False)]
+            print(f"  ❌ Trends Service: Issues with trends functionality - Failed: {trends_failed}")
+        
+        # Content Remix Engine
+        remix_tests = ["Content Remix Engine", "Content Variations"]
+        remix_working = all(self.test_results.get(test, {}).get("success", False) for test in remix_tests)
+        if remix_working:
+            print("  ✅ Content Remix: Smart content remix engine working")
+        else:
+            remix_failed = [test for test in remix_tests if not self.test_results.get(test, {}).get("success", False)]
+            print(f"  ❌ Content Remix: Issues with remix functionality - Failed: {remix_failed}")
+        
+        # Subscription System
+        subscription_test = self.test_results.get("Subscription Endpoints", {})
+        if subscription_test.get("success"):
+            print("  ✅ Subscription System: Stripe integration and customer creation working")
+        else:
+            print("  ❌ Subscription System: Issues with subscription endpoints")
+        
         print("\n" + "=" * 60)
 
 async def main():
