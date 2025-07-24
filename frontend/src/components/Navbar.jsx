@@ -42,11 +42,11 @@ const Navbar = () => {
               <Link to="/generator">
                 <Button 
                   variant={location.pathname === '/generator' ? 'default' : 'ghost'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generator
+                  <Sparkles className="h-4 w-4 mr-1" />
+                  Gen
                   {location.pathname === '/generator' && (
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
                   )}
@@ -56,12 +56,12 @@ const Navbar = () => {
               <Link to="/content-creation">
                 <Button 
                   variant={location.pathname === '/content-creation' ? 'default' : 'ghost'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <Brain className="h-4 w-4 mr-2" />
+                  <Brain className="h-4 w-4 mr-1" />
                   Suite
-                  <Badge className="ml-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
                     NEW
                   </Badge>
                   {location.pathname === '/content-creation' && (
@@ -73,12 +73,12 @@ const Navbar = () => {
               <Link to="/voice-studio">
                 <Button 
                   variant={location.pathname === '/voice-studio' ? 'default' : 'ghost'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <Mic className="h-4 w-4 mr-2" />
+                  <Mic className="h-4 w-4 mr-1" />
                   Voice
-                  <Badge className="ml-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
+                  <Badge className="ml-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs">
                     BETA
                   </Badge>
                   {location.pathname === '/voice-studio' && (
@@ -90,12 +90,12 @@ const Navbar = () => {
               <Link to="/trends-analyzer">
                 <Button 
                   variant={location.pathname === '/trends-analyzer' ? 'default' : 'ghost'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <TrendingUp className="h-4 w-4 mr-2" />
+                  <TrendingUp className="h-4 w-4 mr-1" />
                   Trends
-                  <Badge className="ml-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                  <Badge className="ml-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
                     LIVE
                   </Badge>
                   {location.pathname === '/trends-analyzer' && (
@@ -107,12 +107,12 @@ const Navbar = () => {
               <Link to="/content-remix">
                 <Button 
                   variant={location.pathname === '/content-remix' ? 'default' : 'ghost'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <Shuffle className="h-4 w-4 mr-2" />
+                  <Shuffle className="h-4 w-4 mr-1" />
                   Remix
-                  <Badge className="ml-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs">
+                  <Badge className="ml-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs">
                     AI
                   </Badge>
                   {location.pathname === '/content-remix' && (
@@ -124,12 +124,12 @@ const Navbar = () => {
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
-                  className="relative px-3"
+                  className="relative px-2"
                   size="sm"
                 >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Premium
-                  <Badge className="ml-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                  <Crown className="h-4 w-4 mr-1" />
+                  Pro
+                  <Badge className="ml-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
                     Pro
                   </Badge>
                 </Button>
