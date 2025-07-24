@@ -20,14 +20,14 @@ class StripeService:
         # Subscription plans
         self.subscription_plans = {
             'monthly': {
-                'price_id': 'price_monthly_2999',  # Create this in Stripe Dashboard
-                'amount': 2999,  # $29.99 in cents
+                'price_id': 'price_monthly_999',  # Create this in Stripe Dashboard
+                'amount': 999,  # $9.99 in cents
                 'interval': 'month',
                 'name': 'THREE11 MOTION TECH Monthly'
             },
             'yearly': {
-                'price_id': 'price_yearly_29999',  # Create this in Stripe Dashboard
-                'amount': 29999,  # $299.99 in cents
+                'price_id': 'price_yearly_7999',  # Create this in Stripe Dashboard
+                'amount': 7999,  # $79.99 in cents
                 'interval': 'year',
                 'name': 'THREE11 MOTION TECH Yearly'
             }
