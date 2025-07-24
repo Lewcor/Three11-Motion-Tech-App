@@ -380,7 +380,7 @@ const LandingPage = () => {
                 <Brain className="h-16 w-16 text-blue-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Triple AI Power</h3>
                 <p className="text-slate-600 dark:text-slate-300">
-                  First-ever platform combining OpenAI, Anthropic, and Google Gemini for unmatched creativity
+                  First-ever platform combining THREE11 AI Group 1, 2, and 3 for unmatched creativity
                 </p>
                 <div className="mt-4 flex justify-center gap-2">
                   <Badge variant="outline" className="text-xs">OpenAI GPT</Badge>
