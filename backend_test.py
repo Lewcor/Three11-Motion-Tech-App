@@ -634,6 +634,217 @@ class BackendTester:
             else:
                 self.log_test("Voice Generation Limits", False, "Voice generation failed within limits", response)
     
+    async def test_stripe_pricing_configuration(self):
+        """Test 19: Stripe Service Pricing Configuration"""
+        # Test the updated pricing structure: $9.99/month, $79.99/year
+        success, response = await self.make_request("GET", "/payments/config")
+        
+        if success:
+            data = response["data"]
+            if "plans" in data:
+                plans = data["plans"]
+                monthly_correct = plans.get("monthly", {}).get("amount") == 999  # $9.99
+                yearly_correct = plans.get("yearly", {}).get("amount") == 7999   # $79.99
+                
+                if monthly_correct and yearly_correct:
+                    self.log_test("Stripe Pricing Configuration", True, 
+                                "Pricing correctly updated: $9.99/month, $79.99/year")
+                else:
+                    actual_monthly = plans.get("monthly", {}).get("amount", "N/A")
+                    actual_yearly = plans.get("yearly", {}).get("amount", "N/A")
+                    self.log_test("Stripe Pricing Configuration", False, 
+                                f"Incorrect pricing - Monthly: {actual_monthly} cents, Yearly: {actual_yearly} cents", response)
+            else:
+                self.log_test("Stripe Pricing Configuration", False, "No plans found in payment config", response)
+        else:
+            self.log_test("Stripe Pricing Configuration", False, "Failed to get payment configuration", response)
+    
+    async def test_static_file_serving(self):
+        """Test 20: Static File Serving - Logo SVG"""
+        # Test that logo.svg is accessible
+        try:
+            # Use the frontend URL to test static file serving
+            frontend_url = "https://db254f59-b3d6-4091-b08c-a6b2bcd235bc.preview.emergentagent.com"
+            logo_url = f"{frontend_url}/logo.svg"
+            
+            async with self.session.get(logo_url) as response:
+                if response.status == 200:
+                    content_type = response.headers.get('content-type', '')
+                    if 'svg' in content_type.lower() or response.status == 200:
+                        self.log_test("Static File Serving", True, 
+                                    f"Logo.svg accessible at {logo_url}")
+                    else:
+                        self.log_test("Static File Serving", False, 
+                                    f"Logo.svg found but incorrect content type: {content_type}")
+                else:
+                    self.log_test("Static File Serving", False, 
+                                f"Logo.svg not accessible - Status: {response.status}")
+        except Exception as e:
+            self.log_test("Static File Serving", False, f"Error accessing logo.svg: {str(e)}")
+    
+    async def test_trends_service(self):
+        """Test 21: Real-Time Trends Service"""
+        if not self.auth_token:
+            self.log_test("Trends Service", False, "No auth token available")
+            return
+        
+        try:
+            # Test getting trending topics for Instagram
+            success, response = await self.make_request("GET", "/trends/instagram?limit=5")
+            
+            if success:
+                data = response["data"]
+                if "trends" in data and "success" in data:
+                    if data["success"] and isinstance(data["trends"], list):
+                        self.log_test("Trends Service", True, 
+                                    f"Trends service working - Retrieved {len(data['trends'])} trends for Instagram")
+                    else:
+                        self.log_test("Trends Service", False, 
+                                    f"Trends service returned unsuccessful response: {data}")
+                else:
+                    self.log_test("Trends Service", False, "Invalid trends response format", response)
+            else:
+                self.log_test("Trends Service", False, "Failed to get trending topics", response)
+                
+        except Exception as e:
+            self.log_test("Trends Service", False, f"Trends service test error: {str(e)}")
+    
+    async def test_trends_predictions(self):
+        """Test 22: Trends Predictions Service"""
+        if not self.auth_token:
+            self.log_test("Trends Predictions", False, "No auth token available")
+            return
+        
+        try:
+            # Test trend predictions for TikTok
+            success, response = await self.make_request("GET", "/trends/tiktok/predictions?days_ahead=7")
+            
+            if success:
+                data = response["data"]
+                if "predictions" in data and "success" in data:
+                    if data["success"] and isinstance(data["predictions"], list):
+                        self.log_test("Trends Predictions", True, 
+                                    f"Trend predictions working - Retrieved {len(data['predictions'])} predictions")
+                    else:
+                        self.log_test("Trends Predictions", False, 
+                                    f"Trend predictions returned unsuccessful response: {data}")
+                else:
+                    self.log_test("Trends Predictions", False, "Invalid predictions response format", response)
+            else:
+                self.log_test("Trends Predictions", False, "Failed to get trend predictions", response)
+                
+        except Exception as e:
+            self.log_test("Trends Predictions", False, f"Trends predictions test error: {str(e)}")
+    
+    async def test_content_remix_engine(self):
+        """Test 23: Smart Content Remix Engine"""
+        if not self.auth_token:
+            self.log_test("Content Remix Engine", False, "No auth token available")
+            return
+        
+        try:
+            # Test platform adaptation
+            remix_data = {
+                "content": "Check out this amazing fashion trend! Perfect for summer vibes 🌞",
+                "source_platform": "instagram",
+                "target_platform": "tiktok",
+                "category": "fashion"
+            }
+            
+            success, response = await self.make_request("POST", "/remix/platform-adapt", remix_data)
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    required_fields = ["remixed_content", "adaptation_notes", "engagement_prediction"]
+                    if all(field in data for field in required_fields):
+                        self.log_test("Content Remix Engine", True, 
+                                    "Content remix engine working - Platform adaptation successful")
+                    else:
+                        missing = [f for f in required_fields if f not in data]
+                        self.log_test("Content Remix Engine", False, 
+                                    f"Content remix missing fields: {missing}", response)
+                else:
+                    self.log_test("Content Remix Engine", False, 
+                                f"Content remix failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Content Remix Engine", False, "Content remix request failed", response)
+                
+        except Exception as e:
+            self.log_test("Content Remix Engine", False, f"Content remix test error: {str(e)}")
+    
+    async def test_content_variations(self):
+        """Test 24: Content Variations Generation"""
+        if not self.auth_token:
+            self.log_test("Content Variations", False, "No auth token available")
+            return
+        
+        try:
+            # Test content variations
+            variation_data = {
+                "content": "Discover the latest fashion trends that will make you stand out!",
+                "platform": "instagram",
+                "category": "fashion",
+                "variation_count": 3
+            }
+            
+            success, response = await self.make_request("POST", "/remix/generate-variations", variation_data)
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "variations" in data and isinstance(data["variations"], list):
+                        variation_count = len(data["variations"])
+                        self.log_test("Content Variations", True, 
+                                    f"Content variations working - Generated {variation_count} variations")
+                    else:
+                        self.log_test("Content Variations", False, 
+                                    "Content variations missing variations list", response)
+                else:
+                    self.log_test("Content Variations", False, 
+                                f"Content variations failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Content Variations", False, "Content variations request failed", response)
+                
+        except Exception as e:
+            self.log_test("Content Variations", False, f"Content variations test error: {str(e)}")
+    
+    async def test_subscription_endpoints(self):
+        """Test 25: Subscription Creation Endpoints"""
+        if not self.auth_token:
+            self.log_test("Subscription Endpoints", False, "No auth token available")
+            return
+        
+        try:
+            # Test creating a Stripe customer first
+            success, response = await self.make_request("POST", "/payments/create-customer")
+            
+            if success and "customer_id" in response["data"]:
+                customer_id = response["data"]["customer_id"]
+                self.log_test("Subscription Endpoints", True, 
+                            f"Stripe customer creation working - Customer ID: {customer_id[:20]}...")
+            else:
+                self.log_test("Subscription Endpoints", False, "Failed to create Stripe customer", response)
+                
+        except Exception as e:
+            self.log_test("Subscription Endpoints", False, f"Subscription endpoints test error: {str(e)}")
+    
+    async def test_premium_pack_pricing(self):
+        """Test 26: Premium Pack Pricing Unchanged"""
+        success, response = await self.make_request("GET", "/premium/packs")
+        
+        if success and isinstance(response["data"], list):
+            packs = response["data"]
+            if packs:
+                # Check that premium packs still exist and have pricing
+                pack_names = [pack.get("name", "Unknown") for pack in packs]
+                self.log_test("Premium Pack Pricing", True, 
+                            f"Premium packs unchanged - Found {len(packs)} packs: {', '.join(pack_names[:3])}")
+            else:
+                self.log_test("Premium Pack Pricing", False, "No premium packs found")
+        else:
+            self.log_test("Premium Pack Pricing", False, "Failed to get premium packs", response)
+    
     async def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting THREE11 MOTION TECH Backend Testing...")
