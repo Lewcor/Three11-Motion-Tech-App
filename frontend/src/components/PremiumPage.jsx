@@ -13,15 +13,15 @@ const PremiumPage = () => {
 
   const plans = {
     monthly: {
-      price: '$29.99',
+      price: '$9.99',
       period: 'month',
       savings: null,
       popular: true
     },
     yearly: {
-      price: '$299.99',
+      price: '$79.99',
       period: 'year',
-      savings: 'Save 17%',
+      savings: 'Save 33%',
       popular: false
     }
   };
