@@ -33,7 +33,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-2">
               <Zap className="h-4 w-4 text-yellow-500" />
               <Badge variant="secondary" className="text-xs">
-                OpenAI + Claude + Gemini
+                THREE11 AI Group 1 + 2 + 3
               </Badge>
             </div>
             
