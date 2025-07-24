@@ -21,10 +21,10 @@ const Navbar = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                AI Caption Generator
+                THREE11 Generator
               </span>
               <span className="text-xs text-slate-500 font-medium">
-                Powered by THREE11 MOTION TECH
+                AI-Powered Content Suite
               </span>
             </div>
           </Link>
