@@ -383,9 +383,9 @@ const LandingPage = () => {
                   First-ever platform combining THREE11 AI Group 1, 2, and 3 for unmatched creativity
                 </p>
                 <div className="mt-4 flex justify-center gap-2">
-                  <Badge variant="outline" className="text-xs">OpenAI GPT</Badge>
-                  <Badge variant="outline" className="text-xs">Claude</Badge>
-                  <Badge variant="outline" className="text-xs">Gemini</Badge>
+                  <Badge variant="outline" className="text-xs">THREE11 AI Group 1</Badge>
+                  <Badge variant="outline" className="text-xs">THREE11 AI Group 2</Badge>
+                  <Badge variant="outline" className="text-xs">THREE11 AI Group 3</Badge>
                 </div>
               </CardContent>
             </Card>
