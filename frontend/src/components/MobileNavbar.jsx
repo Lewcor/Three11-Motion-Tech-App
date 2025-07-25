@@ -94,7 +94,7 @@ const MobileNavbar = () => {
                     <div className="flex items-center space-x-1 mt-1">
                       <Zap className="h-3 w-3 text-yellow-500" />
                       <span className="text-xs text-slate-500">
-                        THREE11 AI Group 1 + 2 + 3
+                        Group 1, 2 & 3
                       </span>
                     </div>
                   </div>
