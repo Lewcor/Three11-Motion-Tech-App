@@ -20,9 +20,9 @@ export const mockData = {
   ],
 
   aiProviders: [
-    { id: 'openai', name: 'OpenAI GPT', icon: '🤖', color: 'bg-green-600' },
-    { id: 'anthropic', name: 'Anthropic Claude', icon: '🧠', color: 'bg-orange-600' },
-    { id: 'gemini', name: 'Google Gemini', icon: '💎', color: 'bg-blue-600' }
+    { id: 'openai', name: 'Group 1 - Creative & Engaging', icon: '🤖', color: 'bg-green-600' },
+    { id: 'anthropic', name: 'Group 2 - Thoughtful & Nuanced', icon: '🧠', color: 'bg-orange-600' },
+    { id: 'gemini', name: 'Group 3 - Trendy & Current', icon: '💎', color: 'bg-blue-600' }
   ],
 
   // Mock generated content
