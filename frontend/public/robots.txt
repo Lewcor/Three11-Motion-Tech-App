@@ -37,7 +37,7 @@ Allow: /content-creation
 Allow: /premium
 
 # Sitemap location
-Sitemap: https://app.gentagai.com/sitemap.xml
+Sitemap: https://app.gentag.ai/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
