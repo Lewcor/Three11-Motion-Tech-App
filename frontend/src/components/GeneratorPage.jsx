@@ -235,9 +235,9 @@ const GeneratorPage = () => {
                         <CardHeader className="pb-2">
                           <div className="flex items-center justify-between">
                             <Badge variant="outline" className="text-xs">
-                              {provider === 'openai' ? 'THREE11 AI Group 1' : 
-                               provider === 'anthropic' ? 'THREE11 AI Group 2' : 
-                               'THREE11 AI Group 3'}
+                              {provider === 'openai' ? 'Group 1 - Creative & Engaging' : 
+                               provider === 'anthropic' ? 'Group 2 - Thoughtful & Nuanced' : 
+                               'Group 3 - Trendy & Current'}
                             </Badge>
                             <Button
                               size="sm"
