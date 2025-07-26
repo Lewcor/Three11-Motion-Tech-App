@@ -25,6 +25,12 @@ self.addEventListener('install', (event) => {
 
 // Fetch Event
 self.addEventListener('fetch', (event) => {
+  // Don't cache XML files (sitemap, etc.)
+  if (event.request.url.endsWith('.xml')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
