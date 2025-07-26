@@ -1,7 +1,7 @@
 // THREE11 MOTION TECH - Service Worker
 // Enables offline functionality and app-like behavior
 
-const CACHE_NAME = 'three11-motion-tech-v1';
+const CACHE_NAME = 'three11-motion-tech-v2-2025-01-26';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
