@@ -53,8 +53,10 @@ const TrendsAnalyzer = () => {
       growth_rate: 32,
       engagement_score: 8.7,
       sentiment: "positive",
+      predicted_duration: 15,
       last_updated: new Date().toISOString(),
-      hashtags: ["#AIContent", "#ContentCreator", "#DigitalMarketing"]
+      hashtags: ["#AIContent", "#ContentCreator", "#DigitalMarketing"],
+      related_hashtags: ["#AIContent", "#ContentCreator", "#DigitalMarketing", "#AITools", "#Innovation"]
     },
     {
       id: 2,
@@ -65,8 +67,10 @@ const TrendsAnalyzer = () => {
       growth_rate: 45,
       engagement_score: 9.2,
       sentiment: "positive",
+      predicted_duration: 12,
       last_updated: new Date().toISOString(),
-      hashtags: ["#Trends2025", "#SocialMedia", "#Viral"]
+      hashtags: ["#Trends2025", "#SocialMedia", "#Viral"],
+      related_hashtags: ["#Trends2025", "#SocialMedia", "#Viral", "#TikTokTrends", "#2025Goals"]
     },
     {
       id: 3,
@@ -77,8 +81,10 @@ const TrendsAnalyzer = () => {
       growth_rate: 28,
       engagement_score: 8.5,
       sentiment: "positive",
+      predicted_duration: 20,
       last_updated: new Date().toISOString(),
-      hashtags: ["#VoiceAI", "#AudioContent", "#Innovation"]
+      hashtags: ["#VoiceAI", "#AudioContent", "#Innovation"],
+      related_hashtags: ["#VoiceAI", "#AudioContent", "#Innovation", "#VoiceOver", "#AudioTech"]
     },
     {
       id: 4,
@@ -89,8 +95,10 @@ const TrendsAnalyzer = () => {
       growth_rate: 25,
       engagement_score: 7.8,
       sentiment: "positive",
+      predicted_duration: 18,
       last_updated: new Date().toISOString(),
-      hashtags: ["#ContentStrategy", "#Remix", "#CreativeContent"]
+      hashtags: ["#ContentStrategy", "#Remix", "#CreativeContent"],
+      related_hashtags: ["#ContentStrategy", "#Remix", "#CreativeContent", "#ContentMarketing", "#DigitalStrategy"]
     },
     {
       id: 5,
@@ -101,8 +109,10 @@ const TrendsAnalyzer = () => {
       growth_rate: 55,
       engagement_score: 9.5,
       sentiment: "positive",
+      predicted_duration: 25,
       last_updated: new Date().toISOString(),
-      hashtags: ["#THREE11", "#AITools", "#ContentSuite"]
+      hashtags: ["#THREE11", "#AITools", "#ContentSuite"],
+      related_hashtags: ["#THREE11", "#AITools", "#ContentSuite", "#MotionTech", "#AIContent"]
     }
   ];
 
