@@ -41,6 +41,70 @@ const TrendsAnalyzer = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [refreshTime, setRefreshTime] = useState(null);
 
+  // Default demo trends for SEO and when API is unavailable
+  const defaultTrends = [
+    {
+      id: 1,
+      keyword: "AI Content Creation",
+      platform: "instagram",
+      category: "business",
+      volume: 85,
+      growth_rate: 32,
+      engagement_score: 8.7,
+      sentiment: "positive",
+      last_updated: new Date().toISOString(),
+      hashtags: ["#AIContent", "#ContentCreator", "#DigitalMarketing"]
+    },
+    {
+      id: 2,
+      keyword: "Social Media Trends 2025",
+      platform: "tiktok",
+      category: "all",
+      volume: 78,
+      growth_rate: 45,
+      engagement_score: 9.2,
+      sentiment: "positive",
+      last_updated: new Date().toISOString(),
+      hashtags: ["#Trends2025", "#SocialMedia", "#Viral"]
+    },
+    {
+      id: 3,
+      keyword: "Voice Studio Technology",
+      platform: "youtube",
+      category: "business",
+      volume: 72,
+      growth_rate: 28,
+      engagement_score: 8.5,
+      sentiment: "positive",
+      last_updated: new Date().toISOString(),
+      hashtags: ["#VoiceAI", "#AudioContent", "#Innovation"]
+    },
+    {
+      id: 4,
+      keyword: "Content Remix Strategies",
+      platform: "facebook",
+      category: "business",
+      volume: 65,
+      growth_rate: 25,
+      engagement_score: 7.8,
+      sentiment: "positive",
+      last_updated: new Date().toISOString(),
+      hashtags: ["#ContentStrategy", "#Remix", "#CreativeContent"]
+    },
+    {
+      id: 5,
+      keyword: "THREE11 Motion Tech",
+      platform: "instagram",
+      category: "business",
+      volume: 92,
+      growth_rate: 55,
+      engagement_score: 9.5,
+      sentiment: "positive",
+      last_updated: new Date().toISOString(),
+      hashtags: ["#THREE11", "#AITools", "#ContentSuite"]
+    }
+  ];
+
   const platforms = [
     { value: 'tiktok', label: 'TikTok', icon: '📱', color: 'bg-black' },
     { value: 'instagram', label: 'Instagram', icon: '📸', color: 'bg-pink-500' },
