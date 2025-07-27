@@ -13,9 +13,9 @@
 ✅ All domain references updated to app.gentag.ai
 
 ## In Progress:
-🔵 Google Search Console - DNS VERIFICATION SETUP READY
+✅ Google Search Console - COMPLETE! (DNS verified + sitemap submitted)
 🔵 Bing Webmaster Tools - PENDING VERIFICATION CODE  
-🟡 Yandex - READY TO SET UP
+🟡 Yandex - SETTING UP NOW
 🟠 Baidu - READY TO SET UP
 
 ## Critical Issue Identified & Solution:
