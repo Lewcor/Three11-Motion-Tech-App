@@ -31,6 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from './ui/input';
 
 const TrendsAnalyzer = () => {
+  console.log('🔍 TrendsAnalyzer component is mounting/rendering');
   const [selectedPlatform, setSelectedPlatform] = useState('instagram');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [trends, setTrends] = useState([]);
