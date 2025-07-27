@@ -144,13 +144,39 @@ const TrendsAnalyzer = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setTrends(data.trends || []);
+        // Use API data if available, otherwise fall back to default trends
+        const apiTrends = data.trends || [];
+        if (apiTrends.length > 0) {
+          setTrends(apiTrends);
+        } else {
+          // Filter default trends by platform and category
+          const filteredDefaults = defaultTrends.filter(trend => {
+            const platformMatch = trend.platform === selectedPlatform;
+            const categoryMatch = selectedCategory === 'all' || trend.category === selectedCategory;
+            return platformMatch && categoryMatch;
+          });
+          setTrends(filteredDefaults.length > 0 ? filteredDefaults : defaultTrends.slice(0, 3));
+        }
         setRefreshTime(new Date());
       } else {
-        console.error('Failed to fetch trends');
+        console.error('Failed to fetch trends, using default trends');
+        // Use default trends when API fails
+        const filteredDefaults = defaultTrends.filter(trend => {
+          const platformMatch = trend.platform === selectedPlatform;
+          const categoryMatch = selectedCategory === 'all' || trend.category === selectedCategory;
+          return platformMatch && categoryMatch;
+        });
+        setTrends(filteredDefaults.length > 0 ? filteredDefaults : defaultTrends.slice(0, 3));
       }
     } catch (error) {
-      console.error('Error fetching trends:', error);
+      console.error('Error fetching trends, using default trends:', error);
+      // Use default trends when there's an error
+      const filteredDefaults = defaultTrends.filter(trend => {
+        const platformMatch = trend.platform === selectedPlatform;
+        const categoryMatch = selectedCategory === 'all' || trend.category === selectedCategory;
+        return platformMatch && categoryMatch;
+      });
+      setTrends(filteredDefaults.length > 0 ? filteredDefaults : defaultTrends.slice(0, 3));
     } finally {
       setIsLoading(false);
     }
