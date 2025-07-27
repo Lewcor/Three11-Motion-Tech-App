@@ -126,6 +126,8 @@ const TrendsAnalyzer = () => {
   ];
 
   useEffect(() => {
+    // Set default trends immediately for SEO and fast loading
+    setTrends(defaultTrends.slice(0, 3));
     fetchTrends();
   }, [selectedPlatform, selectedCategory]);
 
