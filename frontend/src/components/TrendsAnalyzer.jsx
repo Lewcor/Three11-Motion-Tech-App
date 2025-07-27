@@ -551,7 +551,7 @@ const TrendsAnalyzer = () => {
             {filteredTrends.length === 0 && !isLoading && (
               <div className="text-center py-8">
                 <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No trends found for the selected filters.</p>
+                <p className="text-gray-600">🚀 Loading trends... Default content should appear here. If you see this message, there may be a technical issue.</p>
               </div>
             )}
           </TabsContent>
