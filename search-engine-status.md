@@ -23,12 +23,11 @@
 ✅ **DNS verification is the recommended solution** - Setup guide created
 
 ## Next Steps:
-1. **PRIORITY: Complete Google Search Console DNS verification** (see google-search-console-dns-setup.md)
-2. Submit sitemap to Google Search Console after verification
-3. Set up Yandex Webmaster Tools
-4. Get Bing verification meta tag
-5. Submit to AI tool directories
-6. Monitor search performance
+1. ✅ **COMPLETED: Google Search Console DNS verification + sitemap submission**
+2. **IN PROGRESS: Set up Yandex Webmaster Tools**
+3. Get Bing verification meta tag
+4. Submit to AI tool directories
+5. Monitor search performance and request indexing for key pages
 
 ## Verification Codes Status:
 - Google: Using DNS TXT record method (recommended)
