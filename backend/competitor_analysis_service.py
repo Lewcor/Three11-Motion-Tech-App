@@ -21,7 +21,11 @@ class CompetitorAnalysisService:
     
     def __init__(self):
         self.ai_service = AIService()
-        self.db = get_database()
+        
+    @property
+    def db(self):
+        """Get database instance dynamically"""
+        return get_database()
         
     async def discover_competitor(self, query: str, user_id: str) -> Dict[str, Any]:
         """
