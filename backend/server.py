@@ -1530,6 +1530,150 @@ async def get_remix_analytics(
         logger.error(f"Error getting remix analytics: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get remix analytics: {str(e)}")
 
+# AI-Powered Competitor Analysis Routes
+@api_router.post("/competitor/discover")
+async def discover_competitor(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Discover and analyze a competitor"""
+    await check_generation_limit(current_user)
+    
+    try:
+        query = request.get("query")
+        if not query:
+            raise HTTPException(status_code=400, detail="Competitor query is required")
+        
+        result = await competitor_service.discover_competitor(query, current_user.id)
+        
+        if not result["success"]:
+            raise HTTPException(status_code=400, detail=result.get("error", "Failed to discover competitor"))
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error discovering competitor: {e}")
+        raise HTTPException(status_code=500, detail=f"Competitor discovery failed: {str(e)}")
+
+@api_router.post("/competitor/{competitor_id}/analyze-strategy")
+async def analyze_competitor_strategy(
+    competitor_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Analyze competitor's content strategy"""
+    await check_generation_limit(current_user)
+    
+    try:
+        result = await competitor_service.analyze_content_strategy(competitor_id, current_user.id)
+        
+        if not result["success"]:
+            raise HTTPException(status_code=400, detail=result.get("error", "Failed to analyze strategy"))
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error analyzing competitor strategy: {e}")
+        raise HTTPException(status_code=500, detail=f"Strategy analysis failed: {str(e)}")
+
+@api_router.post("/competitor/{competitor_id}/generate-content")
+async def generate_competitive_content(
+    competitor_id: str,
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate content to outperform competitor"""
+    await check_generation_limit(current_user)
+    
+    try:
+        content_type = request.get("content_type", "viral_posts")
+        
+        result = await competitor_service.generate_competitive_content(
+            competitor_id, content_type, current_user.id
+        )
+        
+        if not result["success"]:
+            raise HTTPException(status_code=400, detail=result.get("error", "Failed to generate competitive content"))
+        
+        # Update user generation count (premium feature costs more)
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 2}}
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating competitive content: {e}")
+        raise HTTPException(status_code=500, detail=f"Competitive content generation failed: {str(e)}")
+
+@api_router.get("/competitor/{competitor_id}/gap-analysis")
+async def get_competitor_gap_analysis(
+    competitor_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get gap analysis for competitor"""
+    await check_generation_limit(current_user)
+    
+    try:
+        result = await competitor_service.get_gap_analysis(competitor_id, current_user.id)
+        
+        if not result["success"]:
+            raise HTTPException(status_code=400, detail=result.get("error", "Failed to perform gap analysis"))
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error performing gap analysis: {e}")
+        raise HTTPException(status_code=500, detail=f"Gap analysis failed: {str(e)}")
+
+@api_router.get("/competitor/list")
+async def get_user_competitors(
+    current_user: User = Depends(get_current_user)
+):
+    """Get user's analyzed competitors"""
+    try:
+        competitors = await competitor_service.get_user_competitors(current_user.id)
+        
+        return {
+            "success": True,
+            "competitors": competitors,
+            "total_count": len(competitors)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting user competitors: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get competitors: {str(e)}")
+
 # Basic Routes
 @api_router.get("/")
 async def root():
