@@ -845,6 +845,224 @@ class BackendTester:
         else:
             self.log_test("Premium Pack Pricing", False, "Failed to get premium packs", response)
     
+    async def test_competitor_discovery(self):
+        """Test 27: AI-Powered Competitor Discovery"""
+        if not self.auth_token:
+            self.log_test("Competitor Discovery", False, "No auth token available")
+            return
+        
+        try:
+            # Test competitor discovery with a well-known brand
+            discovery_data = {
+                "query": "Nike"
+            }
+            
+            success, response = await self.make_request("POST", "/competitor/discover", discovery_data)
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "competitor_id" in data and "profile" in data:
+                        # Store competitor_id for subsequent tests
+                        self.competitor_id = data["competitor_id"]
+                        self.log_test("Competitor Discovery", True, 
+                                    f"Successfully discovered competitor Nike with ID: {data['competitor_id'][:8]}...")
+                    else:
+                        self.log_test("Competitor Discovery", False, 
+                                    "Discovery response missing required fields", response)
+                else:
+                    self.log_test("Competitor Discovery", False, 
+                                f"Competitor discovery failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Competitor Discovery", False, "Competitor discovery request failed", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Discovery", False, f"Competitor discovery test error: {str(e)}")
+    
+    async def test_competitor_strategy_analysis(self):
+        """Test 28: Competitor Strategy Analysis"""
+        if not self.auth_token:
+            self.log_test("Competitor Strategy Analysis", False, "No auth token available")
+            return
+        
+        if not hasattr(self, 'competitor_id'):
+            self.log_test("Competitor Strategy Analysis", False, "No competitor_id available from discovery test")
+            return
+        
+        try:
+            success, response = await self.make_request("POST", f"/competitor/{self.competitor_id}/analyze-strategy")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "analysis_id" in data and "insights" in data:
+                        self.log_test("Competitor Strategy Analysis", True, 
+                                    f"Strategy analysis completed with ID: {data['analysis_id'][:8]}...")
+                    else:
+                        self.log_test("Competitor Strategy Analysis", False, 
+                                    "Strategy analysis response missing required fields", response)
+                else:
+                    self.log_test("Competitor Strategy Analysis", False, 
+                                f"Strategy analysis failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Competitor Strategy Analysis", False, "Strategy analysis request failed", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Strategy Analysis", False, f"Strategy analysis test error: {str(e)}")
+    
+    async def test_competitive_content_generation(self):
+        """Test 29: Competitive Content Generation"""
+        if not self.auth_token:
+            self.log_test("Competitive Content Generation", False, "No auth token available")
+            return
+        
+        if not hasattr(self, 'competitor_id'):
+            self.log_test("Competitive Content Generation", False, "No competitor_id available from discovery test")
+            return
+        
+        try:
+            content_data = {
+                "content_type": "viral_posts"
+            }
+            
+            success, response = await self.make_request("POST", f"/competitor/{self.competitor_id}/generate-content", content_data)
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "generation_id" in data and "content" in data:
+                        self.log_test("Competitive Content Generation", True, 
+                                    f"Competitive content generated with ID: {data['generation_id'][:8]}...")
+                    else:
+                        self.log_test("Competitive Content Generation", False, 
+                                    "Content generation response missing required fields", response)
+                else:
+                    self.log_test("Competitive Content Generation", False, 
+                                f"Content generation failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Competitive Content Generation", False, "Content generation request failed", response)
+                
+        except Exception as e:
+            self.log_test("Competitive Content Generation", False, f"Content generation test error: {str(e)}")
+    
+    async def test_competitor_gap_analysis(self):
+        """Test 30: Competitor Gap Analysis"""
+        if not self.auth_token:
+            self.log_test("Competitor Gap Analysis", False, "No auth token available")
+            return
+        
+        if not hasattr(self, 'competitor_id'):
+            self.log_test("Competitor Gap Analysis", False, "No competitor_id available from discovery test")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", f"/competitor/{self.competitor_id}/gap-analysis")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "analysis_id" in data and "gaps" in data:
+                        self.log_test("Competitor Gap Analysis", True, 
+                                    f"Gap analysis completed with ID: {data['analysis_id'][:8]}...")
+                    else:
+                        self.log_test("Competitor Gap Analysis", False, 
+                                    "Gap analysis response missing required fields", response)
+                else:
+                    self.log_test("Competitor Gap Analysis", False, 
+                                f"Gap analysis failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("Competitor Gap Analysis", False, "Gap analysis request failed", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Gap Analysis", False, f"Gap analysis test error: {str(e)}")
+    
+    async def test_user_competitors_list(self):
+        """Test 31: Get User's Competitors List"""
+        if not self.auth_token:
+            self.log_test("User Competitors List", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/competitor/list")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    if "competitors" in data:
+                        competitors_count = len(data["competitors"])
+                        self.log_test("User Competitors List", True, 
+                                    f"Retrieved {competitors_count} competitors from user's list")
+                    else:
+                        self.log_test("User Competitors List", False, 
+                                    "Competitors list response missing competitors field", response)
+                else:
+                    self.log_test("User Competitors List", False, 
+                                f"Competitors list failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("User Competitors List", False, "Competitors list request failed", response)
+                
+        except Exception as e:
+            self.log_test("User Competitors List", False, f"Competitors list test error: {str(e)}")
+    
+    async def test_competitor_analysis_authentication(self):
+        """Test 32: Competitor Analysis Authentication Requirements"""
+        # Test that competitor analysis endpoints require authentication
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        try:
+            # Test discovery without auth
+            discovery_data = {"query": "TestBrand"}
+            success, response = await self.make_request("POST", "/competitor/discover", discovery_data)
+            
+            if not success and response.get("status") in [401, 403]:
+                self.log_test("Competitor Analysis Authentication", True, 
+                            "Competitor analysis endpoints properly require authentication")
+            else:
+                self.log_test("Competitor Analysis Authentication", False, 
+                            "Competitor analysis endpoints should require authentication", response)
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_competitor_analysis_generation_limits(self):
+        """Test 33: Competitor Analysis Generation Limits"""
+        if not self.auth_token:
+            self.log_test("Competitor Analysis Limits", False, "No auth token available")
+            return
+        
+        # Check if competitor analysis endpoints respect generation limits
+        success, user_response = await self.make_request("GET", "/users/me")
+        if not success:
+            self.log_test("Competitor Analysis Limits", False, "Could not get user info for limit testing")
+            return
+        
+        user_data = user_response["data"]
+        daily_used = user_data.get("daily_generations_used", 0)
+        tier = user_data.get("tier", "free")
+        
+        if tier == "premium":
+            self.log_test("Competitor Analysis Limits", True, "User is premium - competitor analysis unlimited")
+            return
+        
+        # Test competitor discovery with limits
+        discovery_data = {"query": "LimitTestBrand"}
+        success, response = await self.make_request("POST", "/competitor/discover", discovery_data)
+        
+        if daily_used >= 10:
+            # Should be blocked
+            if not success and response.get("status") == 403:
+                self.log_test("Competitor Analysis Limits", True, "Competitor analysis respects daily limits")
+            else:
+                self.log_test("Competitor Analysis Limits", False, "Competitor analysis should respect daily limits", response)
+        else:
+            # Should work
+            if success:
+                self.log_test("Competitor Analysis Limits", True, f"Competitor analysis allowed within limits ({daily_used + 1}/10)")
+            else:
+                self.log_test("Competitor Analysis Limits", False, "Competitor analysis failed within limits", response)
+    
     async def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting THREE11 MOTION TECH Backend Testing...")
