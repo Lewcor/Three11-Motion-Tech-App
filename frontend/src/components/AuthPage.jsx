@@ -233,7 +233,10 @@ const AuthPage = () => {
               </p>
               <p className="text-xs text-gray-500">
                 Email: test@three11motion.com<br />
-                Password: test123
+                Password: <em>any password works</em>
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Or create a new account with the Sign Up tab
               </p>
             </div>
           </CardContent>
