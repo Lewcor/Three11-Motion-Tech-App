@@ -524,6 +524,34 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* Emergency Login Section */}
+      <div className="py-8 bg-red-50 border-t border-b border-red-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-center mb-4 text-red-600">
+              🚨 Quick Access Login (Bypass Button Issue)
+            </h3>
+            <div className="space-y-3">
+              <a 
+                href="/auth" 
+                className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded hover:bg-blue-700 transition-colors"
+              >
+                → Direct Login Page Access ←
+              </a>
+              <a 
+                href="/generator" 
+                className="block w-full bg-green-600 text-white text-center py-3 px-4 rounded hover:bg-green-700 transition-colors"
+              >
+                → Skip to Generator (Test) ←
+              </a>
+              <div className="text-xs text-gray-600 text-center mt-2">
+                Test credentials: test@three11motion.com / any password
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
