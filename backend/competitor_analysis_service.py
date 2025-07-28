@@ -294,6 +294,16 @@ class CompetitorAnalysisService:
                 {"created_by": user_id}
             ).sort("created_at", -1).to_list(100)
             
+            # Convert ObjectId to string for JSON serialization
+            for competitor in competitors:
+                if '_id' in competitor:
+                    competitor['_id'] = str(competitor['_id'])
+                # Convert datetime objects to ISO format strings
+                if 'created_at' in competitor and hasattr(competitor['created_at'], 'isoformat'):
+                    competitor['created_at'] = competitor['created_at'].isoformat()
+                if 'last_updated' in competitor and hasattr(competitor['last_updated'], 'isoformat'):
+                    competitor['last_updated'] = competitor['last_updated'].isoformat()
+            
             return competitors
             
         except Exception as e:
