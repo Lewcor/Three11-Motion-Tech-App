@@ -223,10 +223,16 @@ class CompetitorAnalysisService:
             
             await self.db.competitive_content.insert_one(content_data)
             
+            # Convert datetime for JSON response
+            content_response = competitive_content.copy()
+            if 'timestamp' in content_response:
+                # timestamp is already ISO format string from _multi_ai_analysis
+                pass
+            
             return {
                 "success": True,
                 "generation_id": generation_id,
-                "content": competitive_content,
+                "content": content_response,
                 "competitor_name": profile['name']
             }
             
