@@ -13,8 +13,8 @@
 ✅ All domain references updated to app.gentag.ai
 
 ## In Progress:
-✅ Google Search Console - COMPLETE! (DNS verified + sitemap submitted)
-✅ Yandex Webmaster Tools - COMPLETE! (Verified + ready for sitemap)
+✅ Google Search Console - COMPLETE! (DNS verified + sitemap submitted)  
+✅ Yandex Webmaster Tools - COMPLETE! (Verified + sitemap submitted + validated)
 🔵 Bing Webmaster Tools - PENDING VERIFICATION CODE  
 🟠 Baidu - READY TO SET UP
 
