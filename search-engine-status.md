@@ -14,8 +14,8 @@
 
 ## In Progress:
 ✅ Google Search Console - COMPLETE! (DNS verified + sitemap submitted)
+✅ Yandex Webmaster Tools - COMPLETE! (Verified + ready for sitemap)
 🔵 Bing Webmaster Tools - PENDING VERIFICATION CODE  
-🟡 Yandex - SETTING UP NOW
 🟠 Baidu - READY TO SET UP
 
 ## Critical Issue Identified & Solution:
