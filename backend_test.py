@@ -1121,6 +1121,17 @@ class BackendTester:
         await self.test_content_remix_engine()
         await self.test_content_variations()
         
+        # AI-Powered Competitor Analysis Tests
+        print("\n🎯 AI-POWERED COMPETITOR ANALYSIS TESTS")
+        print("-" * 40)
+        await self.test_competitor_discovery()
+        await self.test_competitor_strategy_analysis()
+        await self.test_competitive_content_generation()
+        await self.test_competitor_gap_analysis()
+        await self.test_user_competitors_list()
+        await self.test_competitor_analysis_authentication()
+        await self.test_competitor_analysis_generation_limits()
+        
         # Print summary
         self.print_summary()
     
