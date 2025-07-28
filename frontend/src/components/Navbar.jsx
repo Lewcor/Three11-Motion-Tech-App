@@ -121,6 +121,23 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/competitor-analysis">
+                <Button 
+                  variant={location.pathname === '/competitor-analysis' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Target className="h-4 w-4 mr-1" />
+                  Compete
+                  <Badge className="ml-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs">
+                    NEW
+                  </Badge>
+                  {location.pathname === '/competitor-analysis' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
