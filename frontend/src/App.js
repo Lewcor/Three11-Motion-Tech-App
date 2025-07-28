@@ -44,6 +44,9 @@ function App() {
             <Route path="/trends-analyzer" element={<TrendsAnalyzer />} />
             <Route path="/content-remix" element={<ContentRemixEngine />} />
             <Route path="/competitor-analysis" element={<CompetitorAnalysis />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/signup" element={<AuthPage />} />
           </Routes>
           <Toaster position="top-right" />
         </div>
