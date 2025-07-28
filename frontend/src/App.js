@@ -42,6 +42,7 @@ function App() {
             <Route path="/voice-studio" element={<VoiceStudio />} />
             <Route path="/trends-analyzer" element={<TrendsAnalyzer />} />
             <Route path="/content-remix" element={<ContentRemixEngine />} />
+            <Route path="/competitor-analysis" element={<CompetitorAnalysis />} />
           </Routes>
           <Toaster position="top-right" />
         </div>
