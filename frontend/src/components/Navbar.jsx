@@ -166,19 +166,23 @@ const Navbar = () => {
             </Button>
             
             {/* Always visible auth buttons */}
-            <Button 
-              variant="ghost" 
-              className="text-slate-600 hover:text-slate-900 px-2 sm:px-4 hidden sm:flex"
-              size="sm"
-            >
-              Sign In
-            </Button>
-            <Button 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 sm:px-4"
-              size="sm"
-            >
-              Get Started
-            </Button>
+            <Link to="/auth">
+              <Button 
+                variant="ghost" 
+                className="text-slate-600 hover:text-slate-900 px-2 sm:px-4 hidden sm:flex"
+                size="sm"
+              >
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 sm:px-4"
+                size="sm"
+              >
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
