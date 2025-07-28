@@ -184,50 +184,74 @@ Hashtags:"""
         return hashtags[:15]
 
     async def generate_combined_content(self, category: ContentCategory, platform: Platform,
-                                      content_description: str, providers: List[AIProvider]) -> Dict:
-        """Generate content using multiple AI providers"""
+                                      content_description: str, selected_providers: List[str]) -> Dict[str, AIResponse]:
+        """Generate content using multiple AI providers and return all responses"""
+        results = {}
+        
+        for provider_name in selected_providers:
+            try:
+                provider = AIProvider(provider_name)
+                response = await self.generate_caption(provider, category, platform, content_description)
+                results[provider_name] = response
+            except Exception as e:
+                logger.error(f"Error generating content with {provider_name}: {e}")
+                results[provider_name] = AIResponse(
+                    content=f"Error: {str(e)}",
+                    provider=provider_name,
+                    generation_time=0,
+                    metadata={"error": True}
+                )
+        
+        return results
+    
+    async def generate_content(self, prompt: str, provider: str = "openai", max_tokens: int = 2000) -> str:
+        """Generic content generation method for competitor analysis and other services"""
         try:
-            # Generate captions from all providers concurrently
-            caption_tasks = [
-                self.generate_caption(provider, category, platform, content_description)
-                for provider in providers
-            ]
-            
-            # Generate hashtags
-            hashtag_task = self.generate_hashtags(category, platform, content_description)
-            
-            # Wait for all tasks to complete
-            caption_results = await asyncio.gather(*caption_tasks)
-            hashtags = await hashtag_task
-            
-            # Process results
-            captions = {}
-            for result in caption_results:
-                if result.success:
-                    captions[result.provider.value] = result.caption
-                else:
-                    captions[result.provider.value] = f"Error: {result.error}"
-            
-            # Create combined result using the best caption
-            best_caption = ""
-            for provider in [AIProvider.OPENAI, AIProvider.ANTHROPIC, AIProvider.GEMINI]:
-                if provider.value in captions and not captions[provider.value].startswith("Error:"):
-                    best_caption = captions[provider.value]
-                    break
-            
-            # Combine caption with hashtags
-            combined_result = f"{best_caption}\n\n{' '.join(hashtags[:10])}"
-            
-            return {
-                "captions": captions,
-                "hashtags": hashtags,
-                "combined_result": combined_result,
-                "ai_responses": caption_results
+            # Map provider names to AIProvider enum
+            provider_map = {
+                "openai": AIProvider.OPENAI,
+                "anthropic": AIProvider.ANTHROPIC,
+                "gemini": AIProvider.GEMINI
             }
             
+            if provider not in provider_map:
+                raise ValueError(f"Unsupported provider: {provider}")
+            
+            ai_provider = provider_map[provider]
+            
+            # Create a generic chat instance
+            session_id = f"{provider}_generic_{int(time.time())}"
+            system_message = "You are a helpful AI assistant that provides detailed, accurate, and actionable insights."
+            
+            if ai_provider == AIProvider.OPENAI:
+                chat = LlmChat(
+                    api_key=self.openai_key,
+                    session_id=session_id,
+                    system_message=system_message
+                ).with_model("openai", "gpt-4o").with_max_tokens(max_tokens)
+                
+            elif ai_provider == AIProvider.ANTHROPIC:
+                chat = LlmChat(
+                    api_key=self.anthropic_key,
+                    session_id=session_id,
+                    system_message=system_message
+                ).with_model("anthropic", "claude-3-5-sonnet-20241022").with_max_tokens(max_tokens)
+                
+            elif ai_provider == AIProvider.GEMINI:
+                chat = LlmChat(
+                    api_key=self.gemini_key,
+                    session_id=session_id,
+                    system_message=system_message
+                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(max_tokens)
+            
+            message = UserMessage(text=prompt)
+            response = await chat.send_message(message)
+            
+            return response.text
+            
         except Exception as e:
-            logger.error(f"Error in generate_combined_content: {e}")
-            raise
+            logger.error(f"Error generating content with {provider}: {e}")
+            return f"Error generating content: {str(e)}"
 
 # Create global AI service instance
 ai_service = AIService()
