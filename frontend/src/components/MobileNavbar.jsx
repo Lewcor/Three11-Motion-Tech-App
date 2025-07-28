@@ -197,15 +197,19 @@ const MobileNavbar = () => {
                 {/* Authentication */}
                 <div className="border-t pt-4">
                   <div className="space-y-2">
-                    <Link to="/auth" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full">
-                        Sign In
-                      </Button>
+                    <Link 
+                      to="/auth" 
+                      onClick={() => setIsOpen(false)}
+                      className="w-full h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md text-sm font-medium transition-colors inline-flex items-center justify-center"
+                    >
+                      Sign In
                     </Link>
-                    <Link to="/auth" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
-                        Get Started
-                      </Button>
+                    <Link 
+                      to="/auth" 
+                      onClick={() => setIsOpen(false)}
+                      className="w-full h-10 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md text-sm font-medium transition-colors inline-flex items-center justify-center hover:from-blue-700 hover:to-purple-700"
+                    >
+                      Get Started
                     </Link>
                   </div>
                 </div>
