@@ -1243,6 +1243,23 @@ class BackendTester:
         else:
             print("  ❌ Subscription System: Issues with subscription endpoints")
         
+        # AI-Powered Competitor Analysis
+        competitor_tests = ["Competitor Discovery", "Competitor Strategy Analysis", "Competitive Content Generation", 
+                           "Competitor Gap Analysis", "User Competitors List"]
+        competitor_working = all(self.test_results.get(test, {}).get("success", False) for test in competitor_tests)
+        if competitor_working:
+            print("  ✅ Competitor Analysis: AI-powered competitor analysis fully functional")
+        else:
+            competitor_failed = [test for test in competitor_tests if not self.test_results.get(test, {}).get("success", False)]
+            print(f"  ❌ Competitor Analysis: Issues with competitor analysis - Failed: {competitor_failed}")
+        
+        # Competitor Analysis Security
+        competitor_auth_test = self.test_results.get("Competitor Analysis Authentication", {})
+        if competitor_auth_test.get("success"):
+            print("  ✅ Competitor Security: Authentication properly enforced on competitor analysis endpoints")
+        else:
+            print("  ❌ Competitor Security: Issues with competitor analysis authentication")
+        
         print("\n" + "=" * 60)
 
 async def main():
