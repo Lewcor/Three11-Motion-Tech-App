@@ -247,7 +247,13 @@ Hashtags:"""
             message = UserMessage(text=prompt)
             response = await chat.send_message(message)
             
-            return response.text
+            # Handle different response types
+            if hasattr(response, 'text'):
+                return response.text
+            elif isinstance(response, str):
+                return response
+            else:
+                return str(response)
             
         except Exception as e:
             logger.error(f"Error generating content with {provider}: {e}")
