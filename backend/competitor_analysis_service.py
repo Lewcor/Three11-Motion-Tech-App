@@ -72,10 +72,17 @@ class CompetitorAnalysisService:
             # Store in database
             await self.db.competitor_profiles.insert_one(profile_data)
             
+            # Convert datetime objects for JSON response
+            profile_data_response = profile_data.copy()
+            if 'created_at' in profile_data_response:
+                profile_data_response['created_at'] = profile_data_response['created_at'].isoformat()
+            if 'last_updated' in profile_data_response:
+                profile_data_response['last_updated'] = profile_data_response['last_updated'].isoformat()
+            
             return {
                 "success": True,
                 "competitor_id": competitor_id,
-                "profile": profile_data,
+                "profile": profile_data_response,
                 "message": f"Successfully discovered and analyzed competitor: {competitor_info['name']}"
             }
             
