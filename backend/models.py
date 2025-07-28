@@ -307,3 +307,46 @@ class SubscriptionCreate(BaseModel):
     plan_id: str
     payment_method: str
     payment_id: str
+
+# Competitor Analysis Models
+class CompetitorProfile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    competitor_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    original_query: str
+    platforms: Dict[str, Any] = {}
+    analysis_data: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    created_by: str
+
+class CompetitorAnalysis(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    analysis_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    competitor_id: str
+    user_id: str
+    analysis_type: str  # content_strategy, gap_analysis, performance_analysis
+    insights: Dict[str, Any]
+    recommendations: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class AnalysisInsight(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    competitor_id: str
+    insight_type: str  # strength, weakness, opportunity, threat
+    description: str
+    impact_score: float  # 0-10
+    actionable_recommendation: str
+    evidence: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CompetitiveContent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    generation_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    competitor_id: str
+    user_id: str
+    content_type: str
+    generated_content: Dict[str, Any]
+    competitive_advantages: List[str] = []
+    expected_performance: Dict[str, float] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
