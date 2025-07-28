@@ -144,10 +144,16 @@ class CompetitorAnalysisService:
             
             await self.db.competitor_analyses.insert_one(analysis_data)
             
+            # Convert datetime for JSON response
+            insights_response = strategy_analysis.copy()
+            if 'timestamp' in insights_response:
+                # timestamp is already ISO format string from _multi_ai_analysis
+                pass
+            
             return {
                 "success": True,
                 "analysis_id": analysis_id,
-                "insights": strategy_analysis,
+                "insights": insights_response,
                 "competitor_name": profile['name']
             }
             
