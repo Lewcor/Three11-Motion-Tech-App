@@ -194,6 +194,22 @@ const MobileNavbar = () => {
                   </div>
                 </div>
 
+                {/* Authentication */}
+                <div className="border-t pt-4">
+                  <div className="space-y-2">
+                    <Link to="/auth" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link to="/auth" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+                        Get Started
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
                 {/* CTA */}
                 <div className="border-t pt-4">
                   <Link to="/premium" onClick={() => setIsOpen(false)}>
