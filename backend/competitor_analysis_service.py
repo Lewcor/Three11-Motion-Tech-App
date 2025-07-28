@@ -72,17 +72,20 @@ class CompetitorAnalysisService:
             # Store in database
             await self.db.competitor_profiles.insert_one(profile_data)
             
-            # Convert datetime objects for JSON response
-            profile_data_response = profile_data.copy()
-            if 'created_at' in profile_data_response:
-                profile_data_response['created_at'] = profile_data_response['created_at'].isoformat()
-            if 'last_updated' in profile_data_response:
-                profile_data_response['last_updated'] = profile_data_response['last_updated'].isoformat()
-            
+            # Create a clean response without potential ObjectId issues
             return {
                 "success": True,
                 "competitor_id": competitor_id,
-                "profile": profile_data_response,
+                "profile": {
+                    "competitor_id": competitor_id,
+                    "name": competitor_info['name'],
+                    "original_query": query,
+                    "platforms": competitor_info.get('platforms', {}),
+                    "created_at": profile_data['created_at'].isoformat(),
+                    "last_updated": profile_data['last_updated'].isoformat(),
+                    "created_by": user_id,
+                    "analysis_summary": "AI analysis completed successfully" if ai_analysis else "Analysis failed"
+                },
                 "message": f"Successfully discovered and analyzed competitor: {competitor_info['name']}"
             }
             
