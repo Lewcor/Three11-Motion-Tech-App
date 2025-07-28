@@ -30,9 +30,9 @@
 5. Monitor search performance and request indexing for key pages
 
 ## Verification Codes Status:
-- Google: Using DNS TXT record method (recommended)
+✅ Google: DNS TXT records working perfectly
+✅ Yandex: <meta name="yandex-verification" content="f86230e563c604da" /> - VERIFIED
 - Bing: <meta name="msvalidate.01" content="4B7D8821C88BEBE85F538AB01C9A57F7" /> (may need updating)
-- Yandex: <meta name="yandex-verification" content="YANDEX_VERIFICATION_CODE_PENDING" />
 - Baidu: <meta name="baidu-site-verification" content="BAIDU_VERIFICATION_CODE_PENDING" />
 
 ## Current Status:
