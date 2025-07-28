@@ -21,6 +21,7 @@ from stripe_service import stripe_service
 from voice_service import VoiceService
 from trends_service import TrendsService
 from content_remix_service import ContentRemixEngine
+from competitor_analysis_service import competitor_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
