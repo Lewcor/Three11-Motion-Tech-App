@@ -11,6 +11,7 @@ import VoiceStudio from './components/VoiceStudio';
 import TrendsAnalyzer from './components/TrendsAnalyzer';
 import ContentRemixEngine from './components/ContentRemixEngine';
 import CompetitorAnalysis from './components/CompetitorAnalysis';
+import AuthPage from './components/AuthPage';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
