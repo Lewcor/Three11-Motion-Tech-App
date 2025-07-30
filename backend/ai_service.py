@@ -13,6 +13,43 @@ class AIService:
         self.openai_key = os.environ.get('OPENAI_API_KEY')
         self.anthropic_key = os.environ.get('ANTHROPIC_API_KEY')
         self.gemini_key = os.environ.get('GEMINI_API_KEY')
+        self.perplexity_key = os.environ.get('PERPLEXITY_API_KEY')  # Will be added when ready
+        
+        # Advanced AI Models - Latest and Most Powerful
+        self.model_versions = {
+            AIProvider.OPENAI: "gpt-4o",  # Latest OpenAI multimodal model
+            AIProvider.ANTHROPIC: "claude-3-5-sonnet-20241022",  # Latest Claude 3.5 Sonnet
+            AIProvider.GEMINI: "gemini-2.0-flash-exp",  # Latest Gemini 2.0 Flash Experimental
+            AIProvider.PERPLEXITY: "sonar-pro"  # Real-time web search model
+        }
+        
+        # Provider capabilities
+        self.provider_capabilities = {
+            AIProvider.OPENAI: {
+                "name": "GPT-4o",
+                "description": "Advanced multimodal AI with vision, coding, and reasoning",
+                "strengths": ["Creative writing", "Technical content", "Multimodal processing"],
+                "best_for": ["Complex reasoning", "Code generation", "Image analysis"]
+            },
+            AIProvider.ANTHROPIC: {
+                "name": "Claude 3.5 Sonnet",
+                "description": "Most intelligent Claude model with superior reasoning",
+                "strengths": ["Analysis", "Writing quality", "Complex reasoning"],
+                "best_for": ["Long-form content", "Research", "Critical thinking"]
+            },
+            AIProvider.GEMINI: {
+                "name": "Gemini 2.0 Flash",
+                "description": "Fastest multimodal model with real-time capabilities",
+                "strengths": ["Speed", "Multimodal", "Real-time processing"],
+                "best_for": ["Quick responses", "Video analysis", "Live interactions"]
+            },
+            AIProvider.PERPLEXITY: {
+                "name": "Sonar Pro",
+                "description": "Real-time web search with current information",
+                "strengths": ["Current events", "Trend analysis", "Real-time data"],
+                "best_for": ["Trending topics", "Current affairs", "Market research"]
+            }
+        }
         
         # System messages for different content types
         self.system_messages = {
