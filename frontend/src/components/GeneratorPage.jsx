@@ -8,6 +8,7 @@ import { Progress } from './ui/progress';
 import { Sparkles, Copy, Heart, RefreshCw, Zap, Crown, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { mockData } from '../mock';
+import AIProviderSelector from './AIProviderSelector';
 import axios from 'axios';
 
 const GeneratorPage = () => {
