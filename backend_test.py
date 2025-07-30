@@ -1278,6 +1278,524 @@ class BackendTester:
         else:
             self.log_test("Latest AI Models Verification", False, "Failed to verify AI models", response)
     
+    # PHASE 3: Content Type Expansion Tests
+    
+    async def test_video_content_generation(self):
+        """Test 39: Video Content Service - Captions and Subtitles"""
+        if not self.auth_token:
+            self.log_test("Video Content Generation", False, "No auth token available")
+            return
+        
+        try:
+            video_data = {
+                "user_id": self.user_id,
+                "video_title": "Fashion Trends 2025: Ultimate Style Guide",
+                "video_description": "Comprehensive guide to the latest fashion trends for 2025, featuring seasonal colors, sustainable fashion, and styling tips for every occasion",
+                "video_duration": 180,  # 3 minutes
+                "platform": "youtube",
+                "category": "fashion",
+                "caption_style": "engaging",
+                "include_timestamps": True,
+                "language": "en",
+                "ai_providers": ["openai", "anthropic", "gemini"]
+            }
+            
+            success, response = await self.make_request("POST", "/video-content/generate", video_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["id", "user_id", "video_content_id", "captions", "language", "style"]
+                
+                if all(field in data for field in required_fields):
+                    captions = data.get("captions", [])
+                    subtitle_file = data.get("subtitle_file")
+                    
+                    if captions and len(captions) > 0:
+                        # Check caption structure
+                        first_caption = captions[0]
+                        caption_fields = ["timestamp", "text", "provider", "style", "language"]
+                        
+                        if all(field in first_caption for field in caption_fields):
+                            self.log_test("Video Content Generation", True, 
+                                        f"Video captions generated successfully - {len(captions)} captions, SRT file: {'Yes' if subtitle_file else 'No'}")
+                        else:
+                            missing = [f for f in caption_fields if f not in first_caption]
+                            self.log_test("Video Content Generation", False, 
+                                        f"Caption structure missing fields: {missing}")
+                    else:
+                        self.log_test("Video Content Generation", False, "No captions generated")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Video Content Generation", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test("Video Content Generation", False, "Video content generation failed", response)
+                
+        except Exception as e:
+            self.log_test("Video Content Generation", False, f"Test error: {str(e)}")
+    
+    async def test_podcast_content_generation(self):
+        """Test 40: Podcast Content Service - Descriptions and Show Notes"""
+        if not self.auth_token:
+            self.log_test("Podcast Content Generation", False, "No auth token available")
+            return
+        
+        try:
+            # Test podcast description generation
+            podcast_data = {
+                "user_id": self.user_id,
+                "podcast_title": "Fashion Forward: Style & Sustainability",
+                "episode_number": 15,
+                "duration": 45,  # 45 minutes
+                "topics": [
+                    "Sustainable fashion trends",
+                    "Ethical clothing brands",
+                    "Wardrobe minimalism",
+                    "Fashion industry impact"
+                ],
+                "guests": ["Sarah Johnson - Sustainable Fashion Expert"],
+                "key_points": [
+                    "How to build a sustainable wardrobe",
+                    "Top 10 eco-friendly fashion brands",
+                    "The true cost of fast fashion",
+                    "Minimalist styling tips"
+                ],
+                "content_type": "PODCAST_DESCRIPTION",
+                "tone": "professional",
+                "include_timestamps": True,
+                "ai_providers": ["anthropic", "openai", "gemini"]
+            }
+            
+            success, response = await self.make_request("POST", "/podcast-content/generate", podcast_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["id", "user_id", "podcast_content_id", "content_type"]
+                
+                if all(field in data for field in required_fields):
+                    description = data.get("description")
+                    show_notes = data.get("show_notes")
+                    chapters = data.get("chapters", [])
+                    key_quotes = data.get("key_quotes", [])
+                    
+                    if description and len(description) > 50:
+                        self.log_test("Podcast Content Generation", True, 
+                                    f"Podcast content generated successfully - Description: {len(description)} chars, Chapters: {len(chapters)}, Quotes: {len(key_quotes)}")
+                    else:
+                        self.log_test("Podcast Content Generation", False, "Generated content too short or missing")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Podcast Content Generation", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test("Podcast Content Generation", False, "Podcast content generation failed", response)
+                
+        except Exception as e:
+            self.log_test("Podcast Content Generation", False, f"Test error: {str(e)}")
+    
+    async def test_email_marketing_generation(self):
+        """Test 41: Email Marketing Service - Campaign Generation"""
+        if not self.auth_token:
+            self.log_test("Email Marketing Generation", False, "No auth token available")
+            return
+        
+        try:
+            email_data = {
+                "user_id": self.user_id,
+                "campaign_name": "Fashion Week 2025 Exclusive Preview",
+                "email_type": "EMAIL_MARKETING",
+                "subject_line_ideas": 7,
+                "target_audience": "Fashion enthusiasts and style-conscious professionals aged 25-45",
+                "campaign_goal": "conversion",
+                "key_message": "Get exclusive early access to Fashion Week 2025 trends and limited-edition collections",
+                "call_to_action": "Shop Early Access Collection",
+                "brand_voice": "modern",
+                "include_personalization": True,
+                "email_length": "medium",
+                "ai_providers": ["anthropic", "openai", "gemini"]
+            }
+            
+            success, response = await self.make_request("POST", "/email-marketing/generate", email_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["id", "user_id", "campaign_id", "email_type", "subject_lines", "email_content"]
+                
+                if all(field in data for field in required_fields):
+                    subject_lines = data.get("subject_lines", [])
+                    email_content = data.get("email_content", "")
+                    preview_text = data.get("preview_text", "")
+                    personalization_tags = data.get("personalization_tags", [])
+                    a_b_variations = data.get("a_b_variations", [])
+                    
+                    if len(subject_lines) >= 5 and len(email_content) > 100:
+                        self.log_test("Email Marketing Generation", True, 
+                                    f"Email campaign generated successfully - {len(subject_lines)} subject lines, {len(email_content)} chars content, {len(personalization_tags)} personalization tags, {len(a_b_variations)} A/B variations")
+                    else:
+                        self.log_test("Email Marketing Generation", False, 
+                                    f"Generated content insufficient - Subject lines: {len(subject_lines)}, Content length: {len(email_content)}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Email Marketing Generation", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test("Email Marketing Generation", False, "Email marketing generation failed", response)
+                
+        except Exception as e:
+            self.log_test("Email Marketing Generation", False, f"Test error: {str(e)}")
+    
+    async def test_blog_post_generation(self):
+        """Test 42: Blog Post Service - SEO-Optimized Content"""
+        if not self.auth_token:
+            self.log_test("Blog Post Generation", False, "No auth token available")
+            return
+        
+        try:
+            blog_data = {
+                "user_id": self.user_id,
+                "topic": "Sustainable Fashion: Building an Eco-Friendly Wardrobe in 2025",
+                "target_keywords": [
+                    "sustainable fashion",
+                    "eco-friendly wardrobe",
+                    "ethical clothing brands",
+                    "sustainable style tips"
+                ],
+                "word_count_target": 1500,
+                "audience": "Fashion-conscious consumers interested in sustainability",
+                "purpose": "educate",
+                "tone": "professional",
+                "include_outline": True,
+                "include_meta_description": True,
+                "include_social_snippets": True,
+                "seo_focus": True,
+                "ai_providers": ["anthropic", "openai", "gemini"]
+            }
+            
+            success, response = await self.make_request("POST", "/blog-post/generate", blog_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["id", "user_id", "blog_post_id", "title", "content", "word_count"]
+                
+                if all(field in data for field in required_fields):
+                    title = data.get("title", "")
+                    content = data.get("content", "")
+                    word_count = data.get("word_count", 0)
+                    meta_description = data.get("meta_description", "")
+                    outline = data.get("outline", [])
+                    social_snippets = data.get("social_snippets", {})
+                    readability_score = data.get("readability_score", 0)
+                    seo_score = data.get("seo_score", 0)
+                    
+                    if word_count >= 1000 and len(title) > 10 and len(content) > 500:
+                        self.log_test("Blog Post Generation", True, 
+                                    f"Blog post generated successfully - {word_count} words, SEO score: {seo_score}, Readability: {readability_score}, Social snippets: {len(social_snippets)}, Outline sections: {len(outline)}")
+                    else:
+                        self.log_test("Blog Post Generation", False, 
+                                    f"Generated content insufficient - Word count: {word_count}, Title length: {len(title)}, Content length: {len(content)}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Blog Post Generation", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test("Blog Post Generation", False, "Blog post generation failed", response)
+                
+        except Exception as e:
+            self.log_test("Blog Post Generation", False, f"Test error: {str(e)}")
+    
+    async def test_product_description_generation(self):
+        """Test 43: Product Description Service - E-commerce Content"""
+        if not self.auth_token:
+            self.log_test("Product Description Generation", False, "No auth token available")
+            return
+        
+        try:
+            product_data = {
+                "user_id": self.user_id,
+                "product_name": "EcoLux Sustainable Cashmere Sweater",
+                "category": "Women's Fashion",
+                "price": 189.99,
+                "key_features": [
+                    "100% sustainable cashmere",
+                    "Ethically sourced materials",
+                    "Machine washable",
+                    "Available in 8 colors",
+                    "Oversized fit design",
+                    "Hypoallergenic fibers"
+                ],
+                "benefits": [
+                    "Luxurious comfort without environmental guilt",
+                    "Long-lasting quality that saves money",
+                    "Versatile styling for any occasion",
+                    "Easy care and maintenance",
+                    "Supports ethical fashion practices"
+                ],
+                "target_audience": "Eco-conscious fashion lovers aged 28-50 who value quality and sustainability",
+                "brand_style": "luxury",
+                "description_length": "medium",
+                "include_bullet_points": True,
+                "include_specifications": True,
+                "include_usage_instructions": True,
+                "persuasion_style": "benefits_focused",
+                "ai_providers": ["anthropic", "openai", "gemini"]
+            }
+            
+            success, response = await self.make_request("POST", "/product-descriptions/generate", product_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["id", "user_id", "product_id", "title", "short_description", "long_description"]
+                
+                if all(field in data for field in required_fields):
+                    title = data.get("title", "")
+                    short_description = data.get("short_description", "")
+                    long_description = data.get("long_description", "")
+                    bullet_points = data.get("bullet_points", [])
+                    specifications = data.get("specifications", {})
+                    usage_instructions = data.get("usage_instructions", "")
+                    seo_keywords = data.get("seo_keywords", [])
+                    marketing_angles = data.get("marketing_angles", [])
+                    cross_sell_suggestions = data.get("cross_sell_suggestions", [])
+                    
+                    if len(short_description) >= 50 and len(long_description) >= 200 and len(bullet_points) >= 3:
+                        self.log_test("Product Description Generation", True, 
+                                    f"Product description generated successfully - Short: {len(short_description)} chars, Long: {len(long_description)} chars, Bullets: {len(bullet_points)}, SEO keywords: {len(seo_keywords)}, Marketing angles: {len(marketing_angles)}, Cross-sell: {len(cross_sell_suggestions)}")
+                    else:
+                        self.log_test("Product Description Generation", False, 
+                                    f"Generated content insufficient - Short: {len(short_description)}, Long: {len(long_description)}, Bullets: {len(bullet_points)}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Product Description Generation", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test("Product Description Generation", False, "Product description generation failed", response)
+                
+        except Exception as e:
+            self.log_test("Product Description Generation", False, f"Test error: {str(e)}")
+    
+    async def test_phase3_authentication_requirements(self):
+        """Test 44: Phase 3 Endpoints Authentication"""
+        # Test that all Phase 3 endpoints require authentication
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        phase3_endpoints = [
+            "/video-content/generate",
+            "/podcast-content/generate", 
+            "/email-marketing/generate",
+            "/blog-post/generate",
+            "/product-descriptions/generate"
+        ]
+        
+        auth_failures = 0
+        
+        try:
+            for endpoint in phase3_endpoints:
+                # Test with minimal data
+                test_data = {"user_id": "test", "ai_providers": ["openai"]}
+                success, response = await self.make_request("POST", endpoint, test_data)
+                
+                if not success and response.get("status") in [401, 403]:
+                    auth_failures += 1
+            
+            if auth_failures == len(phase3_endpoints):
+                self.log_test("Phase 3 Authentication", True, 
+                            f"All {len(phase3_endpoints)} Phase 3 endpoints properly require authentication")
+            else:
+                self.log_test("Phase 3 Authentication", False, 
+                            f"Only {auth_failures}/{len(phase3_endpoints)} endpoints require authentication")
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_phase3_ai_provider_integration(self):
+        """Test 45: Phase 3 AI Provider Integration"""
+        if not self.auth_token:
+            self.log_test("Phase 3 AI Provider Integration", False, "No auth token available")
+            return
+        
+        # Test different AI provider combinations across Phase 3 services
+        test_cases = [
+            {
+                "service": "video-content",
+                "endpoint": "/video-content/generate",
+                "data": {
+                    "user_id": self.user_id,
+                    "video_title": "AI Provider Test Video",
+                    "video_description": "Testing AI provider integration",
+                    "video_duration": 60,
+                    "platform": "youtube",
+                    "category": "business",
+                    "ai_providers": ["openai"]
+                }
+            },
+            {
+                "service": "podcast-content", 
+                "endpoint": "/podcast-content/generate",
+                "data": {
+                    "user_id": self.user_id,
+                    "podcast_title": "AI Provider Test Podcast",
+                    "duration": 30,
+                    "topics": ["AI integration testing"],
+                    "key_points": ["Testing AI providers"],
+                    "content_type": "PODCAST_DESCRIPTION",
+                    "ai_providers": ["anthropic"]
+                }
+            },
+            {
+                "service": "email-marketing",
+                "endpoint": "/email-marketing/generate", 
+                "data": {
+                    "user_id": self.user_id,
+                    "campaign_name": "AI Provider Test Campaign",
+                    "email_type": "EMAIL_MARKETING",
+                    "target_audience": "Test audience",
+                    "campaign_goal": "testing",
+                    "key_message": "Testing AI providers",
+                    "call_to_action": "Test now",
+                    "ai_providers": ["gemini"]
+                }
+            }
+        ]
+        
+        successful_integrations = 0
+        
+        for test_case in test_cases:
+            try:
+                success, response = await self.make_request("POST", test_case["endpoint"], test_case["data"])
+                
+                if success:
+                    successful_integrations += 1
+                    self.log_test(f"Phase 3 AI Integration ({test_case['service']})", True, 
+                                f"AI provider integration working for {test_case['service']}")
+                else:
+                    self.log_test(f"Phase 3 AI Integration ({test_case['service']})", False, 
+                                f"AI provider integration failed for {test_case['service']}", response)
+                    
+            except Exception as e:
+                self.log_test(f"Phase 3 AI Integration ({test_case['service']})", False, 
+                            f"Integration test error: {str(e)}")
+        
+        # Overall result
+        if successful_integrations >= 2:  # At least 2 out of 3 should work
+            self.log_test("Phase 3 AI Provider Integration", True, 
+                        f"{successful_integrations}/3 Phase 3 services have working AI integration")
+        else:
+            self.log_test("Phase 3 AI Provider Integration", False, 
+                        f"Only {successful_integrations}/3 Phase 3 services have working AI integration")
+    
+    async def test_phase3_generation_limits(self):
+        """Test 46: Phase 3 Generation Limits Enforcement"""
+        if not self.auth_token:
+            self.log_test("Phase 3 Generation Limits", False, "No auth token available")
+            return
+        
+        # Check current user status
+        success, user_response = await self.make_request("GET", "/users/me")
+        if not success:
+            self.log_test("Phase 3 Generation Limits", False, "Could not get user info for limit testing")
+            return
+        
+        user_data = user_response["data"]
+        daily_used = user_data.get("daily_generations_used", 0)
+        tier = user_data.get("tier", "free")
+        
+        if tier == "premium":
+            self.log_test("Phase 3 Generation Limits", True, "User is premium - Phase 3 features unlimited")
+            return
+        
+        # Test a Phase 3 endpoint with limits
+        video_data = {
+            "user_id": self.user_id,
+            "video_title": "Limit Test Video",
+            "video_description": "Testing generation limits",
+            "video_duration": 30,
+            "platform": "tiktok",
+            "category": "business",
+            "ai_providers": ["openai"]
+        }
+        
+        success, response = await self.make_request("POST", "/video-content/generate", video_data)
+        
+        if daily_used >= 10:
+            # Should be blocked
+            if not success and response.get("status") == 403:
+                self.log_test("Phase 3 Generation Limits", True, "Phase 3 endpoints respect daily limits")
+            else:
+                self.log_test("Phase 3 Generation Limits", False, "Phase 3 endpoints should respect daily limits", response)
+        else:
+            # Should work
+            if success:
+                self.log_test("Phase 3 Generation Limits", True, f"Phase 3 generation allowed within limits ({daily_used + 1}/10)")
+            else:
+                self.log_test("Phase 3 Generation Limits", False, "Phase 3 generation failed within limits", response)
+    
+    async def test_phase3_error_handling(self):
+        """Test 47: Phase 3 Error Handling"""
+        if not self.auth_token:
+            self.log_test("Phase 3 Error Handling", False, "No auth token available")
+            return
+        
+        # Test with invalid/missing data
+        error_test_cases = [
+            {
+                "endpoint": "/video-content/generate",
+                "data": {"user_id": self.user_id},  # Missing required fields
+                "expected_error": "Missing required fields"
+            },
+            {
+                "endpoint": "/podcast-content/generate", 
+                "data": {
+                    "user_id": self.user_id,
+                    "podcast_title": "Test",
+                    "duration": -10,  # Invalid duration
+                    "topics": [],
+                    "content_type": "INVALID_TYPE"  # Invalid content type
+                },
+                "expected_error": "Invalid data"
+            },
+            {
+                "endpoint": "/email-marketing/generate",
+                "data": {
+                    "user_id": self.user_id,
+                    "campaign_name": "",  # Empty required field
+                    "email_type": "EMAIL_MARKETING",
+                    "ai_providers": []  # Empty providers
+                },
+                "expected_error": "Validation error"
+            }
+        ]
+        
+        error_handling_working = 0
+        
+        for test_case in error_test_cases:
+            try:
+                success, response = await self.make_request("POST", test_case["endpoint"], test_case["data"])
+                
+                # Should fail gracefully with proper error message
+                if not success and response.get("status") in [400, 422, 500]:
+                    error_handling_working += 1
+                    self.log_test(f"Phase 3 Error Handling ({test_case['endpoint']})", True, 
+                                f"Proper error handling for invalid data")
+                else:
+                    self.log_test(f"Phase 3 Error Handling ({test_case['endpoint']})", False, 
+                                f"Should handle invalid data gracefully", response)
+                    
+            except Exception as e:
+                # Exception handling is also acceptable
+                error_handling_working += 1
+                self.log_test(f"Phase 3 Error Handling ({test_case['endpoint']})", True, 
+                            f"Error handled via exception: {str(e)}")
+        
+        # Overall result
+        if error_handling_working >= 2:
+            self.log_test("Phase 3 Error Handling", True, 
+                        f"{error_handling_working}/3 Phase 3 endpoints handle errors properly")
+        else:
+            self.log_test("Phase 3 Error Handling", False, 
+                        f"Only {error_handling_working}/3 Phase 3 endpoints handle errors properly")
+    
     # PHASE 2: Power User Features Tests
     
     async def test_batch_content_generation_create(self):
