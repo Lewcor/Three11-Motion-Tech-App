@@ -2222,6 +2222,128 @@ async def get_product_analytics(
     """Get product description analytics"""
     return await product_description_service.get_product_analytics(current_user.id)
 
+# PHASE 3: Content Type Expansion API Endpoints (Matching Review Request Paths)
+
+@api_router.post("/video-content/generate", response_model=VideoCaptionResult)
+async def generate_video_content(
+    request: VideoCaptionRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate video captions and subtitles"""
+    await check_generation_limit(current_user)
+    
+    try:
+        request.user_id = current_user.id
+        result = await video_content_service.generate_video_captions(request)
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error generating video content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate video content")
+
+@api_router.post("/podcast-content/generate", response_model=PodcastContentResult)
+async def generate_podcast_content_alt(
+    request: PodcastContentRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate podcast descriptions and show notes"""
+    await check_generation_limit(current_user)
+    
+    try:
+        request.user_id = current_user.id
+        result = await podcast_content_service.generate_podcast_content(request)
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error generating podcast content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate podcast content")
+
+@api_router.post("/email-marketing/generate", response_model=EmailContentResult)
+async def generate_email_marketing_content(
+    request: EmailContentRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate email marketing campaigns"""
+    await check_generation_limit(current_user)
+    
+    try:
+        request.user_id = current_user.id
+        result = await email_marketing_service.generate_email_content(request)
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error generating email marketing content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate email marketing content")
+
+@api_router.post("/blog-post/generate", response_model=BlogPostResult)
+async def generate_blog_post_content(
+    request: BlogPostRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate SEO-optimized blog posts"""
+    await check_generation_limit(current_user)
+    
+    try:
+        request.user_id = current_user.id
+        result = await blog_post_service.generate_blog_post(request)
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error generating blog post: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate blog post")
+
+@api_router.post("/product-descriptions/generate", response_model=ProductDescriptionResult)
+async def generate_product_descriptions_content(
+    request: ProductDescriptionRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate e-commerce product descriptions"""
+    await check_generation_limit(current_user)
+    
+    try:
+        request.user_id = current_user.id
+        result = await product_description_service.generate_product_description(request)
+        
+        # Update user generation count
+        db = get_database()
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$inc": {"daily_generations_used": 1}}
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error generating product descriptions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate product descriptions")
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
