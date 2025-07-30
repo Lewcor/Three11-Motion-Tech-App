@@ -1527,6 +1527,23 @@ class BackendTester:
         else:
             print("  ❌ Competitor Security: Issues with competitor analysis authentication")
         
+        # Advanced AI Provider Functionality
+        ai_provider_tests = ["AI Providers List", "AI Provider Details", "AI Provider Availability", 
+                           "Enhanced Content Generation", "Latest AI Models Verification", "Provider Capabilities Structure"]
+        ai_provider_working = all(self.test_results.get(test, {}).get("success", False) for test in ai_provider_tests)
+        if ai_provider_working:
+            print("  ✅ Advanced AI Providers: All provider functionality working with latest models")
+        else:
+            ai_provider_failed = [test for test in ai_provider_tests if not self.test_results.get(test, {}).get("success", False)]
+            print(f"  ❌ Advanced AI Providers: Issues with provider functionality - Failed: {ai_provider_failed}")
+        
+        # Latest AI Models
+        models_test = self.test_results.get("Latest AI Models Verification", {})
+        if models_test.get("success"):
+            print("  ✅ Latest AI Models: All providers using latest models (gpt-4o, claude-3-5-sonnet-20241022, gemini-2.0-flash-exp, sonar-pro)")
+        else:
+            print("  ❌ Latest AI Models: Some providers not using latest model versions")
+        
         print("\n" + "=" * 60)
 
 async def main():
