@@ -250,6 +250,38 @@ Hashtags:"""
         
         return results
     
+    def get_provider_info(self, provider: AIProvider = None) -> Dict:
+        """Get information about AI providers"""
+        if provider:
+            return self.provider_capabilities.get(provider, {})
+        return self.provider_capabilities
+    
+    def get_available_providers(self) -> List[Dict]:
+        """Get list of available AI providers with their capabilities"""
+        available = []
+        
+        for provider in AIProvider:
+            # Check if API key is available
+            is_available = True
+            if provider == AIProvider.OPENAI and not self.openai_key:
+                is_available = False
+            elif provider == AIProvider.ANTHROPIC and not self.anthropic_key:
+                is_available = False
+            elif provider == AIProvider.GEMINI and not self.gemini_key:
+                is_available = False
+            elif provider == AIProvider.PERPLEXITY and not self.perplexity_key:
+                is_available = False
+            
+            provider_info = self.provider_capabilities.get(provider, {})
+            available.append({
+                "provider": provider.value,
+                "available": is_available,
+                "model": self.model_versions.get(provider, ""),
+                **provider_info
+            })
+        
+        return available
+    
     async def generate_content(self, prompt: str, provider: str = "openai", max_tokens: int = 2000) -> str:
         """Generic content generation method for competitor analysis and other services"""
         try:
