@@ -195,6 +195,16 @@ const MobileNavbar = () => {
                             ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                             : item.badge === 'INSIGHTS'
                             ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                            : item.badge === 'CAPTIONS'
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
+                            : item.badge === 'NOTES'
+                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white'
+                            : item.badge === 'CAMPAIGNS'
+                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                            : item.badge === 'SEO'
+                            ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
+                            : item.badge === 'E-COMMERCE'
+                            ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
