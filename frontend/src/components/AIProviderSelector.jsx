@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Switch } from './ui/switch';
-import { Tooltip } from './ui/tooltip';
 import { Progress } from './ui/progress';
 import { Sparkles, Zap, Brain, Search, Clock, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import { toast } from 'sonner';
