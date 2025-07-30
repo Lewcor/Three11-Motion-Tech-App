@@ -20,6 +20,7 @@ const GeneratorPage = () => {
   const [activeTab, setActiveTab] = useState('captions');
   const [isFreemium, setIsFreemium] = useState(true);
   const [user, setUser] = useState(null);
+  const [selectedProviders, setSelectedProviders] = useState([]);
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
