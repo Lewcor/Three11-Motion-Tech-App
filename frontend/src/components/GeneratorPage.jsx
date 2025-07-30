@@ -23,17 +23,25 @@ const GeneratorPage = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
 
-  // Mock user for demo (in production, get from auth context)
+  // Check for demo mode or regular auth
   useEffect(() => {
-    const mockUser = {
-      id: 'demo-user-123',
-      email: 'demo@example.com',
-      name: 'Demo User',
-      tier: 'free',
-      daily_generations_used: 3,
-      total_generations: 47
-    };
-    setUser(mockUser);
+    const isDemoMode = localStorage.getItem('isDemoMode');
+    const storedUser = localStorage.getItem('user');
+    
+    if (isDemoMode === 'true') {
+      const demoUser = {
+        id: 'demo-user-12345',
+        email: 'demo@three11motion.com',
+        name: 'Demo User',
+        tier: 'demo',
+        daily_generations_used: 0,
+        daily_generation_limit: 5,
+        total_generations: 0
+      };
+      setUser(demoUser);
+    } else if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const handleGenerate = async () => {
