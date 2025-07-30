@@ -121,6 +121,75 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              {/* PHASE 2: Power User Features */}
+              <Link to="/batch-generator">
+                <Button 
+                  variant={location.pathname === '/batch-generator' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Zap className="h-4 w-4 mr-1" />
+                  Batch
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                    POWER
+                  </Badge>
+                  {location.pathname === '/batch-generator' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/scheduler">
+                <Button 
+                  variant={location.pathname === '/scheduler' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  Schedule
+                  <Badge className="ml-1 bg-gradient-to-r from-blue-500 to-green-500 text-white text-xs">
+                    PLAN
+                  </Badge>
+                  {location.pathname === '/scheduler' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/templates">
+                <Button 
+                  variant={location.pathname === '/templates' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <BookOpen className="h-4 w-4 mr-1" />
+                  Templates
+                  <Badge className="ml-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                    PRO
+                  </Badge>
+                  {location.pathname === '/templates' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/analytics">
+                <Button 
+                  variant={location.pathname === '/analytics' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <BarChart3 className="h-4 w-4 mr-1" />
+                  Analytics
+                  <Badge className="ml-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs">
+                    INSIGHTS
+                  </Badge>
+                  {location.pathname === '/analytics' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-cyan-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/competitor-analysis">
                 <Button 
                   variant={location.pathname === '/competitor-analysis' ? 'default' : 'ghost'}
