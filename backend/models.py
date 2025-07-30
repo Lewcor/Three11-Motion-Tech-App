@@ -31,6 +31,7 @@ class AIProvider(str, Enum):
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     GEMINI = "gemini"
+    PERPLEXITY = "perplexity"  # Will be added when key is ready
 
 class ContentType(str, Enum):
     CAPTION = "caption"
