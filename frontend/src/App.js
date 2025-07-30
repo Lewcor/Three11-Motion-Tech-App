@@ -60,6 +60,12 @@ function App() {
             <Route path="/scheduler" element={<ContentScheduler />} />
             <Route path="/templates" element={<TemplateLibrary />} />
             <Route path="/analytics" element={<AdvancedAnalyticsDashboard />} />
+            {/* PHASE 3: Content Type Expansion */}
+            <Route path="/video-content" element={<VideoContentGenerator />} />
+            <Route path="/podcast-content" element={<PodcastContentGenerator />} />
+            <Route path="/email-marketing" element={<EmailMarketingStudio />} />
+            <Route path="/blog-generator" element={<BlogPostGenerator />} />
+            <Route path="/product-descriptions" element={<ProductDescriptionGenerator />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
