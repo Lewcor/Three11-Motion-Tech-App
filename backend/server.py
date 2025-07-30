@@ -2051,6 +2051,177 @@ async def create_competitor_benchmark(
         logger.error(f"Error creating competitor benchmark: {e}")
         raise HTTPException(status_code=500, detail="Failed to create benchmark")
 
+# PHASE 3: Content Type Expansion API Endpoints
+
+# Video Content Routes
+@api_router.post("/video/captions", response_model=VideoCaptionResult)
+async def generate_video_captions(
+    request: VideoCaptionRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate video captions and subtitles"""
+    if current_user.tier == UserTier.FREE:
+        # Count recent video generations
+        recent_videos = await video_content_service.get_user_video_captions(current_user.id, 30)
+        if len(recent_videos) >= 5:
+            raise HTTPException(status_code=403, detail="Free users limited to 5 video captions per month. Upgrade to Premium for unlimited access.")
+    
+    try:
+        request.user_id = current_user.id
+        result = await video_content_service.generate_video_captions(request)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating video captions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate video captions")
+
+@api_router.get("/video/captions", response_model=List[VideoCaptionResult])
+async def get_user_video_captions(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20
+):
+    """Get user's video caption history"""
+    return await video_content_service.get_user_video_captions(current_user.id, limit)
+
+# Podcast Content Routes
+@api_router.post("/podcast/content", response_model=PodcastContentResult)
+async def generate_podcast_content(
+    request: PodcastContentRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate podcast descriptions and show notes"""
+    if current_user.tier == UserTier.FREE:
+        recent_podcasts = await podcast_content_service.get_user_podcast_content(current_user.id, 30)
+        if len(recent_podcasts) >= 3:
+            raise HTTPException(status_code=403, detail="Free users limited to 3 podcast contents per month. Upgrade to Premium for unlimited access.")
+    
+    try:
+        request.user_id = current_user.id
+        result = await podcast_content_service.generate_podcast_content(request)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating podcast content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate podcast content")
+
+@api_router.get("/podcast/content", response_model=List[PodcastContentResult])
+async def get_user_podcast_content(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20
+):
+    """Get user's podcast content history"""
+    return await podcast_content_service.get_user_podcast_content(current_user.id, limit)
+
+@api_router.get("/podcast/analytics")
+async def get_podcast_analytics(
+    current_user: User = Depends(get_current_user)
+):
+    """Get podcast content analytics"""
+    return await podcast_content_service.get_podcast_analytics(current_user.id)
+
+# Email Marketing Routes
+@api_router.post("/email/content", response_model=EmailContentResult)
+async def generate_email_content(
+    request: EmailContentRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate email marketing content"""
+    if current_user.tier == UserTier.FREE:
+        recent_emails = await email_marketing_service.get_user_email_campaigns(current_user.id, 30)
+        if len(recent_emails) >= 5:
+            raise HTTPException(status_code=403, detail="Free users limited to 5 email campaigns per month. Upgrade to Premium for unlimited access.")
+    
+    try:
+        request.user_id = current_user.id
+        result = await email_marketing_service.generate_email_content(request)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating email content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate email content")
+
+@api_router.get("/email/campaigns", response_model=List[EmailContentResult])
+async def get_user_email_campaigns(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20
+):
+    """Get user's email campaign history"""
+    return await email_marketing_service.get_user_email_campaigns(current_user.id, limit)
+
+@api_router.get("/email/analytics")
+async def get_email_analytics(
+    current_user: User = Depends(get_current_user)
+):
+    """Get email marketing analytics"""
+    return await email_marketing_service.get_email_analytics(current_user.id)
+
+# Blog Post Routes
+@api_router.post("/blog/post", response_model=BlogPostResult)
+async def generate_blog_post(
+    request: BlogPostRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate SEO-optimized blog post"""
+    if current_user.tier == UserTier.FREE:
+        recent_blogs = await blog_post_service.get_user_blog_posts(current_user.id, 30)
+        if len(recent_blogs) >= 3:
+            raise HTTPException(status_code=403, detail="Free users limited to 3 blog posts per month. Upgrade to Premium for unlimited access.")
+    
+    try:
+        request.user_id = current_user.id
+        result = await blog_post_service.generate_blog_post(request)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating blog post: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate blog post")
+
+@api_router.get("/blog/posts", response_model=List[BlogPostResult])
+async def get_user_blog_posts(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20
+):
+    """Get user's blog post history"""
+    return await blog_post_service.get_user_blog_posts(current_user.id, limit)
+
+@api_router.get("/blog/analytics")
+async def get_blog_analytics(
+    current_user: User = Depends(get_current_user)
+):
+    """Get blog post analytics"""
+    return await blog_post_service.get_blog_analytics(current_user.id)
+
+# Product Description Routes
+@api_router.post("/product/description", response_model=ProductDescriptionResult)
+async def generate_product_description(
+    request: ProductDescriptionRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate product descriptions"""
+    if current_user.tier == UserTier.FREE:
+        recent_products = await product_description_service.get_user_products(current_user.id, 30)
+        if len(recent_products) >= 10:
+            raise HTTPException(status_code=403, detail="Free users limited to 10 product descriptions per month. Upgrade to Premium for unlimited access.")
+    
+    try:
+        request.user_id = current_user.id
+        result = await product_description_service.generate_product_description(request)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating product description: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate product description")
+
+@api_router.get("/product/descriptions", response_model=List[ProductDescriptionResult])
+async def get_user_product_descriptions(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20
+):
+    """Get user's product description history"""
+    return await product_description_service.get_user_products(current_user.id, limit)
+
+@api_router.get("/product/analytics")
+async def get_product_analytics(
+    current_user: User = Depends(get_current_user)
+):
+    """Get product description analytics"""
+    return await product_description_service.get_product_analytics(current_user.id)
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
