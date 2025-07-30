@@ -2734,7 +2734,19 @@ class BackendTester:
         await self.test_ai_provider_availability()
         await self.test_enhanced_content_generation_with_providers()
         await self.test_latest_ai_models_verification()
-        await self.test_provider_capabilities_structure()
+        
+        # PHASE 3: Content Type Expansion Tests
+        print("\n🎬 PHASE 3: CONTENT TYPE EXPANSION TESTS")
+        print("-" * 40)
+        await self.test_video_content_generation()
+        await self.test_podcast_content_generation()
+        await self.test_email_marketing_generation()
+        await self.test_blog_post_generation()
+        await self.test_product_description_generation()
+        await self.test_phase3_authentication_requirements()
+        await self.test_phase3_ai_provider_integration()
+        await self.test_phase3_generation_limits()
+        await self.test_phase3_error_handling()
         
         # Print summary
         self.print_summary()
