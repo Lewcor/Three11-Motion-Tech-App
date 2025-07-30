@@ -1735,6 +1735,316 @@ async def get_user_competitors(
 async def root():
     return {"message": "THREE11 MOTION TECH - Complete Content Creation Suite API"}
 
+# PHASE 2: Power User Features API Endpoints
+
+# Batch Content Generation Routes
+@api_router.post("/batch/generate", response_model=BatchGenerationResult)
+async def create_batch_generation(
+    request: BatchGenerationRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a batch content generation job"""
+    # Check generation limits for batch operations
+    if current_user.tier == UserTier.FREE:
+        total_items = len(request.content_descriptions)
+        if total_items > 10:
+            raise HTTPException(status_code=403, detail="Free users limited to 10 items per batch. Upgrade to Premium for unlimited batch generation.")
+        
+        # Check daily limit
+        if current_user.daily_generations_used + total_items > 10:
+            raise HTTPException(status_code=403, detail="Batch would exceed daily generation limit. Upgrade to Premium for unlimited generations.")
+    
+    try:
+        request.user_id = current_user.id
+        batch_result = await batch_content_service.create_batch_generation(request)
+        return batch_result
+    except Exception as e:
+        logger.error(f"Error creating batch generation: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create batch generation")
+
+@api_router.get("/batch/{batch_id}", response_model=BatchGenerationResult)
+async def get_batch_status(
+    batch_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get batch generation status"""
+    batch_result = await batch_content_service.get_batch_status(batch_id, current_user.id)
+    if not batch_result:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    return batch_result
+
+@api_router.get("/batch", response_model=List[BatchGenerationResult])
+async def get_user_batches(
+    current_user: User = Depends(get_current_user),
+    limit: int = 20,
+    skip: int = 0
+):
+    """Get user's batch generation history"""
+    return await batch_content_service.get_user_batches(current_user.id, limit, skip)
+
+@api_router.post("/batch/{batch_id}/cancel")
+async def cancel_batch(
+    batch_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Cancel a batch generation job"""
+    success = await batch_content_service.cancel_batch(batch_id, current_user.id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Batch not found or cannot be cancelled")
+    return {"message": "Batch cancelled successfully"}
+
+# Content Scheduling Routes
+@api_router.post("/schedule", response_model=ScheduledContent)
+async def schedule_content(
+    user_id: str = Form(...),
+    generation_result_id: str = Form(...),
+    platform: Platform = Form(...),
+    scheduled_time: datetime = Form(...),
+    auto_post: bool = Form(False),
+    notes: Optional[str] = Form(None),
+    current_user: User = Depends(get_current_user)
+):
+    """Schedule content for posting"""
+    if current_user.tier == UserTier.FREE:
+        # Count existing scheduled posts
+        scheduled_posts = await content_scheduling_service.get_scheduled_content(current_user.id)
+        if len(scheduled_posts) >= 5:
+            raise HTTPException(status_code=403, detail="Free users limited to 5 scheduled posts. Upgrade to Premium for unlimited scheduling.")
+    
+    try:
+        scheduled_content = await content_scheduling_service.schedule_content(
+            user_id=current_user.id,
+            generation_result_id=generation_result_id,
+            platform=platform,
+            scheduled_time=scheduled_time,
+            auto_post=auto_post,
+            notes=notes
+        )
+        return scheduled_content
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error scheduling content: {e}")
+        raise HTTPException(status_code=500, detail="Failed to schedule content")
+
+@api_router.get("/schedule", response_model=List[ScheduledContent])
+async def get_scheduled_content(
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Get user's scheduled content"""
+    return await content_scheduling_service.get_scheduled_content(current_user.id, start_date, end_date)
+
+@api_router.get("/schedule/calendar")
+async def get_calendar_overview(
+    days_ahead: int = 30,
+    current_user: User = Depends(get_current_user)
+):
+    """Get calendar overview with statistics"""
+    return await content_scheduling_service.get_calendar_overview(current_user.id, days_ahead)
+
+@api_router.put("/schedule/{scheduled_id}")
+async def update_scheduled_content(
+    scheduled_id: str,
+    scheduled_time: Optional[datetime] = None,
+    auto_post: Optional[bool] = None,
+    notes: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Update scheduled content"""
+    success = await content_scheduling_service.update_scheduled_content(
+        scheduled_id, current_user.id, scheduled_time, auto_post, notes
+    )
+    if not success:
+        raise HTTPException(status_code=404, detail="Scheduled content not found")
+    return {"message": "Scheduled content updated successfully"}
+
+@api_router.delete("/schedule/{scheduled_id}")
+async def cancel_scheduled_content(
+    scheduled_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Cancel scheduled content"""
+    success = await content_scheduling_service.cancel_scheduled_content(scheduled_id, current_user.id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Scheduled content not found")
+    return {"message": "Scheduled content cancelled successfully"}
+
+# Template Library Routes
+@api_router.get("/templates", response_model=List[ContentTemplate])
+async def get_templates(
+    category: Optional[ContentCategory] = None,
+    platform: Optional[Platform] = None,
+    template_type: Optional[str] = None,
+    include_premium: bool = True,
+    current_user: User = Depends(get_current_user)
+):
+    """Get content templates"""
+    # Free users can't access premium templates
+    if current_user.tier == UserTier.FREE:
+        include_premium = False
+    
+    return await template_library_service.get_templates(
+        category=category,
+        platform=platform,
+        template_type=template_type,
+        user_id=current_user.id,
+        include_premium=include_premium
+    )
+
+@api_router.get("/templates/{template_id}", response_model=ContentTemplate)
+async def get_template(
+    template_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get a specific template"""
+    template = await template_library_service.get_template_by_id(template_id)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    # Check premium access
+    if template.is_premium and current_user.tier == UserTier.FREE:
+        raise HTTPException(status_code=403, detail="Premium template access requires upgrade")
+    
+    return template
+
+@api_router.post("/templates/use/{template_id}")
+async def use_template(
+    template_id: str,
+    placeholders: Dict[str, str],
+    current_user: User = Depends(get_current_user)
+):
+    """Use a template by filling in placeholders"""
+    try:
+        content = await template_library_service.use_template(template_id, placeholders)
+        return {"content": content}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error using template: {e}")
+        raise HTTPException(status_code=500, detail="Failed to use template")
+
+@api_router.post("/templates/suggestions")
+async def get_template_suggestions(
+    category: ContentCategory,
+    platform: Platform,
+    content_description: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get AI-powered template suggestions"""
+    try:
+        suggestions = await template_library_service.generate_template_suggestions(
+            category, platform, content_description
+        )
+        return {"suggestions": suggestions}
+    except Exception as e:
+        logger.error(f"Error generating template suggestions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate suggestions")
+
+@api_router.post("/templates", response_model=ContentTemplate)
+async def create_custom_template(
+    template: ContentTemplate,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a custom template"""
+    if current_user.tier == UserTier.FREE:
+        # Count user's custom templates
+        user_templates = await template_library_service.get_templates(user_id=current_user.id)
+        custom_templates = [t for t in user_templates if t.created_by == current_user.id]
+        if len(custom_templates) >= 3:
+            raise HTTPException(status_code=403, detail="Free users limited to 3 custom templates. Upgrade to Premium for unlimited templates.")
+    
+    try:
+        return await template_library_service.create_custom_template(current_user.id, template)
+    except Exception as e:
+        logger.error(f"Error creating custom template: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create template")
+
+# Advanced Analytics Routes
+@api_router.get("/analytics/dashboard", response_model=AnalyticsDashboard)
+async def get_analytics_dashboard(
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Get comprehensive analytics dashboard"""
+    try:
+        dashboard = await advanced_analytics_service.generate_analytics_dashboard(
+            current_user.id, start_date, end_date
+        )
+        return dashboard
+    except Exception as e:
+        logger.error(f"Error generating analytics dashboard: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate analytics")
+
+@api_router.get("/analytics/insights")
+async def get_content_insights(
+    limit: int = 10,
+    current_user: User = Depends(get_current_user)
+):
+    """Get AI-powered content insights"""
+    try:
+        insights = await advanced_analytics_service.get_content_insights(current_user.id, limit)
+        return insights
+    except Exception as e:
+        logger.error(f"Error generating insights: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate insights")
+
+@api_router.post("/analytics/performance", response_model=ContentPerformance)
+async def create_performance_record(
+    generation_result_id: str,
+    platform: Platform,
+    post_url: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a performance tracking record"""
+    try:
+        performance = await advanced_analytics_service.create_performance_record(
+            current_user.id, generation_result_id, platform, post_url
+        )
+        return performance
+    except Exception as e:
+        logger.error(f"Error creating performance record: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create performance record")
+
+@api_router.put("/analytics/performance/{performance_id}")
+async def update_performance_metrics(
+    performance_id: str,
+    views: Optional[int] = None,
+    likes: Optional[int] = None,
+    comments: Optional[int] = None,
+    shares: Optional[int] = None,
+    reach: Optional[int] = None,
+    impressions: Optional[int] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Update performance metrics"""
+    success = await advanced_analytics_service.update_performance_metrics(
+        performance_id, current_user.id, views, likes, comments, shares, reach, impressions
+    )
+    if not success:
+        raise HTTPException(status_code=404, detail="Performance record not found")
+    return {"message": "Performance metrics updated successfully"}
+
+@api_router.post("/analytics/competitor-benchmark", response_model=CompetitorBenchmark)
+async def create_competitor_benchmark(
+    competitor_name: str,
+    platform: Platform,
+    category: ContentCategory,
+    competitor_avg_engagement: float,
+    current_user: User = Depends(get_current_user)
+):
+    """Create competitor benchmark analysis"""
+    try:
+        benchmark = await advanced_analytics_service.create_competitor_benchmark(
+            current_user.id, competitor_name, platform, category, competitor_avg_engagement
+        )
+        return benchmark
+    except Exception as e:
+        logger.error(f"Error creating competitor benchmark: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create benchmark")
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
