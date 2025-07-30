@@ -212,7 +212,7 @@ const GeneratorPage = () => {
               />
               <Button 
                 onClick={handleGenerate}
-                disabled={loading || !selectedCategory || !selectedPlatform || !userInput.trim()}
+                disabled={loading || !selectedCategory || !selectedPlatform || !userInput.trim() || selectedProviders.length === 0}
                 className="mt-4 w-full"
               >
                 {loading ? (
