@@ -82,21 +82,30 @@ class AIService:
                 api_key=self.openai_key,
                 session_id=session_id,
                 system_message=system_message
-            ).with_model("openai", "gpt-4o").with_max_tokens(300)
+            ).with_model("openai", "gpt-4o").with_max_tokens(400)  # Latest GPT-4o
             
         elif provider == AIProvider.ANTHROPIC:
             chat = LlmChat(
                 api_key=self.anthropic_key,
                 session_id=session_id,
                 system_message=system_message
-            ).with_model("anthropic", "claude-3-5-sonnet-20241022").with_max_tokens(300)
+            ).with_model("anthropic", "claude-3-5-sonnet-20241022").with_max_tokens(400)  # Latest Claude 3.5 Sonnet
             
         elif provider == AIProvider.GEMINI:
             chat = LlmChat(
                 api_key=self.gemini_key,
                 session_id=session_id,
                 system_message=system_message
-            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(300)
+            ).with_model("gemini", "gemini-2.0-flash-exp").with_max_tokens(400)  # Latest Gemini 2.0 Flash Experimental
+            
+        elif provider == AIProvider.PERPLEXITY:
+            if not self.perplexity_key:
+                raise ValueError("Perplexity API key not configured")
+            chat = LlmChat(
+                api_key=self.perplexity_key,
+                session_id=session_id,
+                system_message=system_message + " Use current web data for trending and relevant content."
+            ).with_model("perplexity", "sonar-pro").with_max_tokens(400)  # Real-time web search
             
         else:
             raise ValueError(f"Unsupported AI provider: {provider}")
