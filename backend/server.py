@@ -237,7 +237,7 @@ async def generate_content(
             category=request.category,
             platform=request.platform,
             content_description=request.content_description,
-            providers=request.ai_providers
+            selected_providers=request.ai_providers
         )
         
         # Create generation result
