@@ -328,6 +328,58 @@ async def get_user_generations(
     
     return results
 
+# AI Provider Information Routes
+@api_router.get("/ai/providers")
+async def get_ai_providers():
+    """Get information about available AI providers"""
+    try:
+        providers = ai_service.get_available_providers()
+        return {
+            "providers": providers,
+            "total_providers": len(providers),
+            "available_providers": len([p for p in providers if p["available"]])
+        }
+    except Exception as e:
+        logger.error(f"Error getting AI provider info: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get provider information")
+
+@api_router.get("/ai/providers/{provider}")
+async def get_ai_provider_info(provider: str):
+    """Get detailed information about a specific AI provider"""
+    try:
+        # Validate provider
+        try:
+            ai_provider = AIProvider(provider)
+        except ValueError:
+            raise HTTPException(status_code=404, detail=f"Provider '{provider}' not found")
+        
+        provider_info = ai_service.get_provider_info(ai_provider)
+        if not provider_info:
+            raise HTTPException(status_code=404, detail=f"Provider '{provider}' not found")
+        
+        # Check if provider is available
+        is_available = True
+        if ai_provider == AIProvider.OPENAI and not ai_service.openai_key:
+            is_available = False
+        elif ai_provider == AIProvider.ANTHROPIC and not ai_service.anthropic_key:
+            is_available = False
+        elif ai_provider == AIProvider.GEMINI and not ai_service.gemini_key:
+            is_available = False
+        elif ai_provider == AIProvider.PERPLEXITY and not ai_service.perplexity_key:
+            is_available = False
+        
+        return {
+            "provider": provider,
+            "available": is_available,
+            "model": ai_service.model_versions.get(ai_provider, ""),
+            **provider_info
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting provider info for {provider}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get provider information")
+
 # Premium Routes
 @api_router.get("/premium/packs", response_model=List[PremiumPack])
 async def get_premium_packs():
