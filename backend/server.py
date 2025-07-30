@@ -26,6 +26,12 @@ from batch_content_service import batch_content_service
 from content_scheduling_service import content_scheduling_service
 from template_library_service import template_library_service
 from advanced_analytics_service import advanced_analytics_service
+# PHASE 3: Content Type Expansion Services
+from video_content_service import video_content_service
+from podcast_content_service import podcast_content_service
+from email_marketing_service import email_marketing_service
+from blog_post_service import blog_post_service
+from product_description_service import product_description_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
