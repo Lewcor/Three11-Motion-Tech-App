@@ -17,6 +17,12 @@ import BatchContentGenerator from './components/BatchContentGenerator';
 import ContentScheduler from './components/ContentScheduler';
 import TemplateLibrary from './components/TemplateLibrary';
 import AdvancedAnalyticsDashboard from './components/AdvancedAnalyticsDashboard';
+// PHASE 3: Content Type Expansion
+import VideoContentGenerator from './components/VideoContentGenerator';
+import PodcastContentGenerator from './components/PodcastContentGenerator';
+import EmailMarketingStudio from './components/EmailMarketingStudio';
+import BlogPostGenerator from './components/BlogPostGenerator';
+import ProductDescriptionGenerator from './components/ProductDescriptionGenerator';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
