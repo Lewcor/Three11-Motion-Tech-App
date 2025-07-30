@@ -123,6 +123,128 @@ class GenerationResultResponse(BaseModel):
     combined_result: str
     created_at: datetime
 
+# PHASE 2: Power User Features Models
+
+# Batch Content Generation Models
+class BatchGenerationRequest(BaseModel):
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    content_descriptions: List[str]  # Multiple content descriptions
+    ai_providers: List[AIProvider] = [AIProvider.OPENAI, AIProvider.ANTHROPIC, AIProvider.GEMINI]
+    template_id: Optional[str] = None
+    batch_name: Optional[str] = None
+
+class BatchGenerationResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    batch_name: Optional[str] = None
+    category: ContentCategory
+    platform: Platform
+    total_items: int
+    completed_items: int = 0
+    failed_items: int = 0
+    status: str = "pending"  # pending, processing, completed, failed
+    results: List[GenerationResult] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: Optional[datetime] = None
+    estimated_completion: Optional[datetime] = None
+
+# Content Scheduling Models
+class ScheduledContent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    generation_result_id: str
+    platform: Platform
+    scheduled_time: datetime
+    status: str = "scheduled"  # scheduled, posted, failed, cancelled
+    post_url: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    posted_at: Optional[datetime] = None
+    auto_post: bool = False
+    notes: Optional[str] = None
+
+class ContentCalendar(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    description: Optional[str] = None
+    scheduled_posts: List[ScheduledContent] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Content Templates Models
+class ContentTemplate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str
+    category: ContentCategory
+    platform: Platform
+    template_type: str  # "caption", "hooks", "cta", "story_arc"
+    template_content: str  # The actual template with placeholders
+    placeholders: List[str] = []  # List of placeholder names like {product_name}, {benefit}
+    example_output: str
+    usage_count: int = 0
+    is_premium: bool = False
+    created_by: str = "system"  # "system" or user_id
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    tags: List[str] = []
+
+class TemplateLibrary(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    templates: List[ContentTemplate] = []
+    is_shared: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Advanced Analytics Models
+class ContentPerformance(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    generation_result_id: str
+    platform: Platform
+    post_url: Optional[str] = None
+    views: int = 0
+    likes: int = 0
+    comments: int = 0
+    shares: int = 0
+    engagement_rate: float = 0.0
+    reach: int = 0
+    impressions: int = 0
+    click_through_rate: float = 0.0
+    conversion_rate: float = 0.0
+    revenue_generated: float = 0.0
+    posted_at: datetime
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+class AnalyticsDashboard(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    date_range_start: datetime
+    date_range_end: datetime
+    total_posts: int
+    total_views: int
+    total_engagement: int
+    avg_engagement_rate: float
+    best_performing_category: ContentCategory
+    best_performing_platform: Platform
+    growth_metrics: Dict[str, float]  # week_over_week, month_over_month
+    ai_provider_performance: Dict[str, Dict[str, float]]  # provider -> metrics
+    generated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CompetitorBenchmark(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    competitor_name: str
+    platform: Platform
+    category: ContentCategory
+    competitor_avg_engagement: float
+    user_avg_engagement: float
+    benchmark_score: float  # user performance vs competitor
+    insights: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Content Creation Models
 class ContentIdeaRequest(BaseModel):
     user_id: str
