@@ -40,6 +40,31 @@ const MobileNavbar = () => {
       icon: <Shuffle className="h-4 w-4" />,
       badge: 'AI'
     },
+    // PHASE 2: Power User Features
+    { 
+      path: '/batch-generator', 
+      name: 'Batch Generator', 
+      icon: <Zap className="h-4 w-4" />,
+      badge: 'POWER'
+    },
+    { 
+      path: '/scheduler', 
+      name: 'Content Scheduler', 
+      icon: <Calendar className="h-4 w-4" />,
+      badge: 'PLAN'
+    },
+    { 
+      path: '/templates', 
+      name: 'Template Library', 
+      icon: <BookOpen className="h-4 w-4" />,
+      badge: 'PRO'
+    },
+    { 
+      path: '/analytics', 
+      name: 'Advanced Analytics', 
+      icon: <BarChart3 className="h-4 w-4" />,
+      badge: 'INSIGHTS'
+    },
     { 
       path: '/competitor-analysis', 
       name: 'Competitor Analysis', 
