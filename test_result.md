@@ -609,7 +609,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Authentication Buttons Click Functionality - RESOLVED"
+    - "PHASE 3: Content Type Expansion - Navigation Integration"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
