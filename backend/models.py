@@ -45,7 +45,7 @@ class ContentType(str, Enum):
     TRENDING_TOPIC = "trending_topic"
     CONTENT_STRATEGY = "content_strategy"
 
-class ContentTemplate(str, Enum):
+class ContentTemplateType(str, Enum):
     EDUCATIONAL = "educational"
     ENTERTAINING = "entertaining"
     PROMOTIONAL = "promotional"
