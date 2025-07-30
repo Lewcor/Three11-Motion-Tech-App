@@ -190,6 +190,92 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              {/* PHASE 3: Content Type Expansion */}
+              <Link to="/video-content">
+                <Button 
+                  variant={location.pathname === '/video-content' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Video className="h-4 w-4 mr-1" />
+                  Video
+                  <Badge className="ml-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs">
+                    CAPTIONS
+                  </Badge>
+                  {location.pathname === '/video-content' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/podcast-content">
+                <Button 
+                  variant={location.pathname === '/podcast-content' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Headphones className="h-4 w-4 mr-1" />
+                  Podcast
+                  <Badge className="ml-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs">
+                    NOTES
+                  </Badge>
+                  {location.pathname === '/podcast-content' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/email-marketing">
+                <Button 
+                  variant={location.pathname === '/email-marketing' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Mail className="h-4 w-4 mr-1" />
+                  Email
+                  <Badge className="ml-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                    CAMPAIGNS
+                  </Badge>
+                  {location.pathname === '/email-marketing' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/blog-generator">
+                <Button 
+                  variant={location.pathname === '/blog-generator' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <PenTool className="h-4 w-4 mr-1" />
+                  Blog
+                  <Badge className="ml-1 bg-gradient-to-r from-green-500 to-blue-500 text-white text-xs">
+                    SEO
+                  </Badge>
+                  {location.pathname === '/blog-generator' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/product-descriptions">
+                <Button 
+                  variant={location.pathname === '/product-descriptions' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Package className="h-4 w-4 mr-1" />
+                  Products
+                  <Badge className="ml-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs">
+                    E-COMMERCE
+                  </Badge>
+                  {location.pathname === '/product-descriptions' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/competitor-analysis">
                 <Button 
                   variant={location.pathname === '/competitor-analysis' ? 'default' : 'ghost'}
