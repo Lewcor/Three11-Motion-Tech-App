@@ -1389,6 +1389,16 @@ class BackendTester:
         await self.test_competitor_analysis_authentication()
         await self.test_competitor_analysis_generation_limits()
         
+        # NEW: Advanced AI Provider Functionality Tests
+        print("\n🤖 ADVANCED AI PROVIDER FUNCTIONALITY TESTS")
+        print("-" * 40)
+        await self.test_ai_providers_list()
+        await self.test_ai_provider_details()
+        await self.test_ai_provider_availability()
+        await self.test_enhanced_content_generation_with_providers()
+        await self.test_latest_ai_models_verification()
+        await self.test_provider_capabilities_structure()
+        
         # Print summary
         self.print_summary()
     
