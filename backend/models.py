@@ -257,6 +257,202 @@ class CompetitorBenchmark(BaseModel):
     insights: List[str]
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+# PHASE 3: Content Type Expansion Models
+
+# Video Captions & Subtitles Models
+class VideoContent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    video_title: str
+    video_description: Optional[str] = None
+    video_duration: int  # in seconds
+    video_url: Optional[str] = None
+    platform: Platform
+    category: ContentCategory
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class VideoCaptionRequest(BaseModel):
+    user_id: str
+    video_title: str
+    video_description: str
+    video_duration: int  # in seconds
+    platform: Platform
+    category: ContentCategory
+    caption_style: str = "engaging"  # engaging, informative, storytelling, promotional
+    include_timestamps: bool = True
+    language: str = "en"
+    ai_providers: List[AIProvider] = [AIProvider.OPENAI, AIProvider.ANTHROPIC]
+
+class VideoCaptionResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    video_content_id: str
+    captions: List[Dict[str, Any]]  # [{"timestamp": "00:00", "text": "caption", "provider": "openai"}]
+    subtitle_file: Optional[str] = None  # SRT format
+    language: str
+    style: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Podcast Models
+class PodcastContent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    podcast_title: str
+    episode_number: Optional[int] = None
+    duration: int  # in minutes
+    topics: List[str]
+    guests: List[str] = []
+    key_points: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PodcastContentRequest(BaseModel):
+    user_id: str
+    podcast_title: str
+    episode_number: Optional[int] = None
+    duration: int  # in minutes
+    topics: List[str]
+    guests: List[str] = []
+    key_points: List[str] = []
+    content_type: ContentType  # PODCAST_DESCRIPTION or PODCAST_SHOW_NOTES
+    tone: str = "professional"  # professional, casual, educational, entertaining
+    include_timestamps: bool = True
+    ai_providers: List[AIProvider] = [AIProvider.ANTHROPIC, AIProvider.OPENAI]
+
+class PodcastContentResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    podcast_content_id: str
+    content_type: ContentType
+    description: Optional[str] = None
+    show_notes: Optional[str] = None
+    chapters: List[Dict[str, Any]] = []  # [{"timestamp": "12:30", "title": "Topic", "summary": "..."}]
+    key_quotes: List[str] = []
+    resources_mentioned: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Email Marketing Models
+class EmailCampaign(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    campaign_name: str
+    campaign_type: ContentType  # EMAIL_MARKETING, EMAIL_NEWSLETTER, EMAIL_SEQUENCE
+    target_audience: str
+    campaign_goal: str  # conversion, engagement, information, promotion
+    brand_voice: str = "professional"  # professional, friendly, casual, authoritative
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class EmailContentRequest(BaseModel):
+    user_id: str
+    campaign_name: str
+    email_type: ContentType  # EMAIL_MARKETING, EMAIL_NEWSLETTER, EMAIL_SEQUENCE
+    subject_line_ideas: int = 5
+    target_audience: str
+    campaign_goal: str  # conversion, engagement, information, promotion
+    key_message: str
+    call_to_action: str
+    brand_voice: str = "professional"
+    include_personalization: bool = True
+    email_length: str = "medium"  # short, medium, long
+    ai_providers: List[AIProvider] = [AIProvider.ANTHROPIC, AIProvider.OPENAI]
+
+class EmailContentResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    campaign_id: str
+    email_type: ContentType
+    subject_lines: List[str]
+    email_content: str
+    preview_text: str
+    personalization_tags: List[str] = []
+    a_b_variations: List[Dict[str, str]] = []  # [{"version": "A", "subject": "...", "content": "..."}]
+    estimated_read_time: int  # in minutes
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Blog Post & SEO Models
+class BlogPost(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    title: str
+    target_keywords: List[str]
+    word_count_target: int = 1500
+    audience: str
+    purpose: str  # inform, persuade, entertain, educate
+    tone: str = "professional"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class BlogPostRequest(BaseModel):
+    user_id: str
+    topic: str
+    target_keywords: List[str]
+    word_count_target: int = 1500
+    audience: str
+    purpose: str = "inform"  # inform, persuade, entertain, educate
+    tone: str = "professional"  # professional, casual, authoritative, conversational
+    include_outline: bool = True
+    include_meta_description: bool = True
+    include_social_snippets: bool = True
+    seo_focus: bool = True
+    ai_providers: List[AIProvider] = [AIProvider.ANTHROPIC, AIProvider.OPENAI]
+
+class BlogPostResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    blog_post_id: str
+    title: str
+    meta_description: str
+    outline: List[Dict[str, str]]  # [{"section": "Introduction", "points": ["point1", "point2"]}]
+    content: str
+    word_count: int
+    readability_score: Optional[float] = None
+    seo_score: Optional[float] = None
+    social_snippets: Dict[str, str] = {}  # {"twitter": "...", "linkedin": "...", "facebook": "..."}
+    suggested_images: List[str] = []
+    internal_link_suggestions: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Product Description & E-commerce Models
+class Product(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    product_name: str
+    category: str
+    price: Optional[float] = None
+    key_features: List[str]
+    target_audience: str
+    brand_style: str = "modern"  # modern, classic, playful, luxury, minimalist
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ProductDescriptionRequest(BaseModel):
+    user_id: str
+    product_name: str
+    category: str
+    price: Optional[float] = None
+    key_features: List[str]
+    benefits: List[str]
+    target_audience: str
+    brand_style: str = "modern"
+    description_length: str = "medium"  # short, medium, long
+    include_bullet_points: bool = True
+    include_specifications: bool = True
+    include_usage_instructions: bool = False
+    persuasion_style: str = "benefits_focused"  # benefits_focused, feature_focused, story_driven
+    ai_providers: List[AIProvider] = [AIProvider.ANTHROPIC, AIProvider.OPENAI]
+
+class ProductDescriptionResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    product_id: str
+    title: str
+    short_description: str  # For product listings
+    long_description: str  # For product pages
+    bullet_points: List[str]
+    specifications: Dict[str, str] = {}
+    usage_instructions: Optional[str] = None
+    seo_keywords: List[str] = []
+    marketing_angles: List[str] = []  # Different ways to position the product
+    cross_sell_suggestions: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Content Creation Models
 class ContentIdeaRequest(BaseModel):
     user_id: str
