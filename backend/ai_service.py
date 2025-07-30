@@ -257,7 +257,8 @@ Hashtags:"""
             provider_map = {
                 "openai": AIProvider.OPENAI,
                 "anthropic": AIProvider.ANTHROPIC,
-                "gemini": AIProvider.GEMINI
+                "gemini": AIProvider.GEMINI,
+                "perplexity": AIProvider.PERPLEXITY
             }
             
             if provider not in provider_map:
@@ -274,21 +275,30 @@ Hashtags:"""
                     api_key=self.openai_key,
                     session_id=session_id,
                     system_message=system_message
-                ).with_model("openai", "gpt-4o").with_max_tokens(max_tokens)
+                ).with_model("openai", "gpt-4o").with_max_tokens(max_tokens)  # Latest GPT-4o
                 
             elif ai_provider == AIProvider.ANTHROPIC:
                 chat = LlmChat(
                     api_key=self.anthropic_key,
                     session_id=session_id,
                     system_message=system_message
-                ).with_model("anthropic", "claude-3-5-sonnet-20241022").with_max_tokens(max_tokens)
+                ).with_model("anthropic", "claude-3-5-sonnet-20241022").with_max_tokens(max_tokens)  # Latest Claude 3.5 Sonnet
                 
             elif ai_provider == AIProvider.GEMINI:
                 chat = LlmChat(
                     api_key=self.gemini_key,
                     session_id=session_id,
                     system_message=system_message
-                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(max_tokens)
+                ).with_model("gemini", "gemini-2.0-flash-exp").with_max_tokens(max_tokens)  # Latest Gemini 2.0 Flash Experimental
+                
+            elif ai_provider == AIProvider.PERPLEXITY:
+                if not self.perplexity_key:
+                    raise ValueError("Perplexity API key not configured")
+                chat = LlmChat(
+                    api_key=self.perplexity_key,
+                    session_id=session_id,
+                    system_message=system_message + " Use current web data and real-time information for accurate insights."
+                ).with_model("perplexity", "sonar-pro").with_max_tokens(max_tokens)  # Real-time web search
             
             message = UserMessage(text=prompt)
             response = await chat.send_message(message)
