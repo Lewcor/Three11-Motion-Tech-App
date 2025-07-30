@@ -12,6 +12,11 @@ import TrendsAnalyzer from './components/TrendsAnalyzer';
 import ContentRemixEngine from './components/ContentRemixEngine';
 import CompetitorAnalysis from './components/CompetitorAnalysis';
 import AuthPage from './components/AuthPage';
+// PHASE 2: Power User Features
+import BatchContentGenerator from './components/BatchContentGenerator';
+import ContentScheduler from './components/ContentScheduler';
+import TemplateLibrary from './components/TemplateLibrary';
+import AdvancedAnalyticsDashboard from './components/AdvancedAnalyticsDashboard';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
