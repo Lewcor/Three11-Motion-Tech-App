@@ -65,6 +65,37 @@ const MobileNavbar = () => {
       icon: <BarChart3 className="h-4 w-4" />,
       badge: 'INSIGHTS'
     },
+    // PHASE 3: Content Type Expansion
+    { 
+      path: '/video-content', 
+      name: 'Video Content', 
+      icon: <Video className="h-4 w-4" />,
+      badge: 'CAPTIONS'
+    },
+    { 
+      path: '/podcast-content', 
+      name: 'Podcast Content', 
+      icon: <Headphones className="h-4 w-4" />,
+      badge: 'NOTES'
+    },
+    { 
+      path: '/email-marketing', 
+      name: 'Email Marketing', 
+      icon: <Mail className="h-4 w-4" />,
+      badge: 'CAMPAIGNS'
+    },
+    { 
+      path: '/blog-generator', 
+      name: 'Blog Generator', 
+      icon: <PenTool className="h-4 w-4" />,
+      badge: 'SEO'
+    },
+    { 
+      path: '/product-descriptions', 
+      name: 'Product Descriptions', 
+      icon: <Package className="h-4 w-4" />,
+      badge: 'E-COMMERCE'
+    },
     { 
       path: '/competitor-analysis', 
       name: 'Competitor Analysis', 
