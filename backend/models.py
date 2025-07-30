@@ -251,7 +251,7 @@ class ContentIdeaRequest(BaseModel):
     category: ContentCategory
     platform: Platform
     content_type: ContentType
-    template: Optional[ContentTemplate] = None
+    template: Optional[ContentTemplateType] = None
     quantity: int = 5
     audience_focus: Optional[str] = None
 
@@ -268,7 +268,7 @@ class VideoScriptRequest(BaseModel):
     platform: Platform
     topic: str
     duration: int = 60  # seconds
-    style: ContentTemplate = ContentTemplate.EDUCATIONAL
+    style: ContentTemplateType = ContentTemplateType.EDUCATIONAL
 
 class VideoScriptResponse(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
