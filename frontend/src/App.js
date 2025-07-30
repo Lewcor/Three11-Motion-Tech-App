@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 import './App.css';
-import LandingPage from './components/LandingPage';
+import LandingPage from './components/DemoLandingPage';
 import GeneratorPage from './components/GeneratorPage';
 import ContentCreationPage from './components/ContentCreationPage';
 import PremiumPage from './components/PremiumPage';
