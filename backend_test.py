@@ -1063,6 +1063,263 @@ class BackendTester:
             else:
                 self.log_test("Competitor Analysis Limits", False, "Competitor analysis failed within limits", response)
     
+    async def test_ai_providers_list(self):
+        """Test 34: AI Providers List Endpoint"""
+        success, response = await self.make_request("GET", "/ai/providers")
+        
+        if success:
+            data = response["data"]
+            if "providers" in data and "total_providers" in data and "available_providers" in data:
+                providers = data["providers"]
+                if isinstance(providers, list) and len(providers) > 0:
+                    # Check if we have the expected providers
+                    provider_names = [p.get("provider") for p in providers]
+                    expected_providers = ["openai", "anthropic", "gemini", "perplexity"]
+                    
+                    if all(provider in provider_names for provider in expected_providers):
+                        self.log_test("AI Providers List", True, 
+                                    f"Retrieved {len(providers)} AI providers with all expected providers present")
+                    else:
+                        missing = [p for p in expected_providers if p not in provider_names]
+                        self.log_test("AI Providers List", False, 
+                                    f"Missing expected providers: {missing}", response)
+                else:
+                    self.log_test("AI Providers List", False, "No providers found in response", response)
+            else:
+                self.log_test("AI Providers List", False, "Invalid providers response format", response)
+        else:
+            self.log_test("AI Providers List", False, "Failed to get AI providers list", response)
+    
+    async def test_ai_provider_details(self):
+        """Test 35: AI Provider Details Endpoints"""
+        providers_to_test = ["openai", "anthropic", "gemini", "perplexity"]
+        successful_tests = 0
+        
+        for provider in providers_to_test:
+            success, response = await self.make_request("GET", f"/ai/providers/{provider}")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["provider", "available", "model", "name", "description", "strengths", "best_for"]
+                
+                if all(field in data for field in required_fields):
+                    # Check for latest model versions
+                    model = data.get("model", "")
+                    expected_models = {
+                        "openai": "gpt-4o",
+                        "anthropic": "claude-3-5-sonnet-20241022", 
+                        "gemini": "gemini-2.0-flash-exp",
+                        "perplexity": "sonar-pro"
+                    }
+                    
+                    if model == expected_models.get(provider):
+                        successful_tests += 1
+                        self.log_test(f"AI Provider Details ({provider})", True, 
+                                    f"Provider details correct with latest model: {model}")
+                    else:
+                        self.log_test(f"AI Provider Details ({provider})", False, 
+                                    f"Incorrect model version. Expected: {expected_models.get(provider)}, Got: {model}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test(f"AI Provider Details ({provider})", False, 
+                                f"Missing required fields: {missing}", response)
+            else:
+                self.log_test(f"AI Provider Details ({provider})", False, 
+                            f"Failed to get {provider} provider details", response)
+        
+        # Overall test result
+        if successful_tests == len(providers_to_test):
+            self.log_test("AI Provider Details", True, f"All {successful_tests} provider details working correctly")
+        else:
+            self.log_test("AI Provider Details", False, f"Only {successful_tests}/{len(providers_to_test)} provider details working")
+    
+    async def test_ai_provider_availability(self):
+        """Test 36: AI Provider Availability Check"""
+        success, response = await self.make_request("GET", "/ai/providers")
+        
+        if success:
+            data = response["data"]
+            providers = data.get("providers", [])
+            
+            # Check availability based on API keys
+            expected_available = ["openai", "anthropic", "gemini"]  # These have API keys
+            expected_unavailable = ["perplexity"]  # This doesn't have API key yet
+            
+            available_providers = [p["provider"] for p in providers if p.get("available", False)]
+            unavailable_providers = [p["provider"] for p in providers if not p.get("available", True)]
+            
+            # Check if expected providers are available
+            available_correct = all(provider in available_providers for provider in expected_available)
+            unavailable_correct = all(provider in unavailable_providers for provider in expected_unavailable)
+            
+            if available_correct and unavailable_correct:
+                self.log_test("AI Provider Availability", True, 
+                            f"Provider availability correct - Available: {available_providers}, Unavailable: {unavailable_providers}")
+            else:
+                self.log_test("AI Provider Availability", False, 
+                            f"Provider availability incorrect - Available: {available_providers}, Unavailable: {unavailable_providers}")
+        else:
+            self.log_test("AI Provider Availability", False, "Failed to check provider availability", response)
+    
+    async def test_enhanced_content_generation_with_providers(self):
+        """Test 37: Enhanced Content Generation with Provider Selection"""
+        if not self.auth_token:
+            self.log_test("Enhanced Content Generation", False, "No auth token available")
+            return
+        
+        # Test with different provider combinations
+        test_cases = [
+            {
+                "name": "OpenAI Only",
+                "providers": ["openai"],
+                "description": "Testing latest GPT-4o model for fashion content"
+            },
+            {
+                "name": "Anthropic Only", 
+                "providers": ["anthropic"],
+                "description": "Testing latest Claude 3.5 Sonnet for fashion content"
+            },
+            {
+                "name": "Gemini Only",
+                "providers": ["gemini"], 
+                "description": "Testing latest Gemini 2.0 Flash for fashion content"
+            },
+            {
+                "name": "Multi-Provider",
+                "providers": ["openai", "anthropic", "gemini"],
+                "description": "Testing all available providers for fashion content"
+            }
+        ]
+        
+        successful_tests = 0
+        
+        for test_case in test_cases:
+            generation_data = {
+                "user_id": self.user_id,
+                "category": "fashion",
+                "platform": "instagram",
+                "content_description": test_case["description"],
+                "ai_providers": test_case["providers"]
+            }
+            
+            success, response = await self.make_request("POST", "/generate", generation_data)
+            
+            if success:
+                data = response["data"]
+                if "captions" in data and "hashtags" in data:
+                    captions = data["captions"]
+                    
+                    # Check if requested providers generated content
+                    working_providers = []
+                    for provider in test_case["providers"]:
+                        if provider in captions and captions[provider] and not captions[provider].startswith("Error:"):
+                            working_providers.append(provider)
+                    
+                    if working_providers:
+                        successful_tests += 1
+                        self.log_test(f"Enhanced Content Generation ({test_case['name']})", True, 
+                                    f"Content generated successfully with providers: {working_providers}")
+                    else:
+                        self.log_test(f"Enhanced Content Generation ({test_case['name']})", False, 
+                                    f"No providers generated content successfully")
+                else:
+                    self.log_test(f"Enhanced Content Generation ({test_case['name']})", False, 
+                                "Invalid response format", response)
+            else:
+                self.log_test(f"Enhanced Content Generation ({test_case['name']})", False, 
+                            "Content generation request failed", response)
+        
+        # Overall test result
+        if successful_tests >= 3:  # At least 3 out of 4 should work (Perplexity might fail)
+            self.log_test("Enhanced Content Generation", True, f"{successful_tests}/4 provider combinations working")
+        else:
+            self.log_test("Enhanced Content Generation", False, f"Only {successful_tests}/4 provider combinations working")
+    
+    async def test_latest_ai_models_verification(self):
+        """Test 38: Latest AI Models Verification"""
+        success, response = await self.make_request("GET", "/ai/providers")
+        
+        if success:
+            data = response["data"]
+            providers = data.get("providers", [])
+            
+            # Expected latest models
+            expected_models = {
+                "openai": "gpt-4o",
+                "anthropic": "claude-3-5-sonnet-20241022",
+                "gemini": "gemini-2.0-flash-exp", 
+                "perplexity": "sonar-pro"
+            }
+            
+            correct_models = 0
+            total_models = 0
+            
+            for provider_data in providers:
+                provider_name = provider_data.get("provider")
+                model = provider_data.get("model")
+                
+                if provider_name in expected_models:
+                    total_models += 1
+                    if model == expected_models[provider_name]:
+                        correct_models += 1
+                        self.log_test(f"Latest Model ({provider_name})", True, 
+                                    f"Correct latest model: {model}")
+                    else:
+                        self.log_test(f"Latest Model ({provider_name})", False, 
+                                    f"Outdated model. Expected: {expected_models[provider_name]}, Got: {model}")
+            
+            # Overall verification
+            if correct_models == total_models:
+                self.log_test("Latest AI Models Verification", True, 
+                            f"All {correct_models} providers using latest models")
+            else:
+                self.log_test("Latest AI Models Verification", False, 
+                            f"Only {correct_models}/{total_models} providers using latest models")
+        else:
+            self.log_test("Latest AI Models Verification", False, "Failed to verify AI models", response)
+    
+    async def test_provider_capabilities_structure(self):
+        """Test 39: Provider Capabilities Structure"""
+        success, response = await self.make_request("GET", "/ai/providers")
+        
+        if success:
+            data = response["data"]
+            providers = data.get("providers", [])
+            
+            capabilities_correct = 0
+            total_providers = len(providers)
+            
+            for provider_data in providers:
+                provider_name = provider_data.get("provider")
+                required_capability_fields = ["name", "description", "strengths", "best_for"]
+                
+                if all(field in provider_data for field in required_capability_fields):
+                    # Check if fields have meaningful content
+                    if (provider_data.get("name") and 
+                        provider_data.get("description") and 
+                        isinstance(provider_data.get("strengths"), list) and 
+                        isinstance(provider_data.get("best_for"), list)):
+                        capabilities_correct += 1
+                        self.log_test(f"Provider Capabilities ({provider_name})", True, 
+                                    f"Complete capability information available")
+                    else:
+                        self.log_test(f"Provider Capabilities ({provider_name})", False, 
+                                    "Capability fields present but incomplete")
+                else:
+                    missing = [f for f in required_capability_fields if f not in provider_data]
+                    self.log_test(f"Provider Capabilities ({provider_name})", False, 
+                                f"Missing capability fields: {missing}")
+            
+            # Overall capabilities test
+            if capabilities_correct == total_providers:
+                self.log_test("Provider Capabilities Structure", True, 
+                            f"All {capabilities_correct} providers have complete capability information")
+            else:
+                self.log_test("Provider Capabilities Structure", False, 
+                            f"Only {capabilities_correct}/{total_providers} providers have complete capabilities")
+        else:
+            self.log_test("Provider Capabilities Structure", False, "Failed to check provider capabilities", response)
+    
     async def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting THREE11 MOTION TECH Backend Testing...")
