@@ -230,25 +230,46 @@ Hashtags:"""
         return hashtags[:15]
 
     async def generate_combined_content(self, category: ContentCategory, platform: Platform,
-                                      content_description: str, selected_providers: List[str]) -> Dict[str, AIResponse]:
-        """Generate content using multiple AI providers and return all responses"""
-        results = {}
+                                      content_description: str, selected_providers: List[str]) -> Dict:
+        """Generate content using multiple AI providers and return combined results"""
+        ai_responses = []
+        captions = {}
         
+        # Generate content from each provider
         for provider_name in selected_providers:
             try:
                 provider = AIProvider(provider_name)
                 response = await self.generate_caption(provider, category, platform, content_description)
-                results[provider_name] = response
+                ai_responses.append(response)
+                captions[provider_name] = response.caption
             except Exception as e:
                 logger.error(f"Error generating content with {provider_name}: {e}")
-                results[provider_name] = AIResponse(
-                    content=f"Error: {str(e)}",
-                    provider=provider_name,
+                error_response = AIResponse(
+                    provider=AIProvider(provider_name),
+                    caption=f"Error: {str(e)}",
                     generation_time=0,
-                    metadata={"error": True}
+                    success=False,
+                    error=str(e)
                 )
+                ai_responses.append(error_response)
+                captions[provider_name] = f"Error: {str(e)}"
         
-        return results
+        # Generate hashtags
+        hashtags = await self.generate_hashtags(category, platform, content_description)
+        
+        # Create combined result from successful responses
+        successful_captions = [resp.caption for resp in ai_responses if resp.success and resp.caption]
+        if successful_captions:
+            combined_result = f"🎯 AI-Generated Content Suite:\n\n" + "\n\n".join(successful_captions)
+        else:
+            combined_result = "No successful content generated from AI providers."
+        
+        return {
+            "ai_responses": ai_responses,
+            "captions": captions,
+            "hashtags": hashtags,
+            "combined_result": combined_result
+        }
     
     def get_provider_info(self, provider: AIProvider = None) -> Dict:
         """Get information about AI providers"""
