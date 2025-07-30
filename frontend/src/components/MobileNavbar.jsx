@@ -156,6 +156,14 @@ const MobileNavbar = () => {
                             ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
                             : item.badge === 'AI'
                             ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white'
+                            : item.badge === 'POWER'
+                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                            : item.badge === 'PLAN'
+                            ? 'bg-gradient-to-r from-blue-500 to-green-500 text-white'
+                            : item.badge === 'PRO'
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
+                            : item.badge === 'INSIGHTS'
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
