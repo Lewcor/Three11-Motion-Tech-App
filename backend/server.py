@@ -22,6 +22,10 @@ from voice_service import VoiceService
 from trends_service import TrendsService
 from content_remix_service import ContentRemixEngine
 from competitor_analysis_service import competitor_service
+from batch_content_service import batch_content_service
+from content_scheduling_service import content_scheduling_service
+from template_library_service import template_library_service
+from advanced_analytics_service import advanced_analytics_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
