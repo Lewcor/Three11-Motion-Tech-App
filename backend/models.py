@@ -44,6 +44,18 @@ class ContentType(str, Enum):
     CTA = "cta"
     TRENDING_TOPIC = "trending_topic"
     CONTENT_STRATEGY = "content_strategy"
+    # PHASE 3: New Content Types
+    VIDEO_CAPTIONS = "video_captions"
+    VIDEO_SUBTITLES = "video_subtitles"
+    PODCAST_DESCRIPTION = "podcast_description"
+    PODCAST_SHOW_NOTES = "podcast_show_notes"
+    EMAIL_MARKETING = "email_marketing"
+    EMAIL_NEWSLETTER = "email_newsletter"
+    EMAIL_SEQUENCE = "email_sequence"
+    BLOG_POST = "blog_post"
+    SEO_ARTICLE = "seo_article"
+    PRODUCT_DESCRIPTION = "product_description"
+    ECOMMERCE_COPY = "ecommerce_copy"
 
 class ContentTemplateType(str, Enum):
     EDUCATIONAL = "educational"
