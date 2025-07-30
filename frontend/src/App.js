@@ -49,6 +49,11 @@ function App() {
             <Route path="/trends-analyzer" element={<TrendsAnalyzer />} />
             <Route path="/content-remix" element={<ContentRemixEngine />} />
             <Route path="/competitor-analysis" element={<CompetitorAnalysis />} />
+            {/* PHASE 2: Power User Features */}
+            <Route path="/batch-generator" element={<BatchContentGenerator />} />
+            <Route path="/scheduler" element={<ContentScheduler />} />
+            <Route path="/templates" element={<TemplateLibrary />} />
+            <Route path="/analytics" element={<AdvancedAnalyticsDashboard />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
