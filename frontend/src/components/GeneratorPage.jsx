@@ -190,6 +190,13 @@ const GeneratorPage = () => {
             </CardContent>
           </Card>
 
+          {/* AI Provider Selection */}
+          <AIProviderSelector
+            selectedProviders={selectedProviders}
+            onProvidersChange={setSelectedProviders}
+            disabled={loading}
+          />
+
           {/* Content Input */}
           <Card>
             <CardHeader>
