@@ -35,6 +35,11 @@ import TeamDashboard from './components/TeamDashboard';
 import TeamManagement from './components/TeamManagement';
 import RoleManagement from './components/RoleManagement';
 import CollaborationTools from './components/CollaborationTools';
+// PHASE 6: Social Media Automation
+import SocialMediaDashboard from './components/SocialMediaDashboard';
+import SocialMediaPublishing from './components/SocialMediaPublishing';
+import AutomationWorkflows from './components/AutomationWorkflows';
+import CRMIntegration from './components/CRMIntegration';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
