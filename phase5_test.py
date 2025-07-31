@@ -119,8 +119,10 @@ class Phase5Tester:
         
         # 1. POST /api/teams/create
         team_data = {
-            "name": "Fashion Content Team",
+            "team_name": "Fashion Content Team",
             "description": "A team focused on creating viral fashion content",
+            "owner_id": self.user_id,
+            "plan_type": "starter",
             "settings": {
                 "privacy": "private",
                 "auto_approve_invites": False,
