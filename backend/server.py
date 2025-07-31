@@ -3034,6 +3034,242 @@ async def get_role_analytics_endpoint(
     """Get role analytics and insights"""
     return await role_permission_service.get_role_analytics(team_id, current_user.id)
 
+# =====================================
+# PHASE 6: SOCIAL MEDIA AUTOMATION API ENDPOINTS
+# =====================================
+
+# Social Media Publishing Endpoints
+@api_router.post("/social/accounts/connect", response_model=SocialAccount)
+async def connect_social_account_endpoint(
+    request: ConnectSocialAccountRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Connect a social media account"""
+    return await social_publishing_service.connect_social_account(request, current_user.id)
+
+@api_router.get("/social/accounts")
+async def get_connected_accounts_endpoint(
+    current_user: User = Depends(get_current_user)
+):
+    """Get all connected social media accounts"""
+    return await social_publishing_service.get_connected_accounts(current_user.id)
+
+@api_router.post("/social/posts/create", response_model=SocialMediaPost)
+async def create_social_post_endpoint(
+    request: CreatePostRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new social media post"""
+    return await social_publishing_service.create_social_post(request, current_user.id)
+
+@api_router.post("/social/posts/{post_id}/publish")
+async def publish_post_endpoint(
+    post_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Publish a post to selected platforms"""
+    return await social_publishing_service.publish_post(post_id, current_user.id)
+
+@api_router.post("/social/posts/schedule")
+async def schedule_posts_endpoint(
+    request: SchedulePostsRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Schedule multiple posts for future publishing"""
+    return await social_publishing_service.schedule_posts(request, current_user.id)
+
+@api_router.get("/social/posts")
+async def get_user_posts_endpoint(
+    status: Optional[PostStatus] = None,
+    limit: int = 50,
+    current_user: User = Depends(get_current_user)
+):
+    """Get user's social media posts"""
+    return await social_publishing_service.get_user_posts(current_user.id, status, limit)
+
+@api_router.get("/social/analytics")
+async def get_publishing_analytics_endpoint(
+    date_range: str = "30_days",
+    current_user: User = Depends(get_current_user)
+):
+    """Get publishing analytics and insights"""
+    return await social_publishing_service.get_publishing_analytics(current_user.id, date_range)
+
+# CRM Integration Endpoints
+@api_router.post("/crm/connect", response_model=CRMIntegration)
+async def connect_crm_endpoint(
+    platform: CRMPlatform,
+    api_key: str,
+    settings: Dict[str, Any] = {},
+    current_user: User = Depends(get_current_user)
+):
+    """Connect a CRM platform integration"""
+    return await crm_integration_service.connect_crm_integration(platform, api_key, current_user.id, settings)
+
+@api_router.post("/crm/{integration_id}/sync")
+async def sync_crm_data_endpoint(
+    integration_id: str,
+    sync_type: str = "contacts",
+    current_user: User = Depends(get_current_user)
+):
+    """Sync data from CRM platform"""
+    return await crm_integration_service.sync_crm_data(integration_id, current_user.id, sync_type)
+
+@api_router.get("/crm/contacts")
+async def get_crm_contacts_endpoint(
+    integration_id: Optional[str] = None,
+    filters: Dict[str, Any] = {},
+    current_user: User = Depends(get_current_user)
+):
+    """Get CRM contacts with optional filtering"""
+    return await crm_integration_service.get_crm_contacts(current_user.id, integration_id, filters)
+
+@api_router.put("/crm/contacts/{contact_id}/engagement")
+async def update_contact_engagement_endpoint(
+    contact_id: str,
+    engagement_data: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Update contact engagement based on social media activity"""
+    return await crm_integration_service.update_contact_engagement(contact_id, current_user.id, engagement_data)
+
+@api_router.get("/crm/insights")
+async def get_engagement_insights_endpoint(
+    date_range: str = "30_days",
+    current_user: User = Depends(get_current_user)
+):
+    """Get CRM engagement insights and social media correlation"""
+    return await crm_integration_service.get_engagement_insights(current_user.id, date_range)
+
+@api_router.post("/crm/campaigns/create")
+async def create_automated_campaign_endpoint(
+    campaign_data: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Create automated marketing campaign based on CRM segments"""
+    return await crm_integration_service.create_automated_campaign(current_user.id, campaign_data)
+
+@api_router.get("/crm/integrations")
+async def get_crm_integrations_endpoint(
+    current_user: User = Depends(get_current_user)
+):
+    """Get all CRM integrations for a user"""
+    return await crm_integration_service.get_crm_integrations(current_user.id)
+
+# Calendar Integration Endpoints
+@api_router.post("/calendar/connect", response_model=CalendarIntegration)
+async def connect_calendar_endpoint(
+    provider: CalendarProvider,
+    access_token: str,
+    settings: Dict[str, Any] = {},
+    current_user: User = Depends(get_current_user)
+):
+    """Connect a calendar integration"""
+    return await calendar_integration_service.connect_calendar_integration(provider, access_token, current_user.id, settings)
+
+@api_router.post("/calendar/{integration_id}/sync")
+async def sync_calendar_events_endpoint(
+    integration_id: str,
+    date_range_days: int = 30,
+    current_user: User = Depends(get_current_user)
+):
+    """Sync calendar events for content planning"""
+    return await calendar_integration_service.sync_calendar_events(integration_id, current_user.id, date_range_days)
+
+@api_router.post("/calendar/events/create", response_model=ContentCalendarEvent)
+async def create_content_event_endpoint(
+    event_data: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new content planning event"""
+    return await calendar_integration_service.create_content_event(current_user.id, event_data)
+
+@api_router.get("/calendar/events")
+async def get_content_calendar_endpoint(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Get content calendar events"""
+    start_dt = datetime.fromisoformat(start_date) if start_date else None
+    end_dt = datetime.fromisoformat(end_date) if end_date else None
+    return await calendar_integration_service.get_content_calendar(current_user.id, start_dt, end_dt)
+
+@api_router.put("/calendar/events/{event_id}/status")
+async def update_event_status_endpoint(
+    event_id: str,
+    status: str,
+    post_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Update content event status"""
+    return await calendar_integration_service.update_event_status(event_id, current_user.id, status, post_id)
+
+@api_router.get("/calendar/analytics")
+async def get_calendar_analytics_endpoint(
+    date_range: str = "30_days",
+    current_user: User = Depends(get_current_user)
+):
+    """Get calendar and content planning analytics"""
+    return await calendar_integration_service.get_calendar_analytics(current_user.id, date_range)
+
+@api_router.get("/calendar/optimal-times")
+async def get_optimal_times_endpoint(
+    content_type: ContentType,
+    platforms: List[SocialPlatform],
+    current_user: User = Depends(get_current_user)
+):
+    """Get AI-powered optimal posting time suggestions"""
+    return await calendar_integration_service.suggest_optimal_times(current_user.id, content_type, platforms)
+
+@api_router.get("/calendar/integrations")
+async def get_calendar_integrations_endpoint(
+    current_user: User = Depends(get_current_user)
+):
+    """Get all calendar integrations for a user"""
+    return await calendar_integration_service.get_calendar_integrations(current_user.id)
+
+# Social Media Automation Endpoints
+@api_router.post("/automation/workflows/create", response_model=AutomationWorkflow)
+async def create_automation_workflow_endpoint(
+    workflow_data: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new automation workflow"""
+    return await social_automation_service.create_automation_workflow(current_user.id, workflow_data)
+
+@api_router.get("/automation/workflows")
+async def get_automation_workflows_endpoint(
+    current_user: User = Depends(get_current_user)
+):
+    """Get all automation workflows for a user"""
+    return await social_automation_service.get_automation_workflows(current_user.id)
+
+@api_router.post("/automation/workflows/{workflow_id}/execute")
+async def execute_workflow_endpoint(
+    workflow_id: str,
+    trigger_data: Dict[str, Any] = {},
+    current_user: User = Depends(get_current_user)
+):
+    """Execute an automation workflow"""
+    return await social_automation_service.execute_workflow(workflow_id, current_user.id, trigger_data)
+
+@api_router.get("/automation/analytics")
+async def get_automation_analytics_endpoint(
+    date_range: str = "30_days",
+    current_user: User = Depends(get_current_user)
+):
+    """Get automation analytics and performance insights"""
+    return await social_automation_service.get_automation_analytics(current_user.id, date_range)
+
+@api_router.get("/social/dashboard", response_model=SocialMediaDashboard)
+async def get_social_media_dashboard_endpoint(
+    date_range: str = "30_days",
+    current_user: User = Depends(get_current_user)
+):
+    """Get comprehensive social media automation dashboard"""
+    return await social_automation_service.get_social_media_dashboard(current_user.id, date_range)
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
