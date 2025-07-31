@@ -96,6 +96,37 @@ const MobileNavbar = () => {
       icon: <Package className="h-4 w-4" />,
       badge: 'E-COMMERCE'
     },
+    // PHASE 4: Intelligence & Insights
+    { 
+      path: '/intelligence-dashboard', 
+      name: 'Intelligence Dashboard', 
+      icon: <Brain className="h-4 w-4" />,
+      badge: 'AI'
+    },
+    { 
+      path: '/performance-tracker', 
+      name: 'Performance Tracker', 
+      icon: <BarChart3 className="h-4 w-4" />,
+      badge: 'ANALYTICS'
+    },
+    { 
+      path: '/engagement-predictor', 
+      name: 'Engagement Predictor', 
+      icon: <Eye className="h-4 w-4" />,
+      badge: 'PREDICT'
+    },
+    { 
+      path: '/ab-testing-hub', 
+      name: 'A/B Testing Hub', 
+      icon: <TestTube className="h-4 w-4" />,
+      badge: 'OPTIMIZE'
+    },
+    { 
+      path: '/trend-forecaster', 
+      name: 'Trend Forecaster', 
+      icon: <Telescope className="h-4 w-4" />,
+      badge: 'FORECAST'
+    },
     { 
       path: '/competitor-analysis', 
       name: 'Competitor Analysis', 
