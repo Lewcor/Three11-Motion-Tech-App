@@ -28,6 +28,8 @@ import IntelligenceDashboard from './components/IntelligenceDashboard';
 import PerformanceTracker from './components/PerformanceTracker';
 import EngagementPredictor from './components/EngagementPredictor';
 import ABTestingHub from './components/ABTestingHub';
+import CompetitorMonitor from './components/CompetitorMonitor';
+import TrendForecaster from './components/TrendForecaster';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
