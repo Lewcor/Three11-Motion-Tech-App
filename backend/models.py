@@ -946,3 +946,415 @@ class IntelligenceDashboardData(BaseModel):
     key_insights: List[IntelligenceInsight]
     overall_intelligence_score: float  # 0-100
     generated_at: datetime = Field(default_factory=datetime.utcnow)
+
+# =====================================
+# PHASE 5: TEAM COLLABORATION PLATFORM MODELS
+# =====================================
+
+# Team Management Models
+class TeamPlanType(str, Enum):
+    STARTER = "starter"
+    PROFESSIONAL = "professional"
+    ENTERPRISE = "enterprise"
+
+class TeamSettings(BaseModel):
+    allow_external_sharing: bool = False
+    require_approval_for_publishing: bool = True
+    enable_brand_compliance: bool = True
+    default_content_visibility: str = "team"  # team, public, private
+    max_team_members: int = 10
+    notification_preferences: Dict[str, bool] = {}
+    integration_settings: Dict[str, Any] = {}
+
+class Team(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: Optional[str] = None
+    workspace_slug: str  # Unique workspace identifier
+    owner_id: str
+    plan_type: TeamPlanType = TeamPlanType.STARTER
+    settings: TeamSettings = Field(default_factory=TeamSettings)
+    avatar_url: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+    is_active: bool = True
+
+class CreateTeamRequest(BaseModel):
+    team_name: str
+    description: Optional[str] = None
+    owner_id: str
+    plan_type: TeamPlanType = TeamPlanType.STARTER
+    settings: Dict[str, Any] = {}
+
+# Role and Permission Models
+class TeamRole(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    name: str
+    description: Optional[str] = None
+    permissions: List[str] = []
+    color: str = "#4ECDC4"  # Hex color for role display
+    is_default: bool = False  # Default role for new members
+    is_system_role: bool = False  # Cannot be deleted
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_by: Optional[str] = None
+    updated_at: Optional[datetime] = None
+    updated_by: Optional[str] = None
+
+class CreateRoleRequest(BaseModel):
+    team_id: str
+    name: str
+    description: Optional[str] = None
+    permissions: List[str]
+    color: str = "#4ECDC4"
+    is_default: bool = False
+    created_by: str
+
+class UpdateRoleRequest(BaseModel):
+    team_id: str
+    name: Optional[str] = None
+    description: Optional[str] = None
+    permissions: Optional[List[str]] = None
+    color: Optional[str] = None
+    is_default: Optional[bool] = None
+    updated_by: str
+
+class RoleAnalytics(BaseModel):
+    team_id: str
+    total_roles: int
+    custom_roles: int
+    role_distribution: Dict[str, int]  # role_name -> member_count
+    permission_usage: Dict[str, float]  # permission -> usage_percentage
+    role_effectiveness: Dict[str, Dict[str, float]]  # role -> metrics
+    recommendations: List[str]
+
+# Team Member Models
+class TeamMember(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    user_id: str
+    role_id: str
+    status: str = "active"  # active, inactive, pending, removed
+    joined_at: datetime = Field(default_factory=datetime.utcnow)
+    invited_by: Optional[str] = None
+    last_active: Optional[datetime] = None
+    role_updated_at: Optional[datetime] = None
+    role_updated_by: Optional[str] = None
+    removed_at: Optional[datetime] = None
+    removed_by: Optional[str] = None
+
+class UserDetails(BaseModel):
+    id: str
+    email: str
+    full_name: Optional[str] = None
+    avatar_url: Optional[str] = None
+    last_active: Optional[datetime] = None
+
+class RoleDetails(BaseModel):
+    id: str
+    name: str
+    color: str
+
+class TeamMemberWithUser(BaseModel):
+    id: str
+    team_id: str
+    user_id: str
+    role_id: str
+    status: str
+    joined_at: datetime
+    user_details: UserDetails
+    role_details: RoleDetails
+    last_active: Optional[datetime] = None
+
+class InviteTeamMemberRequest(BaseModel):
+    team_id: str
+    email: str
+    role_id: str
+    invited_by: str
+    team_name: str
+    message: Optional[str] = None
+
+class UpdateMemberRoleRequest(BaseModel):
+    team_id: str
+    member_id: str
+    new_role_id: str
+    updated_by: str
+    reason: Optional[str] = None
+
+class TeamInvitation(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    email: str
+    role_id: str
+    invited_by: str
+    invitation_token: str
+    status: str = "pending"  # pending, accepted, expired, declined
+    message: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime
+    accepted_at: Optional[datetime] = None
+    declined_at: Optional[datetime] = None
+
+# Team Activity Models
+class TeamActivity(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    user_id: str
+    action: str  # content_created, member_joined, role_assigned, etc.
+    entity_type: str  # content, member, role, workflow, etc.
+    entity_id: str
+    details: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Team Dashboard Models
+class TeamSummary(BaseModel):
+    total_members: int
+    active_members: int
+    pending_invitations: int
+    total_content_pieces: int
+    content_in_review: int
+    published_this_month: int
+
+class TeamPerformance(BaseModel):
+    avg_approval_time_hours: float
+    content_approval_rate: float
+    team_productivity_score: float
+    collaboration_index: float
+
+class WorkflowSummary(BaseModel):
+    id: str
+    name: str
+    items_pending: int
+    avg_completion_time: float
+
+class TeamDashboardData(BaseModel):
+    team_id: str
+    team_summary: TeamSummary
+    recent_activities: List[TeamActivity]
+    team_performance: TeamPerformance
+    active_workflows: List[WorkflowSummary]
+    team_insights: List[str]
+
+# Workflow Engine Models
+class WorkflowStage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: Optional[str] = None
+    order: int
+    required_permissions: List[str] = []
+    required_roles: List[str] = []
+    auto_approve_conditions: List[str] = []
+    escalation_rules: Dict[str, Any] = {}
+    time_limit_hours: Optional[int] = None
+
+class WorkflowTemplate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    name: str
+    description: Optional[str] = None
+    content_types: List[str] = []  # Which content types this applies to
+    conditions: Dict[str, Any] = {}  # Conditional logic
+    stages: List[WorkflowStage] = []
+    is_active: bool = True
+    is_default: bool = False
+    created_by: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+
+class WorkflowInstance(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    workflow_template_id: str
+    team_id: str
+    content_id: str
+    current_stage_id: str
+    status: str = "in_progress"  # in_progress, completed, rejected, cancelled
+    started_by: str
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: Optional[datetime] = None
+    stage_history: List[Dict[str, Any]] = []
+    metadata: Dict[str, Any] = {}
+
+class WorkflowAction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    workflow_instance_id: str
+    stage_id: str
+    user_id: str
+    action: str  # approve, reject, request_changes, delegate
+    comment: Optional[str] = None
+    metadata: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CreateWorkflowRequest(BaseModel):
+    team_id: str
+    name: str
+    description: Optional[str] = None
+    content_types: List[str]
+    stages: List[Dict[str, Any]]
+    conditions: Dict[str, Any] = {}
+    created_by: str
+
+# Collaboration Models
+class ContentComment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_id: str
+    team_id: str
+    user_id: str
+    comment_text: str
+    parent_comment_id: Optional[str] = None  # For reply threads
+    mentions: List[str] = []  # User IDs mentioned in comment
+    attachments: List[str] = []  # File URLs
+    is_resolved: bool = False
+    resolved_by: Optional[str] = None
+    resolved_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+    reactions: Dict[str, List[str]] = {}  # emoji -> [user_ids]
+
+class ContentReview(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_id: str
+    team_id: str
+    reviewer_id: str
+    review_type: str = "general"  # general, brand_compliance, legal, technical
+    status: str = "pending"  # pending, approved, rejected, changes_requested
+    overall_rating: Optional[int] = None  # 1-5 stars
+    feedback_areas: Dict[str, str] = {}  # area -> feedback
+    action_items: List[str] = []
+    decision_comment: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: Optional[datetime] = None
+
+class ContentVersion(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_id: str
+    version_number: int
+    created_by: str
+    changes_summary: Optional[str] = None
+    content_data: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    is_current: bool = False
+
+class CollaborationSession(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_id: str
+    team_id: str
+    participants: List[str] = []  # User IDs
+    started_by: str
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    ended_at: Optional[datetime] = None
+    is_active: bool = True
+    session_data: Dict[str, Any] = {}  # Real-time collaboration state
+
+# Brand Management Models
+class BrandAsset(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    name: str
+    asset_type: str  # logo, color_palette, font, template, image
+    category: str  # primary, secondary, social, print, etc.
+    file_url: Optional[str] = None
+    file_metadata: Dict[str, Any] = {}  # size, format, dimensions, etc.
+    usage_guidelines: Optional[str] = None
+    tags: List[str] = []
+    uploaded_by: str
+    uploaded_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+    is_active: bool = True
+
+class BrandGuideline(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    title: str
+    category: str  # colors, typography, voice_tone, imagery, etc.
+    content: str  # Guidelines content
+    examples: List[Dict[str, Any]] = []  # Good/bad examples
+    rules: List[str] = []  # Specific rules for compliance
+    created_by: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+    is_active: bool = True
+
+class BrandComplianceCheck(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    content_id: str
+    team_id: str
+    checked_by: str  # user_id or "system" for auto-checks
+    compliance_score: float  # 0-100
+    violations: List[Dict[str, Any]] = []  # guideline violations
+    suggestions: List[str] = []
+    status: str = "compliant"  # compliant, minor_issues, major_issues
+    checked_at: datetime = Field(default_factory=datetime.utcnow)
+    auto_generated: bool = False
+
+class BrandCenter(BaseModel):
+    team_id: str
+    brand_assets: List[BrandAsset]
+    brand_guidelines: List[BrandGuideline]
+    compliance_stats: Dict[str, Any]
+    recent_activity: List[Dict[str, Any]]
+    brand_health_score: float  # Overall brand consistency score
+
+# Notification Models
+class TeamNotification(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str
+    recipient_id: str  # user_id
+    notification_type: str  # mention, assignment, approval_needed, etc.
+    title: str
+    message: str
+    entity_type: str  # content, comment, workflow, etc.
+    entity_id: str
+    action_url: Optional[str] = None
+    priority: str = "normal"  # low, normal, high, urgent
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    read_at: Optional[datetime] = None
+    metadata: Dict[str, Any] = {}
+
+class NotificationPreferences(BaseModel):
+    user_id: str
+    team_id: str
+    email_notifications: Dict[str, bool] = {}  # notification_type -> enabled
+    push_notifications: Dict[str, bool] = {}
+    in_app_notifications: Dict[str, bool] = {}
+    notification_frequency: str = "immediate"  # immediate, daily, weekly
+    quiet_hours_start: Optional[str] = None  # "22:00"
+    quiet_hours_end: Optional[str] = None  # "08:00"
+
+class NotificationBatch(BaseModel):
+    recipient_id: str
+    team_id: str
+    batch_type: str  # daily_digest, weekly_summary
+    notifications: List[TeamNotification]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    sent_at: Optional[datetime] = None
+
+# Request/Response Models for API endpoints
+class AddCommentRequest(BaseModel):
+    content_id: str
+    team_id: str
+    comment_text: str
+    parent_comment_id: Optional[str] = None
+    mentions: List[str] = []
+
+class CreateReviewRequest(BaseModel):
+    content_id: str
+    team_id: str
+    review_type: str = "general"
+    feedback_areas: Dict[str, str] = {}
+    action_items: List[str] = []
+
+class UpdateBrandAssetRequest(BaseModel):
+    name: Optional[str] = None
+    category: Optional[str] = None
+    usage_guidelines: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+class CreateBrandGuidelineRequest(BaseModel):
+    team_id: str
+    title: str
+    category: str
+    content: str
+    examples: List[Dict[str, Any]] = []
+    rules: List[str] = []
+    created_by: str
