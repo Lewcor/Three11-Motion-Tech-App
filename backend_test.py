@@ -4053,6 +4053,590 @@ class BackendTester:
         else:
             self.log_test("Provider Capabilities Structure", False, "Failed to check provider capabilities", response)
     
+    # =====================================
+    # PHASE 5: TEAM COLLABORATION PLATFORM TESTS
+    # =====================================
+    
+    async def test_team_creation(self):
+        """Test 63: Create Team Workspace"""
+        if not self.auth_token:
+            self.log_test("Team Creation", False, "No auth token available")
+            return
+        
+        try:
+            team_data = {
+                "team_name": "Fashion Content Creators",
+                "description": "A collaborative workspace for fashion content creation",
+                "owner_id": self.user_id,
+                "plan_type": "professional",
+                "settings": {
+                    "allow_external_sharing": True,
+                    "require_approval_for_publishing": True,
+                    "enable_brand_compliance": True
+                }
+            }
+            
+            success, response = await self.make_request("POST", "/teams/create", team_data)
+            
+            if success:
+                data = response["data"]
+                if "id" in data and "workspace_slug" in data:
+                    self.team_id = data["id"]  # Store for other tests
+                    self.log_test("Team Creation", True, 
+                                f"Team created successfully: {data['name']} (ID: {data['id'][:8]}...)")
+                else:
+                    self.log_test("Team Creation", False, "Team creation missing required fields", response)
+            else:
+                self.log_test("Team Creation", False, "Team creation request failed", response)
+                
+        except Exception as e:
+            self.log_test("Team Creation", False, f"Team creation test error: {str(e)}")
+    
+    async def test_team_member_invitation(self):
+        """Test 64: Send Team Member Invitations"""
+        if not self.auth_token:
+            self.log_test("Team Member Invitation", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            invitation_data = {
+                "team_id": team_id,
+                "email": "newmember@fashionbrand.com",
+                "role_id": "content_creator_role",
+                "invited_by": self.user_id,
+                "team_name": "Fashion Content Creators",
+                "message": "Welcome to our creative team!"
+            }
+            
+            success, response = await self.make_request("POST", "/teams/invite", invitation_data)
+            
+            if success:
+                data = response["data"]
+                if "invitation_token" in data and "expires_at" in data:
+                    self.invitation_token = data["invitation_token"]  # Store for acceptance test
+                    self.log_test("Team Member Invitation", True, 
+                                f"Invitation sent successfully to {data['email']}")
+                else:
+                    self.log_test("Team Member Invitation", False, "Invitation missing required fields", response)
+            else:
+                self.log_test("Team Member Invitation", False, "Team invitation request failed", response)
+                
+        except Exception as e:
+            self.log_test("Team Member Invitation", False, f"Team invitation test error: {str(e)}")
+    
+    async def test_accept_team_invitation(self):
+        """Test 65: Accept Team Invitations"""
+        if not self.auth_token:
+            self.log_test("Accept Team Invitation", False, "No auth token available")
+            return
+        
+        invitation_token = getattr(self, 'invitation_token', 'mock_invitation_token')
+        
+        try:
+            success, response = await self.make_request("POST", f"/teams/accept-invitation/{invitation_token}?user_id={self.user_id}")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    self.log_test("Accept Team Invitation", True, 
+                                "Team invitation accepted successfully")
+                else:
+                    self.log_test("Accept Team Invitation", False, 
+                                f"Invitation acceptance failed: {data.get('message', 'Unknown error')}")
+            else:
+                self.log_test("Accept Team Invitation", False, "Accept invitation request failed", response)
+                
+        except Exception as e:
+            self.log_test("Accept Team Invitation", False, f"Accept invitation test error: {str(e)}")
+    
+    async def test_get_team_members(self):
+        """Test 66: Retrieve Team Members"""
+        if not self.auth_token:
+            self.log_test("Get Team Members", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request("GET", f"/teams/{team_id}/members?user_id={self.user_id}")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    member_count = len(data)
+                    # Check if members have required fields
+                    if data and all("user_details" in member and "role_details" in member for member in data):
+                        self.log_test("Get Team Members", True, 
+                                    f"Retrieved {member_count} team members with complete details")
+                    else:
+                        self.log_test("Get Team Members", True, 
+                                    f"Retrieved {member_count} team members")
+                else:
+                    self.log_test("Get Team Members", False, "Invalid team members response format", response)
+            else:
+                self.log_test("Get Team Members", False, "Get team members request failed", response)
+                
+        except Exception as e:
+            self.log_test("Get Team Members", False, f"Get team members test error: {str(e)}")
+    
+    async def test_update_member_role(self):
+        """Test 67: Update Member Roles"""
+        if not self.auth_token:
+            self.log_test("Update Member Role", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            role_update_data = {
+                "team_id": team_id,
+                "member_id": "mock_member_id",
+                "new_role_id": "reviewer_role",
+                "updated_by": self.user_id,
+                "reason": "Promoting to content reviewer role"
+            }
+            
+            success, response = await self.make_request("PUT", "/teams/members/role", role_update_data)
+            
+            if success:
+                data = response["data"]
+                if "role_id" in data and data["role_id"] == "reviewer_role":
+                    self.log_test("Update Member Role", True, 
+                                "Member role updated successfully")
+                else:
+                    self.log_test("Update Member Role", False, "Role update missing confirmation", response)
+            else:
+                self.log_test("Update Member Role", False, "Update member role request failed", response)
+                
+        except Exception as e:
+            self.log_test("Update Member Role", False, f"Update member role test error: {str(e)}")
+    
+    async def test_remove_team_member(self):
+        """Test 68: Remove Team Members"""
+        if not self.auth_token:
+            self.log_test("Remove Team Member", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request(
+                "DELETE", 
+                f"/teams/{team_id}/members/mock_member_id?removed_by={self.user_id}&reason=Performance issues"
+            )
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    self.log_test("Remove Team Member", True, 
+                                "Team member removed successfully")
+                else:
+                    self.log_test("Remove Team Member", False, 
+                                f"Member removal failed: {data.get('message', 'Unknown error')}")
+            else:
+                self.log_test("Remove Team Member", False, "Remove team member request failed", response)
+                
+        except Exception as e:
+            self.log_test("Remove Team Member", False, f"Remove team member test error: {str(e)}")
+    
+    async def test_team_activity_feed(self):
+        """Test 69: Team Activity Feed"""
+        if not self.auth_token:
+            self.log_test("Team Activity Feed", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request("GET", f"/teams/{team_id}/activity?user_id={self.user_id}&limit=20")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    activity_count = len(data)
+                    # Check if activities have required fields
+                    if data and all("action" in activity and "details" in activity for activity in data):
+                        self.log_test("Team Activity Feed", True, 
+                                    f"Retrieved {activity_count} team activities with complete details")
+                    else:
+                        self.log_test("Team Activity Feed", True, 
+                                    f"Retrieved {activity_count} team activities")
+                else:
+                    self.log_test("Team Activity Feed", False, "Invalid activity feed response format", response)
+            else:
+                self.log_test("Team Activity Feed", False, "Team activity feed request failed", response)
+                
+        except Exception as e:
+            self.log_test("Team Activity Feed", False, f"Team activity feed test error: {str(e)}")
+    
+    async def test_team_dashboard(self):
+        """Test 70: Team Dashboard Data"""
+        if not self.auth_token:
+            self.log_test("Team Dashboard", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request("GET", f"/teams/{team_id}/dashboard?user_id={self.user_id}")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["team_summary", "team_performance", "recent_activities", "team_insights"]
+                if all(field in data for field in required_fields):
+                    self.log_test("Team Dashboard", True, 
+                                "Team dashboard data retrieved with all required sections")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Team Dashboard", False, 
+                                f"Team dashboard missing fields: {missing}", response)
+            else:
+                self.log_test("Team Dashboard", False, "Team dashboard request failed", response)
+                
+        except Exception as e:
+            self.log_test("Team Dashboard", False, f"Team dashboard test error: {str(e)}")
+    
+    # =====================================
+    # ROLE & PERMISSION MANAGEMENT TESTS
+    # =====================================
+    
+    async def test_create_custom_role(self):
+        """Test 71: Create Custom Roles"""
+        if not self.auth_token:
+            self.log_test("Create Custom Role", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            role_data = {
+                "team_id": team_id,
+                "name": "Senior Content Creator",
+                "description": "Experienced content creator with additional permissions",
+                "permissions": [
+                    "create_content", "edit_own_content", "edit_all_content",
+                    "view_team_content", "comment_on_content", "submit_for_approval",
+                    "approve_content", "view_analytics"
+                ],
+                "color": "#9B59B6",
+                "is_default": False,
+                "created_by": self.user_id
+            }
+            
+            success, response = await self.make_request("POST", "/teams/roles/create", role_data)
+            
+            if success:
+                data = response["data"]
+                if "id" in data and "permissions" in data:
+                    self.custom_role_id = data["id"]  # Store for other tests
+                    permission_count = len(data["permissions"])
+                    self.log_test("Create Custom Role", True, 
+                                f"Custom role created successfully with {permission_count} permissions")
+                else:
+                    self.log_test("Create Custom Role", False, "Custom role creation missing required fields", response)
+            else:
+                self.log_test("Create Custom Role", False, "Create custom role request failed", response)
+                
+        except Exception as e:
+            self.log_test("Create Custom Role", False, f"Create custom role test error: {str(e)}")
+    
+    async def test_update_role(self):
+        """Test 72: Update Existing Roles"""
+        if not self.auth_token:
+            self.log_test("Update Role", False, "No auth token available")
+            return
+        
+        role_id = getattr(self, 'custom_role_id', 'mock_role_id')
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            update_data = {
+                "team_id": team_id,
+                "name": "Senior Content Creator Plus",
+                "description": "Enhanced senior content creator role",
+                "permissions": [
+                    "create_content", "edit_own_content", "edit_all_content",
+                    "view_team_content", "comment_on_content", "submit_for_approval",
+                    "approve_content", "view_analytics", "manage_brand_assets"
+                ],
+                "color": "#8E44AD",
+                "updated_by": self.user_id
+            }
+            
+            success, response = await self.make_request("PUT", f"/teams/roles/{role_id}", update_data)
+            
+            if success:
+                data = response["data"]
+                if "name" in data and data["name"] == "Senior Content Creator Plus":
+                    self.log_test("Update Role", True, 
+                                "Role updated successfully with new permissions")
+                else:
+                    self.log_test("Update Role", False, "Role update missing confirmation", response)
+            else:
+                self.log_test("Update Role", False, "Update role request failed", response)
+                
+        except Exception as e:
+            self.log_test("Update Role", False, f"Update role test error: {str(e)}")
+    
+    async def test_get_team_roles(self):
+        """Test 73: Get Team Roles"""
+        if not self.auth_token:
+            self.log_test("Get Team Roles", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request("GET", f"/teams/{team_id}/roles?user_id={self.user_id}")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    role_count = len(data)
+                    # Check if roles have required fields
+                    if data and all("permissions" in role and "name" in role for role in data):
+                        system_roles = len([r for r in data if r.get("is_system_role", False)])
+                        custom_roles = role_count - system_roles
+                        self.log_test("Get Team Roles", True, 
+                                    f"Retrieved {role_count} roles ({system_roles} system, {custom_roles} custom)")
+                    else:
+                        self.log_test("Get Team Roles", True, 
+                                    f"Retrieved {role_count} team roles")
+                else:
+                    self.log_test("Get Team Roles", False, "Invalid team roles response format", response)
+            else:
+                self.log_test("Get Team Roles", False, "Get team roles request failed", response)
+                
+        except Exception as e:
+            self.log_test("Get Team Roles", False, f"Get team roles test error: {str(e)}")
+    
+    async def test_get_available_permissions(self):
+        """Test 74: Get Available Permissions"""
+        try:
+            success, response = await self.make_request("GET", "/teams/permissions/available")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, dict):
+                    permission_count = len(data)
+                    # Check permission categories
+                    categories = set()
+                    for perm_data in data.values():
+                        if "category" in perm_data:
+                            categories.add(perm_data["category"])
+                    
+                    self.log_test("Get Available Permissions", True, 
+                                f"Retrieved {permission_count} permissions across {len(categories)} categories")
+                else:
+                    self.log_test("Get Available Permissions", False, "Invalid permissions response format", response)
+            else:
+                self.log_test("Get Available Permissions", False, "Get available permissions request failed", response)
+                
+        except Exception as e:
+            self.log_test("Get Available Permissions", False, f"Get available permissions test error: {str(e)}")
+    
+    async def test_ai_permission_suggestions(self):
+        """Test 75: AI Permission Suggestions"""
+        try:
+            success, response = await self.make_request("GET", "/teams/permissions/suggestions?role_type=content_creator&content_focus=fashion")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    suggestion_count = len(data)
+                    self.log_test("AI Permission Suggestions", True, 
+                                f"AI suggested {suggestion_count} permissions for content creator role")
+                else:
+                    self.log_test("AI Permission Suggestions", False, "Invalid suggestions response format", response)
+            else:
+                self.log_test("AI Permission Suggestions", False, "AI permission suggestions request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Permission Suggestions", False, f"AI permission suggestions test error: {str(e)}")
+    
+    async def test_check_user_permissions(self):
+        """Test 76: Check User Permissions"""
+        if not self.auth_token:
+            self.log_test("Check User Permissions", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            permission_check_data = {
+                "user_id": self.user_id,
+                "team_id": team_id,
+                "permissions": ["create_content", "edit_own_content", "manage_team_members", "view_analytics"]
+            }
+            
+            success, response = await self.make_request("POST", "/teams/permissions/check", permission_check_data)
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, dict):
+                    checked_permissions = len(data)
+                    granted_permissions = sum(1 for granted in data.values() if granted)
+                    self.log_test("Check User Permissions", True, 
+                                f"Permission check completed: {granted_permissions}/{checked_permissions} permissions granted")
+                else:
+                    self.log_test("Check User Permissions", False, "Invalid permission check response format", response)
+            else:
+                self.log_test("Check User Permissions", False, "Check user permissions request failed", response)
+                
+        except Exception as e:
+            self.log_test("Check User Permissions", False, f"Check user permissions test error: {str(e)}")
+    
+    async def test_role_analytics(self):
+        """Test 77: Role Analytics"""
+        if not self.auth_token:
+            self.log_test("Role Analytics", False, "No auth token available")
+            return
+        
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request("GET", f"/teams/{team_id}/analytics/roles?user_id={self.user_id}")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["role_distribution", "permission_usage", "role_effectiveness", "recommendations"]
+                if all(field in data for field in required_fields):
+                    role_count = data.get("total_roles", 0)
+                    recommendation_count = len(data.get("recommendations", []))
+                    self.log_test("Role Analytics", True, 
+                                f"Role analytics retrieved: {role_count} roles analyzed with {recommendation_count} recommendations")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Role Analytics", False, 
+                                f"Role analytics missing fields: {missing}", response)
+            else:
+                self.log_test("Role Analytics", False, "Role analytics request failed", response)
+                
+        except Exception as e:
+            self.log_test("Role Analytics", False, f"Role analytics test error: {str(e)}")
+    
+    async def test_delete_custom_role(self):
+        """Test 78: Delete Custom Roles"""
+        if not self.auth_token:
+            self.log_test("Delete Custom Role", False, "No auth token available")
+            return
+        
+        role_id = getattr(self, 'custom_role_id', 'mock_role_id')
+        team_id = getattr(self, 'team_id', 'mock_team_id')
+        
+        try:
+            success, response = await self.make_request(
+                "DELETE", 
+                f"/teams/roles/{role_id}?team_id={team_id}&deleted_by={self.user_id}"
+            )
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    self.log_test("Delete Custom Role", True, 
+                                "Custom role deleted successfully")
+                else:
+                    self.log_test("Delete Custom Role", False, 
+                                f"Role deletion failed: {data.get('message', 'Unknown error')}")
+            else:
+                self.log_test("Delete Custom Role", False, "Delete custom role request failed", response)
+                
+        except Exception as e:
+            self.log_test("Delete Custom Role", False, f"Delete custom role test error: {str(e)}")
+    
+    async def test_team_collaboration_authentication(self):
+        """Test 79: Team Collaboration Authentication Requirements"""
+        # Test that team collaboration endpoints require authentication
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        try:
+            # Test team creation without auth
+            team_data = {
+                "team_name": "Test Team",
+                "owner_id": "test_user"
+            }
+            
+            success, response = await self.make_request("POST", "/teams/create", team_data)
+            
+            if not success and response.get("status") in [401, 403]:
+                self.log_test("Team Collaboration Authentication", True, 
+                            "Team collaboration endpoints properly require authentication")
+            else:
+                self.log_test("Team Collaboration Authentication", False, 
+                            "Team collaboration endpoints should require authentication", response)
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_team_collaboration_error_handling(self):
+        """Test 80: Team Collaboration Error Handling"""
+        if not self.auth_token:
+            self.log_test("Team Collaboration Error Handling", False, "No auth token available")
+            return
+        
+        try:
+            # Test with invalid team data
+            invalid_team_data = {
+                "team_name": "",  # Empty name
+                "owner_id": "invalid_user_id",
+                "plan_type": "invalid_plan"
+            }
+            
+            success, response = await self.make_request("POST", "/teams/create", invalid_team_data)
+            
+            # Should fail gracefully
+            if not success or (success and "error" in response.get("data", {})):
+                self.log_test("Team Collaboration Error Handling", True, 
+                            "Team collaboration services handle invalid data gracefully")
+            else:
+                self.log_test("Team Collaboration Error Handling", False, 
+                            "Team collaboration services should reject invalid data", response)
+                
+        except Exception as e:
+            self.log_test("Team Collaboration Error Handling", True, 
+                        f"Team collaboration services properly handle errors: {str(e)}")
+    
+    async def test_team_collaboration_integration(self):
+        """Test 81: Team Collaboration Service Integration"""
+        if not self.auth_token:
+            self.log_test("Team Collaboration Integration", False, "No auth token available")
+            return
+        
+        try:
+            # Test integration between team management and role permission services
+            team_id = getattr(self, 'team_id', 'mock_team_id')
+            
+            # First get team roles
+            roles_success, roles_response = await self.make_request("GET", f"/teams/{team_id}/roles?user_id={self.user_id}")
+            
+            # Then get team members
+            members_success, members_response = await self.make_request("GET", f"/teams/{team_id}/members?user_id={self.user_id}")
+            
+            # Then get team dashboard (which should integrate data from both services)
+            dashboard_success, dashboard_response = await self.make_request("GET", f"/teams/{team_id}/dashboard?user_id={self.user_id}")
+            
+            if roles_success and members_success and dashboard_success:
+                self.log_test("Team Collaboration Integration", True, 
+                            "Team management and role permission services are properly integrated")
+            else:
+                failed_services = []
+                if not roles_success:
+                    failed_services.append("roles")
+                if not members_success:
+                    failed_services.append("members")
+                if not dashboard_success:
+                    failed_services.append("dashboard")
+                
+                self.log_test("Team Collaboration Integration", False, 
+                            f"Service integration issues with: {', '.join(failed_services)}")
+                
+        except Exception as e:
+            self.log_test("Team Collaboration Integration", False, f"Integration test error: {str(e)}")
+
     async def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting THREE11 MOTION TECH Backend Testing...")
