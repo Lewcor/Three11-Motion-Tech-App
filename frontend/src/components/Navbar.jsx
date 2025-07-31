@@ -465,6 +465,75 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              {/* PHASE 6: Social Media Automation */}
+              <Link to="/social-dashboard">
+                <Button 
+                  variant={location.pathname === '/social-dashboard' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Share2 className="h-4 w-4 mr-1" />
+                  Dashboard
+                  <Badge className="ml-1 bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-xs">
+                    SOCIAL
+                  </Badge>
+                  {location.pathname === '/social-dashboard' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/social-publishing">
+                <Button 
+                  variant={location.pathname === '/social-publishing' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Send className="h-4 w-4 mr-1" />
+                  Publishing
+                  <Badge className="ml-1 bg-gradient-to-r from-teal-500 to-green-500 text-white text-xs">
+                    POST
+                  </Badge>
+                  {location.pathname === '/social-publishing' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/automation-workflows">
+                <Button 
+                  variant={location.pathname === '/automation-workflows' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Workflow className="h-4 w-4 mr-1" />
+                  Automation
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                    AUTO
+                  </Badge>
+                  {location.pathname === '/automation-workflows' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/crm-integration">
+                <Button 
+                  variant={location.pathname === '/crm-integration' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Database className="h-4 w-4 mr-1" />
+                  CRM
+                  <Badge className="ml-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs">
+                    SYNC
+                  </Badge>
+                  {location.pathname === '/crm-integration' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
