@@ -5088,6 +5088,62 @@ class BackendTester:
                 phase4_system_failed = [test for test in phase4_system_tests if not self.test_results.get(test, {}).get("success", False)]
                 print(f"  ❌ Phase 4 System: Issues - Failed: {phase4_system_failed}")
         
+        # =====================================
+        # PHASE 5: TEAM COLLABORATION PLATFORM SUMMARY
+        # =====================================
+        
+        # Phase 5 specific summary
+        phase5_tests = [name for name in self.test_results.keys() if any(keyword in name for keyword in 
+                       ["Team", "Role", "Permission", "Member", "Collaboration", "Phase 5"])]
+        
+        if phase5_tests:
+            phase5_passed = sum(1 for name in phase5_tests if self.test_results[name]["success"])
+            phase5_total = len(phase5_tests)
+            phase5_success_rate = (phase5_passed / phase5_total) * 100
+            
+            print(f"\n👥 PHASE 5: TEAM COLLABORATION PLATFORM SUMMARY:")
+            print(f"   📊 Phase 5 Tests: {phase5_passed}/{phase5_total} ({phase5_success_rate:.1f}%)")
+            
+            if phase5_success_rate >= 90:
+                print(f"   🎉 EXCELLENT: Phase 5 is production-ready!")
+            elif phase5_success_rate >= 80:
+                print(f"   ✅ GOOD: Phase 5 is mostly functional with minor issues")
+            elif phase5_success_rate >= 60:
+                print(f"   ⚠️ NEEDS WORK: Phase 5 has significant issues to address")
+            else:
+                print(f"   ❌ CRITICAL: Phase 5 requires major fixes before deployment")
+            
+            # Team Management Service
+            team_mgmt_tests = ["Team Creation", "Team Member Invitation", "Accept Team Invitation", 
+                              "Get Team Members", "Update Member Role", "Remove Team Member", 
+                              "Team Activity Feed", "Team Dashboard"]
+            team_mgmt_working = all(self.test_results.get(test, {}).get("success", False) for test in team_mgmt_tests)
+            if team_mgmt_working:
+                print("  ✅ Team Management: Creation, invitations, members, activity, and dashboard working")
+            else:
+                team_mgmt_failed = [test for test in team_mgmt_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Team Management: Issues - Failed: {team_mgmt_failed}")
+            
+            # Role & Permission Management Service
+            role_perm_tests = ["Create Custom Role", "Update Role", "Get Team Roles", "Get Available Permissions",
+                              "AI Permission Suggestions", "Check User Permissions", "Role Analytics", "Delete Custom Role"]
+            role_perm_working = all(self.test_results.get(test, {}).get("success", False) for test in role_perm_tests)
+            if role_perm_working:
+                print("  ✅ Role & Permission Management: Custom roles, permissions, analytics, and AI suggestions working")
+            else:
+                role_perm_failed = [test for test in role_perm_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Role & Permission Management: Issues - Failed: {role_perm_failed}")
+            
+            # Team Collaboration System Tests
+            team_collab_system_tests = ["Team Collaboration Authentication", "Team Collaboration Error Handling", 
+                                       "Team Collaboration Integration"]
+            team_collab_system_working = all(self.test_results.get(test, {}).get("success", False) for test in team_collab_system_tests)
+            if team_collab_system_working:
+                print("  ✅ Team Collaboration System: Authentication, error handling, and service integration working")
+            else:
+                team_collab_system_failed = [test for test in team_collab_system_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Team Collaboration System: Issues - Failed: {team_collab_system_failed}")
+        
         print("\n" + "=" * 80)
         print("🏁 COMPREHENSIVE TESTING COMPLETE")
         print("=" * 80)
