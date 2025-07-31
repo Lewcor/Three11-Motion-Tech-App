@@ -100,7 +100,7 @@ class TemplateLibraryService:
                 name="Business Tip Monday",
                 description="Weekly business advice",
                 category=ContentCategory.BUSINESS,
-                platform=Platform.LINKEDIN,
+                platform=Platform.FACEBOOK,
                 template_type="caption",
                 template_content="💡 #BusinessTipMonday\n\n{tip_title}\n\nThe challenge: {problem_description}\n\nThe solution: {solution_description}\n\nReal example: {case_study_example}\n\nKey takeaway: {main_insight}\n\nWhat business challenge are you currently facing? Let's discuss in the comments! 👇",
                 placeholders=["tip_title", "problem_description", "solution_description", "case_study_example", "main_insight"],
