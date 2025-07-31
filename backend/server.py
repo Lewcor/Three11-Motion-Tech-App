@@ -3045,14 +3045,14 @@ async def connect_social_account_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Connect a social media account"""
-    return await social_publishing_service.connect_social_account(request, current_user.id)
+    return await social_media_publishing_service.connect_social_account(request, current_user.id)
 
 @api_router.get("/social/accounts")
 async def get_connected_accounts_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Get all connected social media accounts"""
-    return await social_publishing_service.get_connected_accounts(current_user.id)
+    return await social_media_publishing_service.get_connected_accounts(current_user.id)
 
 @api_router.post("/social/posts/create", response_model=SocialMediaPost)
 async def create_social_post_endpoint(
@@ -3060,7 +3060,7 @@ async def create_social_post_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Create a new social media post"""
-    return await social_publishing_service.create_social_post(request, current_user.id)
+    return await social_media_publishing_service.create_social_post(request, current_user.id)
 
 @api_router.post("/social/posts/{post_id}/publish")
 async def publish_post_endpoint(
@@ -3068,7 +3068,7 @@ async def publish_post_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Publish a post to selected platforms"""
-    return await social_publishing_service.publish_post(post_id, current_user.id)
+    return await social_media_publishing_service.publish_post(post_id, current_user.id)
 
 @api_router.post("/social/posts/schedule")
 async def schedule_posts_endpoint(
@@ -3076,7 +3076,7 @@ async def schedule_posts_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Schedule multiple posts for future publishing"""
-    return await social_publishing_service.schedule_posts(request, current_user.id)
+    return await social_media_publishing_service.schedule_posts(request, current_user.id)
 
 @api_router.get("/social/posts")
 async def get_user_posts_endpoint(
@@ -3085,7 +3085,7 @@ async def get_user_posts_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Get user's social media posts"""
-    return await social_publishing_service.get_user_posts(current_user.id, status, limit)
+    return await social_media_publishing_service.get_user_posts(current_user.id, status, limit)
 
 @api_router.get("/social/analytics")
 async def get_publishing_analytics_endpoint(
@@ -3093,7 +3093,7 @@ async def get_publishing_analytics_endpoint(
     current_user: User = Depends(get_current_user)
 ):
     """Get publishing analytics and insights"""
-    return await social_publishing_service.get_publishing_analytics(current_user.id, date_range)
+    return await social_media_publishing_service.get_publishing_analytics(current_user.id, date_range)
 
 # CRM Integration Endpoints
 @api_router.post("/crm/connect", response_model=CRMIntegration)
