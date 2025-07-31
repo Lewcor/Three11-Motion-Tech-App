@@ -4203,6 +4203,42 @@ class BackendTester:
         await self.test_phase4_statistical_calculations()
         await self.test_phase4_data_aggregation()
         
+        # =====================================
+        # PHASE 5: TEAM COLLABORATION PLATFORM TESTS
+        # =====================================
+        
+        print("\n👥 PHASE 5: TEAM COLLABORATION PLATFORM TESTS")
+        print("=" * 60)
+        
+        # Team Management Tests
+        print("\n🏢 TEAM MANAGEMENT TESTS")
+        print("-" * 40)
+        await self.test_team_creation()
+        await self.test_team_member_invitation()
+        await self.test_team_invitation_acceptance()
+        await self.test_team_members_list()
+        await self.test_member_role_update()
+        await self.test_team_member_removal()
+        await self.test_team_activity_feed()
+        await self.test_team_dashboard()
+        
+        # Role & Permission Management Tests
+        print("\n🔐 ROLE & PERMISSION MANAGEMENT TESTS")
+        print("-" * 40)
+        await self.test_custom_role_creation()
+        await self.test_role_update()
+        await self.test_team_roles_list()
+        await self.test_available_permissions()
+        await self.test_permission_suggestions()
+        await self.test_user_permissions_check()
+        await self.test_role_analytics()
+        await self.test_role_deletion()
+        
+        # Phase 5 System Tests
+        print("\n🔧 PHASE 5 SYSTEM TESTS")
+        print("-" * 40)
+        await self.test_team_collaboration_authentication()
+        
         # Print summary
         self.print_summary()
     
