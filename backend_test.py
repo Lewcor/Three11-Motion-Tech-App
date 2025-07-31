@@ -4818,10 +4818,43 @@ class BackendTester:
         await self.test_role_analytics()
         await self.test_role_deletion()
         
+        # =====================================
+        # PHASE 5: TEAM COLLABORATION PLATFORM TESTS
+        # =====================================
+        
+        print("\n👥 PHASE 5: TEAM COLLABORATION PLATFORM TESTS")
+        print("=" * 60)
+        
+        # Team Management Tests
+        print("\n🏢 TEAM MANAGEMENT TESTS")
+        print("-" * 40)
+        await self.test_team_creation()
+        await self.test_team_member_invitation()
+        await self.test_accept_team_invitation()
+        await self.test_get_team_members()
+        await self.test_update_member_role()
+        await self.test_remove_team_member()
+        await self.test_team_activity_feed()
+        await self.test_team_dashboard()
+        
+        # Role & Permission Management Tests
+        print("\n🔐 ROLE & PERMISSION MANAGEMENT TESTS")
+        print("-" * 40)
+        await self.test_create_custom_role()
+        await self.test_update_role()
+        await self.test_get_team_roles()
+        await self.test_get_available_permissions()
+        await self.test_ai_permission_suggestions()
+        await self.test_check_user_permissions()
+        await self.test_role_analytics()
+        await self.test_delete_custom_role()
+        
         # Phase 5 System Tests
         print("\n🔧 PHASE 5 SYSTEM TESTS")
         print("-" * 40)
         await self.test_team_collaboration_authentication()
+        await self.test_team_collaboration_error_handling()
+        await self.test_team_collaboration_integration()
         
         # Print summary
         self.print_summary()
