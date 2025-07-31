@@ -396,6 +396,75 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              {/* PHASE 5: Team Collaboration Platform */}
+              <Link to="/team-dashboard">
+                <Button 
+                  variant={location.pathname === '/team-dashboard' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Users2 className="h-4 w-4 mr-1" />
+                  Teams
+                  <Badge className="ml-1 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-xs">
+                    COLLAB
+                  </Badge>
+                  {location.pathname === '/team-dashboard' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/team-management">
+                <Button 
+                  variant={location.pathname === '/team-management' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <UserCog className="h-4 w-4 mr-1" />
+                  Manage
+                  <Badge className="ml-1 bg-gradient-to-r from-violet-500 to-purple-500 text-white text-xs">
+                    ADMIN
+                  </Badge>
+                  {location.pathname === '/team-management' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-violet-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/role-management">
+                <Button 
+                  variant={location.pathname === '/role-management' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Crown className="h-4 w-4 mr-1" />
+                  Roles
+                  <Badge className="ml-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                    PERMISSIONS
+                  </Badge>
+                  {location.pathname === '/role-management' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/collaboration-tools">
+                <Button 
+                  variant={location.pathname === '/collaboration-tools' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <MessageSquareMore className="h-4 w-4 mr-1" />
+                  Collaborate
+                  <Badge className="ml-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs">
+                    WORKFLOW
+                  </Badge>
+                  {location.pathname === '/collaboration-tools' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-pink-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
