@@ -276,6 +276,92 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              {/* PHASE 4: Intelligence & Insights */}
+              <Link to="/intelligence-dashboard">
+                <Button 
+                  variant={location.pathname === '/intelligence-dashboard' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Brain className="h-4 w-4 mr-1" />
+                  Intelligence
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                    AI
+                  </Badge>
+                  {location.pathname === '/intelligence-dashboard' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/performance-tracker">
+                <Button 
+                  variant={location.pathname === '/performance-tracker' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <BarChart3 className="h-4 w-4 mr-1" />
+                  Performance
+                  <Badge className="ml-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                    ANALYTICS
+                  </Badge>
+                  {location.pathname === '/performance-tracker' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/engagement-predictor">
+                <Button 
+                  variant={location.pathname === '/engagement-predictor' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Predict
+                  <Badge className="ml-1 bg-gradient-to-r from-green-500 to-blue-500 text-white text-xs">
+                    ENGAGE
+                  </Badge>
+                  {location.pathname === '/engagement-predictor' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/ab-testing-hub">
+                <Button 
+                  variant={location.pathname === '/ab-testing-hub' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <TestTube className="h-4 w-4 mr-1" />
+                  A/B Test
+                  <Badge className="ml-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs">
+                    OPTIMIZE
+                  </Badge>
+                  {location.pathname === '/ab-testing-hub' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/trend-forecaster">
+                <Button 
+                  variant={location.pathname === '/trend-forecaster' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Telescope className="h-4 w-4 mr-1" />
+                  Trends
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
+                    FORECAST
+                  </Badge>
+                  {location.pathname === '/trend-forecaster' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/competitor-analysis">
                 <Button 
                   variant={location.pathname === '/competitor-analysis' ? 'default' : 'ghost'}
