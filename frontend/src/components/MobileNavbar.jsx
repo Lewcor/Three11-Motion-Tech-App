@@ -128,6 +128,12 @@ const MobileNavbar = () => {
       badge: 'FORECAST'
     },
     { 
+      path: '/competitor-monitor', 
+      name: 'Competitor Monitor', 
+      icon: <Target className="h-4 w-4" />,
+      badge: 'INTEL'
+    },
+    { 
       path: '/competitor-analysis', 
       name: 'Competitor Analysis', 
       icon: <Target className="h-4 w-4" />,
