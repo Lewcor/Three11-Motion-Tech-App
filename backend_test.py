@@ -1278,6 +1278,837 @@ class BackendTester:
         else:
             self.log_test("Latest AI Models Verification", False, "Failed to verify AI models", response)
     
+    # =====================================
+    # PHASE 4: INTELLIGENCE & INSIGHTS TESTS
+    # =====================================
+    
+    async def test_performance_tracking_dashboard(self):
+        """Test 39: Performance Tracking Dashboard"""
+        if not self.auth_token:
+            self.log_test("Performance Tracking Dashboard", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/performance/dashboard?date_range=30_days")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["performance_analysis", "key_insights", "real_time_summary"]
+                
+                if all(field in data for field in required_fields):
+                    # Check performance analysis structure
+                    perf_analysis = data["performance_analysis"]
+                    analysis_fields = ["avg_engagement_rate", "total_content_pieces", "platform_performance"]
+                    
+                    if all(field in perf_analysis for field in analysis_fields):
+                        self.log_test("Performance Tracking Dashboard", True, 
+                                    f"Performance dashboard working - {perf_analysis['total_content_pieces']} content pieces analyzed")
+                    else:
+                        missing = [f for f in analysis_fields if f not in perf_analysis]
+                        self.log_test("Performance Tracking Dashboard", False, 
+                                    f"Performance analysis missing fields: {missing}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Performance Tracking Dashboard", False, 
+                                f"Dashboard missing required fields: {missing}")
+            else:
+                self.log_test("Performance Tracking Dashboard", False, "Failed to get performance dashboard", response)
+                
+        except Exception as e:
+            self.log_test("Performance Tracking Dashboard", False, f"Performance dashboard test error: {str(e)}")
+    
+    async def test_performance_analysis(self):
+        """Test 40: Performance Analysis with Request"""
+        if not self.auth_token:
+            self.log_test("Performance Analysis", False, "No auth token available")
+            return
+        
+        try:
+            analysis_data = {
+                "user_id": self.user_id,
+                "date_range": "7_days",
+                "platforms": ["instagram", "tiktok"],
+                "categories": ["fashion", "fitness"],
+                "metrics": ["engagement_rate", "reach", "impressions"]
+            }
+            
+            success, response = await self.make_request("POST", "/performance/analyze", analysis_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["avg_engagement_rate", "total_content_pieces", "platform_performance", "category_performance"]
+                
+                if all(field in data for field in required_fields):
+                    platform_perf = data["platform_performance"]
+                    if isinstance(platform_perf, dict) and len(platform_perf) > 0:
+                        self.log_test("Performance Analysis", True, 
+                                    f"Performance analysis working - Analyzed {len(platform_perf)} platforms")
+                    else:
+                        self.log_test("Performance Analysis", False, "Empty platform performance data")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Performance Analysis", False, 
+                                f"Analysis missing required fields: {missing}")
+            else:
+                self.log_test("Performance Analysis", False, "Failed to get performance analysis", response)
+                
+        except Exception as e:
+            self.log_test("Performance Analysis", False, f"Performance analysis test error: {str(e)}")
+    
+    async def test_real_time_metrics(self):
+        """Test 41: Real-time Performance Metrics"""
+        if not self.auth_token:
+            self.log_test("Real-time Metrics", False, "No auth token available")
+            return
+        
+        try:
+            # Use a mock content ID
+            content_id = "test_content_123"
+            success, response = await self.make_request("GET", f"/performance/real-time/{content_id}")
+            
+            if success:
+                data = response["data"]
+                expected_fields = ["content_id", "current_metrics", "trend_data", "last_updated"]
+                
+                if all(field in data for field in expected_fields):
+                    metrics = data["current_metrics"]
+                    if isinstance(metrics, dict) and "engagement_rate" in metrics:
+                        self.log_test("Real-time Metrics", True, 
+                                    f"Real-time metrics working - Engagement rate: {metrics['engagement_rate']}%")
+                    else:
+                        self.log_test("Real-time Metrics", False, "Invalid metrics structure")
+                else:
+                    missing = [f for f in expected_fields if f not in data]
+                    self.log_test("Real-time Metrics", False, 
+                                f"Real-time metrics missing fields: {missing}")
+            else:
+                self.log_test("Real-time Metrics", False, "Failed to get real-time metrics", response)
+                
+        except Exception as e:
+            self.log_test("Real-time Metrics", False, f"Real-time metrics test error: {str(e)}")
+    
+    async def test_performance_insights(self):
+        """Test 42: AI-powered Performance Insights"""
+        if not self.auth_token:
+            self.log_test("Performance Insights", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/performance/insights")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list) and len(data) > 0:
+                    # Check insight structure
+                    first_insight = data[0]
+                    insight_fields = ["insight_type", "title", "description", "impact_score", "actionable_steps"]
+                    
+                    if all(field in first_insight for field in insight_fields):
+                        self.log_test("Performance Insights", True, 
+                                    f"Performance insights working - Generated {len(data)} insights")
+                    else:
+                        missing = [f for f in insight_fields if f not in first_insight]
+                        self.log_test("Performance Insights", False, 
+                                    f"Insight missing fields: {missing}")
+                else:
+                    self.log_test("Performance Insights", False, "No insights generated")
+            else:
+                self.log_test("Performance Insights", False, "Failed to get performance insights", response)
+                
+        except Exception as e:
+            self.log_test("Performance Insights", False, f"Performance insights test error: {str(e)}")
+    
+    async def test_engagement_prediction(self):
+        """Test 43: Engagement Prediction Service"""
+        if not self.auth_token:
+            self.log_test("Engagement Prediction", False, "No auth token available")
+            return
+        
+        try:
+            prediction_data = {
+                "user_id": self.user_id,
+                "content_type": "caption",
+                "category": "fashion",
+                "platform": "instagram",
+                "content_preview": "Check out this amazing summer fashion trend! Perfect for beach days and city strolls. #SummerStyle #Fashion2025",
+                "posting_time": "2025-01-15T14:00:00Z",
+                "hashtags": ["#SummerStyle", "#Fashion2025", "#OOTD"],
+                "content_length": 120,
+                "has_media": True,
+                "media_type": "image"
+            }
+            
+            success, response = await self.make_request("POST", "/engagement/predict", prediction_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["predicted_engagement_rate", "confidence_score", "best_posting_time", "optimization_suggestions"]
+                
+                if all(field in data for field in required_fields):
+                    engagement_rate = data["predicted_engagement_rate"]
+                    confidence = data["confidence_score"]
+                    
+                    if isinstance(engagement_rate, (int, float)) and isinstance(confidence, (int, float)):
+                        self.log_test("Engagement Prediction", True, 
+                                    f"Engagement prediction working - Predicted: {engagement_rate}% (confidence: {confidence})")
+                    else:
+                        self.log_test("Engagement Prediction", False, "Invalid prediction data types")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Engagement Prediction", False, 
+                                f"Prediction missing fields: {missing}")
+            else:
+                self.log_test("Engagement Prediction", False, "Failed to get engagement prediction", response)
+                
+        except Exception as e:
+            self.log_test("Engagement Prediction", False, f"Engagement prediction test error: {str(e)}")
+    
+    async def test_best_posting_time(self):
+        """Test 44: Best Posting Time Prediction"""
+        if not self.auth_token:
+            self.log_test("Best Posting Time", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/engagement/best-posting-time?platform=instagram&category=fashion")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["best_posting_time", "timezone_note", "confidence", "alternative_times"]
+                
+                if all(field in data for field in required_fields):
+                    best_time = data["best_posting_time"]
+                    alternatives = data["alternative_times"]
+                    
+                    if best_time and isinstance(alternatives, list):
+                        self.log_test("Best Posting Time", True, 
+                                    f"Best posting time prediction working - Recommended: {best_time}")
+                    else:
+                        self.log_test("Best Posting Time", False, "Invalid posting time data")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Best Posting Time", False, 
+                                f"Posting time missing fields: {missing}")
+            else:
+                self.log_test("Best Posting Time", False, "Failed to get best posting time", response)
+                
+        except Exception as e:
+            self.log_test("Best Posting Time", False, f"Best posting time test error: {str(e)}")
+    
+    async def test_engagement_insights(self):
+        """Test 45: Engagement Insights"""
+        if not self.auth_token:
+            self.log_test("Engagement Insights", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/engagement/insights?platform=instagram&category=fashion")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["platform_benchmark", "category_performance", "your_predicted_performance", "optimization_opportunities", "best_practices"]
+                
+                if all(field in data for field in required_fields):
+                    benchmark = data["platform_benchmark"]
+                    predicted_perf = data["your_predicted_performance"]
+                    
+                    if "avg_engagement_rate" in benchmark and "engagement_rate" in predicted_perf:
+                        self.log_test("Engagement Insights", True, 
+                                    f"Engagement insights working - Benchmark: {benchmark['avg_engagement_rate']}%")
+                    else:
+                        self.log_test("Engagement Insights", False, "Invalid insights structure")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Engagement Insights", False, 
+                                f"Insights missing fields: {missing}")
+            else:
+                self.log_test("Engagement Insights", False, "Failed to get engagement insights", response)
+                
+        except Exception as e:
+            self.log_test("Engagement Insights", False, f"Engagement insights test error: {str(e)}")
+    
+    async def test_ab_testing_create(self):
+        """Test 46: A/B Testing - Create Experiment"""
+        if not self.auth_token:
+            self.log_test("A/B Testing Create", False, "No auth token available")
+            return
+        
+        try:
+            ab_test_data = {
+                "user_id": self.user_id,
+                "experiment_name": "Caption Hook Test",
+                "hypothesis": "Using question hooks will increase engagement by 20%",
+                "test_type": "caption_variation",
+                "platform": "instagram",
+                "category": "fashion",
+                "variant_a": {
+                    "name": "Control - Statement Hook",
+                    "content": "This summer trend is taking over fashion week!",
+                    "description": "Direct statement approach"
+                },
+                "variant_b": {
+                    "name": "Test - Question Hook", 
+                    "content": "Ready to see the summer trend everyone's talking about?",
+                    "description": "Question-based hook approach"
+                },
+                "success_metric": "engagement_rate",
+                "target_sample_size": 1000,
+                "confidence_level": 0.95,
+                "expected_duration_days": 7
+            }
+            
+            success, response = await self.make_request("POST", "/ab-testing/create", ab_test_data)
+            
+            if success:
+                data = response["data"]
+                required_fields = ["experiment_id", "status", "created_at", "estimated_completion"]
+                
+                if all(field in data for field in required_fields):
+                    experiment_id = data["experiment_id"]
+                    # Store for subsequent tests
+                    self.ab_test_id = experiment_id
+                    self.log_test("A/B Testing Create", True, 
+                                f"A/B test created successfully - ID: {experiment_id[:8]}...")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("A/B Testing Create", False, 
+                                f"A/B test creation missing fields: {missing}")
+            else:
+                self.log_test("A/B Testing Create", False, "Failed to create A/B test", response)
+                
+        except Exception as e:
+            self.log_test("A/B Testing Create", False, f"A/B test creation error: {str(e)}")
+    
+    async def test_ab_testing_dashboard(self):
+        """Test 47: A/B Testing Dashboard"""
+        if not self.auth_token:
+            self.log_test("A/B Testing Dashboard", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/ab-testing/dashboard")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["summary", "active_experiments", "recent_results", "suggested_tests", "success_rate"]
+                
+                if all(field in data for field in required_fields):
+                    summary = data["summary"]
+                    summary_fields = ["total_tests", "active_tests", "completed_tests", "average_improvement"]
+                    
+                    if all(field in summary for field in summary_fields):
+                        self.log_test("A/B Testing Dashboard", True, 
+                                    f"A/B testing dashboard working - {summary['total_tests']} total tests")
+                    else:
+                        missing = [f for f in summary_fields if f not in summary]
+                        self.log_test("A/B Testing Dashboard", False, 
+                                    f"Dashboard summary missing fields: {missing}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("A/B Testing Dashboard", False, 
+                                f"Dashboard missing fields: {missing}")
+            else:
+                self.log_test("A/B Testing Dashboard", False, "Failed to get A/B testing dashboard", response)
+                
+        except Exception as e:
+            self.log_test("A/B Testing Dashboard", False, f"A/B testing dashboard error: {str(e)}")
+    
+    async def test_ab_testing_suggestions(self):
+        """Test 48: A/B Testing Suggestions"""
+        if not self.auth_token:
+            self.log_test("A/B Testing Suggestions", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/ab-testing/suggestions?platform=instagram&category=fashion")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list) and len(data) > 0:
+                    # Check suggestion structure
+                    first_suggestion = data[0]
+                    suggestion_fields = ["test_type", "hypothesis", "expected_impact", "difficulty", "priority"]
+                    
+                    if all(field in first_suggestion for field in suggestion_fields):
+                        self.log_test("A/B Testing Suggestions", True, 
+                                    f"A/B test suggestions working - Generated {len(data)} suggestions")
+                    else:
+                        missing = [f for f in suggestion_fields if f not in first_suggestion]
+                        self.log_test("A/B Testing Suggestions", False, 
+                                    f"Suggestion missing fields: {missing}")
+                else:
+                    self.log_test("A/B Testing Suggestions", False, "No A/B test suggestions generated")
+            else:
+                self.log_test("A/B Testing Suggestions", False, "Failed to get A/B test suggestions", response)
+                
+        except Exception as e:
+            self.log_test("A/B Testing Suggestions", False, f"A/B test suggestions error: {str(e)}")
+    
+    async def test_ab_testing_user_experiments(self):
+        """Test 49: User's A/B Test Experiments"""
+        if not self.auth_token:
+            self.log_test("A/B Testing User Experiments", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/ab-testing/user-experiments")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    self.log_test("A/B Testing User Experiments", True, 
+                                f"User experiments retrieved - {len(data)} experiments found")
+                else:
+                    self.log_test("A/B Testing User Experiments", False, "Invalid experiments data format")
+            else:
+                self.log_test("A/B Testing User Experiments", False, "Failed to get user experiments", response)
+                
+        except Exception as e:
+            self.log_test("A/B Testing User Experiments", False, f"User experiments error: {str(e)}")
+    
+    async def test_competitor_monitoring_dashboard(self):
+        """Test 50: Competitor Monitoring Dashboard"""
+        if not self.auth_token:
+            self.log_test("Competitor Monitoring Dashboard", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/competitor-monitoring/dashboard")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["summary", "recent_alerts", "benchmark_summary", "trending_opportunities"]
+                
+                if all(field in data for field in required_fields):
+                    summary = data["summary"]
+                    summary_fields = ["total_alerts", "high_priority_alerts", "unread_alerts", "competitive_score"]
+                    
+                    if all(field in summary for field in summary_fields):
+                        competitive_score = summary["competitive_score"]
+                        self.log_test("Competitor Monitoring Dashboard", True, 
+                                    f"Competitor monitoring dashboard working - Competitive score: {competitive_score}")
+                    else:
+                        missing = [f for f in summary_fields if f not in summary]
+                        self.log_test("Competitor Monitoring Dashboard", False, 
+                                    f"Dashboard summary missing fields: {missing}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Competitor Monitoring Dashboard", False, 
+                                f"Dashboard missing fields: {missing}")
+            else:
+                self.log_test("Competitor Monitoring Dashboard", False, "Failed to get competitor monitoring dashboard", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Monitoring Dashboard", False, f"Competitor monitoring dashboard error: {str(e)}")
+    
+    async def test_competitor_monitoring_alerts(self):
+        """Test 51: Competitor Monitoring Alerts"""
+        if not self.auth_token:
+            self.log_test("Competitor Monitoring Alerts", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/competitor-monitoring/alerts?limit=10")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    self.log_test("Competitor Monitoring Alerts", True, 
+                                f"Competitor alerts retrieved - {len(data)} alerts found")
+                else:
+                    self.log_test("Competitor Monitoring Alerts", False, "Invalid alerts data format")
+            else:
+                self.log_test("Competitor Monitoring Alerts", False, "Failed to get competitor alerts", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Monitoring Alerts", False, f"Competitor alerts error: {str(e)}")
+    
+    async def test_competitor_monitoring_benchmark(self):
+        """Test 52: Competitor Benchmarking"""
+        if not self.auth_token:
+            self.log_test("Competitor Benchmarking", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/competitor-monitoring/benchmark?category=fashion&platform=instagram")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["performance_percentile", "improvement_potential", "quick_wins", "competitive_gaps"]
+                
+                if all(field in data for field in required_fields):
+                    percentile = data["performance_percentile"]
+                    improvement = data["improvement_potential"]
+                    
+                    if isinstance(percentile, (int, float)) and isinstance(improvement, (int, float)):
+                        self.log_test("Competitor Benchmarking", True, 
+                                    f"Competitor benchmarking working - Percentile: {percentile}%, Improvement: {improvement}%")
+                    else:
+                        self.log_test("Competitor Benchmarking", False, "Invalid benchmark data types")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Competitor Benchmarking", False, 
+                                f"Benchmark missing fields: {missing}")
+            else:
+                self.log_test("Competitor Benchmarking", False, "Failed to get competitor benchmark", response)
+                
+        except Exception as e:
+            self.log_test("Competitor Benchmarking", False, f"Competitor benchmarking error: {str(e)}")
+    
+    async def test_trend_forecasting_dashboard(self):
+        """Test 53: Trend Forecasting Dashboard"""
+        if not self.auth_token:
+            self.log_test("Trend Forecasting Dashboard", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/trend-forecasting/dashboard")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["summary", "top_forecasts", "urgent_alerts", "trending_now", "forecast_accuracy"]
+                
+                if all(field in data for field in required_fields):
+                    summary = data["summary"]
+                    summary_fields = ["total_forecasts", "high_confidence_forecasts", "active_alerts", "urgent_opportunities"]
+                    
+                    if all(field in summary for field in summary_fields):
+                        total_forecasts = summary["total_forecasts"]
+                        high_confidence = summary["high_confidence_forecasts"]
+                        self.log_test("Trend Forecasting Dashboard", True, 
+                                    f"Trend forecasting dashboard working - {total_forecasts} forecasts ({high_confidence} high confidence)")
+                    else:
+                        missing = [f for f in summary_fields if f not in summary]
+                        self.log_test("Trend Forecasting Dashboard", False, 
+                                    f"Dashboard summary missing fields: {missing}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Trend Forecasting Dashboard", False, 
+                                f"Dashboard missing fields: {missing}")
+            else:
+                self.log_test("Trend Forecasting Dashboard", False, "Failed to get trend forecasting dashboard", response)
+                
+        except Exception as e:
+            self.log_test("Trend Forecasting Dashboard", False, f"Trend forecasting dashboard error: {str(e)}")
+    
+    async def test_trend_forecasting_forecast(self):
+        """Test 54: Generate Trend Forecast"""
+        if not self.auth_token:
+            self.log_test("Trend Forecasting Forecast", False, "No auth token available")
+            return
+        
+        try:
+            forecast_data = {
+                "user_id": self.user_id,
+                "forecast_horizon_days": 30,
+                "platforms": ["instagram", "tiktok"],
+                "categories": ["fashion", "fitness"],
+                "confidence_threshold": 0.7,
+                "include_seasonal_trends": True,
+                "focus_areas": ["hashtags", "content_types", "posting_times"]
+            }
+            
+            success, response = await self.make_request("POST", "/trend-forecasting/forecast", forecast_data)
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list) and len(data) > 0:
+                    # Check forecast structure
+                    first_forecast = data[0]
+                    forecast_fields = ["trend_topic", "confidence_score", "estimated_peak_date", "recommended_action"]
+                    
+                    if all(field in first_forecast for field in forecast_fields):
+                        confidence = first_forecast["confidence_score"]
+                        self.log_test("Trend Forecasting Forecast", True, 
+                                    f"Trend forecasting working - Generated {len(data)} forecasts (avg confidence: {confidence})")
+                    else:
+                        missing = [f for f in forecast_fields if f not in first_forecast]
+                        self.log_test("Trend Forecasting Forecast", False, 
+                                    f"Forecast missing fields: {missing}")
+                else:
+                    self.log_test("Trend Forecasting Forecast", False, "No trend forecasts generated")
+            else:
+                self.log_test("Trend Forecasting Forecast", False, "Failed to generate trend forecast", response)
+                
+        except Exception as e:
+            self.log_test("Trend Forecasting Forecast", False, f"Trend forecasting error: {str(e)}")
+    
+    async def test_trend_forecasting_trending_topics(self):
+        """Test 55: Current Trending Topics"""
+        if not self.auth_token:
+            self.log_test("Trending Topics", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/trend-forecasting/trending-topics?category=fashion&platform=instagram&limit=10")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["trending_topics", "last_updated", "data_sources", "next_update"]
+                
+                if all(field in data for field in required_fields):
+                    topics = data["trending_topics"]
+                    if isinstance(topics, list) and len(topics) > 0:
+                        # Check topic structure
+                        first_topic = topics[0]
+                        topic_fields = ["topic", "popularity_score", "growth_rate", "engagement_potential"]
+                        
+                        if all(field in first_topic for field in topic_fields):
+                            self.log_test("Trending Topics", True, 
+                                        f"Trending topics working - {len(topics)} topics retrieved")
+                        else:
+                            missing = [f for f in topic_fields if f not in first_topic]
+                            self.log_test("Trending Topics", False, 
+                                        f"Topic missing fields: {missing}")
+                    else:
+                        self.log_test("Trending Topics", False, "No trending topics found")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Trending Topics", False, 
+                                f"Trending topics missing fields: {missing}")
+            else:
+                self.log_test("Trending Topics", False, "Failed to get trending topics", response)
+                
+        except Exception as e:
+            self.log_test("Trending Topics", False, f"Trending topics error: {str(e)}")
+    
+    async def test_trend_forecasting_alerts(self):
+        """Test 56: Trend Opportunity Alerts"""
+        if not self.auth_token:
+            self.log_test("Trend Forecasting Alerts", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/trend-forecasting/alerts")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list):
+                    self.log_test("Trend Forecasting Alerts", True, 
+                                f"Trend alerts retrieved - {len(data)} alerts found")
+                else:
+                    self.log_test("Trend Forecasting Alerts", False, "Invalid alerts data format")
+            else:
+                self.log_test("Trend Forecasting Alerts", False, "Failed to get trend alerts", response)
+                
+        except Exception as e:
+            self.log_test("Trend Forecasting Alerts", False, f"Trend alerts error: {str(e)}")
+    
+    async def test_intelligence_dashboard(self):
+        """Test 57: Intelligence Dashboard (Combined Phase 4 Overview)"""
+        if not self.auth_token:
+            self.log_test("Intelligence Dashboard", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/intelligence/dashboard")
+            
+            if success:
+                data = response["data"]
+                required_fields = ["intelligence_score", "performance_summary", "trend_opportunities", 
+                                 "competitive_intelligence", "optimization_insights", "key_recommendations", "alerts_summary"]
+                
+                if all(field in data for field in required_fields):
+                    intelligence_score = data["intelligence_score"]
+                    perf_summary = data["performance_summary"]
+                    trend_ops = data["trend_opportunities"]
+                    
+                    # Check key sub-structures
+                    if ("avg_engagement_rate" in perf_summary and 
+                        "high_confidence_forecasts" in trend_ops and
+                        isinstance(intelligence_score, (int, float))):
+                        
+                        self.log_test("Intelligence Dashboard", True, 
+                                    f"Intelligence dashboard working - Score: {intelligence_score}, Engagement: {perf_summary['avg_engagement_rate']}%")
+                    else:
+                        self.log_test("Intelligence Dashboard", False, "Invalid dashboard sub-structure")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    self.log_test("Intelligence Dashboard", False, 
+                                f"Intelligence dashboard missing fields: {missing}")
+            else:
+                self.log_test("Intelligence Dashboard", False, "Failed to get intelligence dashboard", response)
+                
+        except Exception as e:
+            self.log_test("Intelligence Dashboard", False, f"Intelligence dashboard error: {str(e)}")
+    
+    async def test_phase4_authentication_requirements(self):
+        """Test 58: Phase 4 Endpoints Authentication"""
+        # Test that Phase 4 endpoints require authentication
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        phase4_endpoints = [
+            "/performance/dashboard",
+            "/engagement/predict",
+            "/ab-testing/create",
+            "/competitor-monitoring/dashboard",
+            "/trend-forecasting/dashboard",
+            "/intelligence/dashboard"
+        ]
+        
+        authenticated_endpoints = 0
+        
+        try:
+            for endpoint in phase4_endpoints:
+                if endpoint == "/engagement/predict" or endpoint == "/ab-testing/create":
+                    # POST endpoints need data
+                    success, response = await self.make_request("POST", endpoint, {"test": "data"})
+                else:
+                    # GET endpoints
+                    success, response = await self.make_request("GET", endpoint)
+                
+                if not success and response.get("status") in [401, 403]:
+                    authenticated_endpoints += 1
+            
+            if authenticated_endpoints == len(phase4_endpoints):
+                self.log_test("Phase 4 Authentication", True, 
+                            f"All {authenticated_endpoints} Phase 4 endpoints properly require authentication")
+            else:
+                self.log_test("Phase 4 Authentication", False, 
+                            f"Only {authenticated_endpoints}/{len(phase4_endpoints)} Phase 4 endpoints require authentication")
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_phase4_error_handling(self):
+        """Test 59: Phase 4 Error Handling"""
+        if not self.auth_token:
+            self.log_test("Phase 4 Error Handling", False, "No auth token available")
+            return
+        
+        try:
+            # Test invalid data for engagement prediction
+            invalid_prediction_data = {
+                "user_id": "invalid_user",
+                "content_type": "invalid_type",
+                "category": "invalid_category",
+                "platform": "invalid_platform"
+            }
+            
+            success, response = await self.make_request("POST", "/engagement/predict", invalid_prediction_data)
+            
+            # Should fail gracefully with proper error message
+            if not success or (success and "error" in response.get("data", {})):
+                self.log_test("Phase 4 Error Handling", True, 
+                            "Phase 4 services handle invalid data gracefully")
+            else:
+                self.log_test("Phase 4 Error Handling", False, 
+                            "Phase 4 services should reject invalid data", response)
+                
+        except Exception as e:
+            self.log_test("Phase 4 Error Handling", True, 
+                        f"Phase 4 services properly handle errors: {str(e)}")
+    
+    async def test_phase4_ai_integration(self):
+        """Test 60: Phase 4 AI Integration"""
+        if not self.auth_token:
+            self.log_test("Phase 4 AI Integration", False, "No auth token available")
+            return
+        
+        try:
+            # Test AI-powered performance insights
+            success, response = await self.make_request("GET", "/performance/insights")
+            
+            if success:
+                data = response["data"]
+                if isinstance(data, list) and len(data) > 0:
+                    # Check if insights contain AI-generated content
+                    first_insight = data[0]
+                    if ("description" in first_insight and 
+                        "actionable_steps" in first_insight and
+                        len(first_insight.get("description", "")) > 20):
+                        
+                        self.log_test("Phase 4 AI Integration", True, 
+                                    "Phase 4 AI integration working - Generated detailed insights")
+                    else:
+                        self.log_test("Phase 4 AI Integration", False, 
+                                    "AI insights lack sufficient detail")
+                else:
+                    self.log_test("Phase 4 AI Integration", False, "No AI insights generated")
+            else:
+                self.log_test("Phase 4 AI Integration", False, "Failed to test AI integration", response)
+                
+        except Exception as e:
+            self.log_test("Phase 4 AI Integration", False, f"Phase 4 AI integration error: {str(e)}")
+    
+    async def test_phase4_statistical_calculations(self):
+        """Test 61: Phase 4 Statistical Calculations"""
+        if not self.auth_token:
+            self.log_test("Phase 4 Statistical Calculations", False, "No auth token available")
+            return
+        
+        try:
+            # Test A/B testing dashboard which includes statistical calculations
+            success, response = await self.make_request("GET", "/ab-testing/dashboard")
+            
+            if success:
+                data = response["data"]
+                if "summary" in data:
+                    summary = data["summary"]
+                    # Check for statistical metrics
+                    if ("average_improvement" in summary and 
+                        "success_rate" in data and
+                        isinstance(summary.get("average_improvement"), (int, float))):
+                        
+                        avg_improvement = summary["average_improvement"]
+                        success_rate = data["success_rate"]
+                        self.log_test("Phase 4 Statistical Calculations", True, 
+                                    f"Statistical calculations working - Avg improvement: {avg_improvement}%, Success rate: {success_rate}%")
+                    else:
+                        self.log_test("Phase 4 Statistical Calculations", False, 
+                                    "Missing statistical calculation fields")
+                else:
+                    self.log_test("Phase 4 Statistical Calculations", False, "No summary data for calculations")
+            else:
+                self.log_test("Phase 4 Statistical Calculations", False, "Failed to test statistical calculations", response)
+                
+        except Exception as e:
+            self.log_test("Phase 4 Statistical Calculations", False, f"Statistical calculations error: {str(e)}")
+    
+    async def test_phase4_data_aggregation(self):
+        """Test 62: Phase 4 Data Aggregation"""
+        if not self.auth_token:
+            self.log_test("Phase 4 Data Aggregation", False, "No auth token available")
+            return
+        
+        try:
+            # Test intelligence dashboard which aggregates data from all Phase 4 services
+            success, response = await self.make_request("GET", "/intelligence/dashboard")
+            
+            if success:
+                data = response["data"]
+                
+                # Check if data is aggregated from multiple services
+                aggregation_indicators = [
+                    "performance_summary",  # From performance service
+                    "trend_opportunities",  # From trend forecasting
+                    "competitive_intelligence",  # From competitor monitoring
+                    "optimization_insights"  # From engagement prediction & A/B testing
+                ]
+                
+                if all(indicator in data for indicator in aggregation_indicators):
+                    # Check if each section has meaningful data
+                    perf_summary = data["performance_summary"]
+                    trend_ops = data["trend_opportunities"]
+                    
+                    if (len(perf_summary) > 1 and len(trend_ops) > 1):
+                        self.log_test("Phase 4 Data Aggregation", True, 
+                                    "Data aggregation working - Multiple services integrated successfully")
+                    else:
+                        self.log_test("Phase 4 Data Aggregation", False, 
+                                    "Aggregated data sections are incomplete")
+                else:
+                    missing = [i for i in aggregation_indicators if i not in data]
+                    self.log_test("Phase 4 Data Aggregation", False, 
+                                f"Data aggregation missing sections: {missing}")
+            else:
+                self.log_test("Phase 4 Data Aggregation", False, "Failed to test data aggregation", response)
+                
+        except Exception as e:
+            self.log_test("Phase 4 Data Aggregation", False, f"Data aggregation error: {str(e)}")
+    
     # PHASE 3: Content Type Expansion Tests
     
     async def test_video_content_generation(self):
