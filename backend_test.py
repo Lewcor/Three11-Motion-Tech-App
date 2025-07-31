@@ -3783,7 +3783,96 @@ class BackendTester:
         else:
             print("  ❌ Latest AI Models: Some providers not using latest model versions")
         
-        print("\n" + "=" * 60)
+        # =====================================
+        # PHASE 4: INTELLIGENCE & INSIGHTS SUMMARY
+        # =====================================
+        
+        # Phase 4 specific summary
+        phase4_tests = [name for name in self.test_results.keys() if any(keyword in name for keyword in 
+                       ["Performance", "Engagement", "A/B Testing", "Competitor Monitoring", "Trend Forecasting", "Intelligence", "Phase 4"])]
+        
+        if phase4_tests:
+            phase4_passed = sum(1 for name in phase4_tests if self.test_results[name]["success"])
+            phase4_total = len(phase4_tests)
+            phase4_success_rate = (phase4_passed / phase4_total) * 100
+            
+            print(f"\n🧠 PHASE 4: INTELLIGENCE & INSIGHTS SUMMARY:")
+            print(f"   📊 Phase 4 Tests: {phase4_passed}/{phase4_total} ({phase4_success_rate:.1f}%)")
+            
+            if phase4_success_rate >= 90:
+                print(f"   🎉 EXCELLENT: Phase 4 is production-ready!")
+            elif phase4_success_rate >= 80:
+                print(f"   ✅ GOOD: Phase 4 is mostly functional with minor issues")
+            elif phase4_success_rate >= 60:
+                print(f"   ⚠️ NEEDS WORK: Phase 4 has significant issues to address")
+            else:
+                print(f"   ❌ CRITICAL: Phase 4 requires major fixes before deployment")
+            
+            # Performance Tracking Service
+            perf_tests = ["Performance Tracking Dashboard", "Performance Analysis", "Real-time Metrics", "Performance Insights"]
+            perf_working = all(self.test_results.get(test, {}).get("success", False) for test in perf_tests)
+            if perf_working:
+                print("  ✅ Performance Tracking: Dashboard, analysis, real-time metrics, and AI insights working")
+            else:
+                perf_failed = [test for test in perf_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Performance Tracking: Issues - Failed: {perf_failed}")
+            
+            # Engagement Prediction Service
+            engagement_tests = ["Engagement Prediction", "Best Posting Time", "Engagement Insights"]
+            engagement_working = all(self.test_results.get(test, {}).get("success", False) for test in engagement_tests)
+            if engagement_working:
+                print("  ✅ Engagement Prediction: AI predictions, optimal timing, and insights working")
+            else:
+                engagement_failed = [test for test in engagement_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Engagement Prediction: Issues - Failed: {engagement_failed}")
+            
+            # A/B Testing Service
+            ab_tests = ["A/B Testing Create", "A/B Testing Dashboard", "A/B Testing Suggestions", "A/B Testing User Experiments"]
+            ab_working = all(self.test_results.get(test, {}).get("success", False) for test in ab_tests)
+            if ab_working:
+                print("  ✅ A/B Testing: Experiment creation, dashboard, suggestions, and management working")
+            else:
+                ab_failed = [test for test in ab_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ A/B Testing: Issues - Failed: {ab_failed}")
+            
+            # Competitor Monitoring Service
+            comp_mon_tests = ["Competitor Monitoring Dashboard", "Competitor Monitoring Alerts", "Competitor Benchmarking"]
+            comp_mon_working = all(self.test_results.get(test, {}).get("success", False) for test in comp_mon_tests)
+            if comp_mon_working:
+                print("  ✅ Competitor Monitoring: Dashboard, alerts, and benchmarking working")
+            else:
+                comp_mon_failed = [test for test in comp_mon_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Competitor Monitoring: Issues - Failed: {comp_mon_failed}")
+            
+            # Trend Forecasting Service
+            trend_forecast_tests = ["Trend Forecasting Dashboard", "Trend Forecasting Forecast", "Trending Topics", "Trend Forecasting Alerts"]
+            trend_forecast_working = all(self.test_results.get(test, {}).get("success", False) for test in trend_forecast_tests)
+            if trend_forecast_working:
+                print("  ✅ Trend Forecasting: Dashboard, forecasts, trending topics, and alerts working")
+            else:
+                trend_forecast_failed = [test for test in trend_forecast_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Trend Forecasting: Issues - Failed: {trend_forecast_failed}")
+            
+            # Intelligence Dashboard
+            intelligence_test = self.test_results.get("Intelligence Dashboard", {})
+            if intelligence_test.get("success"):
+                print("  ✅ Intelligence Dashboard: Combined Phase 4 overview working with data aggregation")
+            else:
+                print("  ❌ Intelligence Dashboard: Issues with comprehensive intelligence overview")
+            
+            # Phase 4 System Tests
+            phase4_system_tests = ["Phase 4 Authentication", "Phase 4 Error Handling", "Phase 4 AI Integration", 
+                                 "Phase 4 Statistical Calculations", "Phase 4 Data Aggregation"]
+            phase4_system_working = all(self.test_results.get(test, {}).get("success", False) for test in phase4_system_tests)
+            if phase4_system_working:
+                print("  ✅ Phase 4 System: Authentication, error handling, AI integration, and data aggregation working")
+            else:
+                phase4_system_failed = [test for test in phase4_system_tests if not self.test_results.get(test, {}).get("success", False)]
+                print(f"  ❌ Phase 4 System: Issues - Failed: {phase4_system_failed}")
+        
+        print("\n" + "=" * 80)
+        print("🏁 COMPREHENSIVE TESTING COMPLETE")
+        print("=" * 80)
 
 async def main():
     """Main test runner"""
