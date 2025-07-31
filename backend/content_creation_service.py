@@ -6,7 +6,7 @@ import os
 import logging
 from datetime import datetime, timedelta
 from models import (
-    AIProvider, ContentCategory, Platform, ContentType, ContentTemplate, 
+    AIProvider, ContentCategory, Platform, ContentType, ContentTemplateType, 
     PostTiming, ContentIdeaRequest, ContentIdeaResponse, VideoScriptRequest,
     VideoScriptResponse, ContentStrategyRequest, ContentStrategyResponse,
     TrendingTopic, ContentCalendar, BrandVoice
@@ -66,14 +66,14 @@ class ContentCreationService:
         
         # Content templates
         self.content_templates = {
-            ContentTemplate.EDUCATIONAL: "Focus on teaching, explaining, and providing value. Use step-by-step formats and actionable insights.",
-            ContentTemplate.ENTERTAINING: "Focus on humor, storytelling, and emotional engagement. Make it fun and shareable.",
-            ContentTemplate.PROMOTIONAL: "Focus on products, services, or personal brand. Balance value with promotion.",
-            ContentTemplate.INSPIRATIONAL: "Focus on motivation, success stories, and personal growth. Inspire action and positive change.",
-            ContentTemplate.TUTORIAL: "Focus on how-to content with clear steps and demonstrations. Make it easy to follow.",
-            ContentTemplate.BEHIND_SCENES: "Focus on process, authenticity, and personal connection. Show the human side.",
-            ContentTemplate.USER_GENERATED: "Focus on community, testimonials, and user experiences. Encourage participation.",
-            ContentTemplate.SEASONAL: "Focus on holidays, seasons, and timely events. Create urgency and relevance."
+            ContentTemplateType.EDUCATIONAL: "Focus on teaching, explaining, and providing value. Use step-by-step formats and actionable insights.",
+            ContentTemplateType.ENTERTAINING: "Focus on humor, storytelling, and emotional engagement. Make it fun and shareable.",
+            ContentTemplateType.PROMOTIONAL: "Focus on products, services, or personal brand. Balance value with promotion.",
+            ContentTemplateType.INSPIRATIONAL: "Focus on motivation, success stories, and personal growth. Inspire action and positive change.",
+            ContentTemplateType.TUTORIAL: "Focus on how-to content with clear steps and demonstrations. Make it easy to follow.",
+            ContentTemplateType.BEHIND_SCENES: "Focus on process, authenticity, and personal connection. Show the human side.",
+            ContentTemplateType.USER_GENERATED: "Focus on community, testimonials, and user experiences. Encourage participation.",
+            ContentTemplateType.SEASONAL: "Focus on holidays, seasons, and timely events. Create urgency and relevance."
         }
 
     async def create_content_chat(self, content_type: ContentType, category: ContentCategory, 
