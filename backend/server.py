@@ -39,6 +39,9 @@ from engagement_prediction_service import engagement_service
 from ab_testing_service import ab_testing_service
 from competitor_monitoring_service import competitor_monitoring_service
 from trend_forecasting_service import trend_forecasting_service
+# PHASE 5: Team Collaboration Platform Services
+from team_management_service import team_management_service
+from role_permission_service import role_permission_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
