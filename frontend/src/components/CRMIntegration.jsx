@@ -25,7 +25,7 @@ import {
   BarChart3,
   UserCheck,
   Zap,
-  Sync,
+  RefreshCw,
   Filter,
   Search
 } from 'lucide-react';
