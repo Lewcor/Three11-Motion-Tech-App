@@ -95,6 +95,11 @@ function App() {
             <Route path="/team-management" element={<TeamManagement />} />
             <Route path="/role-management" element={<RoleManagement />} />
             <Route path="/collaboration-tools" element={<CollaborationTools />} />
+            {/* PHASE 6: Social Media Automation */}
+            <Route path="/social-dashboard" element={<SocialMediaDashboard />} />
+            <Route path="/social-publishing" element={<SocialMediaPublishing />} />
+            <Route path="/automation-workflows" element={<AutomationWorkflows />} />
+            <Route path="/crm-integration" element={<CRMIntegration />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
