@@ -164,6 +164,31 @@ const MobileNavbar = () => {
       icon: <MessageSquareMore className="h-4 w-4" />,
       badge: 'WORKFLOW'
     },
+    // PHASE 6: Social Media Automation
+    { 
+      path: '/social-dashboard', 
+      name: 'Social Dashboard', 
+      icon: <Share2 className="h-4 w-4" />,
+      badge: 'SOCIAL'
+    },
+    { 
+      path: '/social-publishing', 
+      name: 'Social Publishing', 
+      icon: <Send className="h-4 w-4" />,
+      badge: 'POST'
+    },
+    { 
+      path: '/automation-workflows', 
+      name: 'Automation', 
+      icon: <Workflow className="h-4 w-4" />,
+      badge: 'AUTO'
+    },
+    { 
+      path: '/crm-integration', 
+      name: 'CRM Integration', 
+      icon: <Database className="h-4 w-4" />,
+      badge: 'SYNC'
+    },
     { 
       path: '/premium', 
       name: 'Premium', 
