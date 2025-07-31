@@ -250,6 +250,8 @@ const MobileNavbar = () => {
                             ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
                             : item.badge === 'FORECAST'
                             ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                            : item.badge === 'INTEL'
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
