@@ -32,6 +32,12 @@ from podcast_content_service import podcast_content_service
 from email_marketing_service import email_marketing_service
 from blog_post_service import blog_post_service
 from product_description_service import product_description_service
+# PHASE 4: Intelligence & Insights Services
+from performance_tracking_service import performance_service
+from engagement_prediction_service import engagement_service
+from ab_testing_service import ab_testing_service
+from competitor_monitoring_service import competitor_monitoring_service
+from trend_forecasting_service import trend_forecasting_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
