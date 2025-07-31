@@ -449,7 +449,7 @@ const CRMIntegration = () => {
                         {syncing[integration.id] ? (
                           <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 mr-2"></div>
                         ) : (
-                          <Sync className="h-3 w-3 mr-2" />
+                          <RefreshCw className="h-3 w-3 mr-2" />
                         )}
                         Sync Now
                       </Button>
