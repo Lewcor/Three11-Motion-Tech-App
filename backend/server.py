@@ -42,6 +42,11 @@ from trend_forecasting_service import trend_forecasting_service
 # PHASE 5: Team Collaboration Platform Services
 from team_management_service import team_management_service
 from role_permission_service import role_permission_service
+# PHASE 6: Social Media Automation Services
+from social_media_publishing_service import social_publishing_service
+from crm_integration_service import crm_integration_service
+from calendar_integration_service import calendar_integration_service
+from social_media_automation_service import social_automation_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
