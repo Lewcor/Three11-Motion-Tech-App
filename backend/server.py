@@ -2887,6 +2887,148 @@ async def get_intelligence_dashboard(
         }
     }
 
+# =====================================
+# PHASE 5: TEAM COLLABORATION PLATFORM API ENDPOINTS
+# =====================================
+
+# Team Management Endpoints
+@api_router.post("/teams/create", response_model=Team)
+async def create_team_endpoint(
+    request: CreateTeamRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new team workspace"""
+    request.owner_id = current_user.id
+    return await team_management_service.create_team(request)
+
+@api_router.post("/teams/invite", response_model=TeamInvitation)
+async def invite_team_member_endpoint(
+    request: InviteTeamMemberRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Invite a new team member"""
+    request.invited_by = current_user.id
+    return await team_management_service.invite_team_member(request)
+
+@api_router.post("/teams/accept-invitation/{token}")
+async def accept_team_invitation_endpoint(
+    token: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Accept a team invitation"""
+    return await team_management_service.accept_invitation(token, current_user.id)
+
+@api_router.get("/teams/{team_id}/members")
+async def get_team_members_endpoint(
+    team_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get all team members"""
+    return await team_management_service.get_team_members(team_id, current_user.id)
+
+@api_router.put("/teams/members/role")
+async def update_member_role_endpoint(
+    request: UpdateMemberRoleRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Update team member role"""
+    request.updated_by = current_user.id
+    return await team_management_service.update_member_role(request)
+
+@api_router.delete("/teams/{team_id}/members/{member_id}")
+async def remove_team_member_endpoint(
+    team_id: str,
+    member_id: str,
+    reason: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Remove team member"""
+    return await team_management_service.remove_team_member(team_id, member_id, current_user.id, reason)
+
+@api_router.get("/teams/{team_id}/activity")
+async def get_team_activity_endpoint(
+    team_id: str,
+    limit: int = 50,
+    current_user: User = Depends(get_current_user)
+):
+    """Get team activity feed"""
+    return await team_management_service.get_team_activity(team_id, current_user.id, limit)
+
+@api_router.get("/teams/{team_id}/dashboard")
+async def get_team_dashboard_endpoint(
+    team_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get team dashboard data"""
+    return await team_management_service.get_team_dashboard(team_id, current_user.id)
+
+# Role and Permission Management Endpoints
+@api_router.post("/teams/roles/create", response_model=TeamRole)
+async def create_custom_role_endpoint(
+    request: CreateRoleRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new custom role"""
+    request.created_by = current_user.id
+    return await role_permission_service.create_custom_role(request)
+
+@api_router.put("/teams/roles/{role_id}", response_model=TeamRole)
+async def update_role_endpoint(
+    role_id: str,
+    request: UpdateRoleRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Update an existing role"""
+    request.updated_by = current_user.id
+    return await role_permission_service.update_role(role_id, request)
+
+@api_router.delete("/teams/roles/{role_id}")
+async def delete_role_endpoint(
+    role_id: str,
+    team_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete a custom role"""
+    return await role_permission_service.delete_role(role_id, team_id, current_user.id)
+
+@api_router.get("/teams/{team_id}/roles")
+async def get_team_roles_endpoint(
+    team_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get all roles for a team"""
+    return await role_permission_service.get_team_roles(team_id, current_user.id)
+
+@api_router.get("/teams/permissions/available")
+async def get_available_permissions_endpoint():
+    """Get all available permissions in the system"""
+    return await role_permission_service.get_available_permissions()
+
+@api_router.get("/teams/permissions/suggestions")
+async def get_permission_suggestions_endpoint(
+    role_type: str,
+    content_focus: str = "general"
+):
+    """Get AI-powered permission suggestions for role creation"""
+    return await role_permission_service.get_permission_suggestions(role_type, content_focus)
+
+@api_router.post("/teams/permissions/check")
+async def check_user_permissions_endpoint(
+    team_id: str,
+    permissions: List[str],
+    current_user: User = Depends(get_current_user)
+):
+    """Check if user has specific permissions"""
+    return await role_permission_service.check_user_permissions(current_user.id, team_id, permissions)
+
+@api_router.get("/teams/{team_id}/analytics/roles")
+async def get_role_analytics_endpoint(
+    team_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get role analytics and insights"""
+    return await role_permission_service.get_role_analytics(team_id, current_user.id)
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
