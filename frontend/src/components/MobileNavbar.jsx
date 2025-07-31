@@ -139,6 +139,31 @@ const MobileNavbar = () => {
       icon: <Target className="h-4 w-4" />,
       badge: 'NEW'
     },
+    // PHASE 5: Team Collaboration Platform
+    { 
+      path: '/team-dashboard', 
+      name: 'Team Dashboard', 
+      icon: <Users2 className="h-4 w-4" />,
+      badge: 'COLLAB'
+    },
+    { 
+      path: '/team-management', 
+      name: 'Team Management', 
+      icon: <UserCog className="h-4 w-4" />,
+      badge: 'ADMIN'
+    },
+    { 
+      path: '/role-management', 
+      name: 'Role Management', 
+      icon: <Crown className="h-4 w-4" />,
+      badge: 'PERMISSIONS'
+    },
+    { 
+      path: '/collaboration-tools', 
+      name: 'Collaboration Tools', 
+      icon: <MessageSquareMore className="h-4 w-4" />,
+      badge: 'WORKFLOW'
+    },
     { 
       path: '/premium', 
       name: 'Premium', 
