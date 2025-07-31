@@ -3579,6 +3579,65 @@ class BackendTester:
         await self.test_phase3_generation_limits()
         await self.test_phase3_error_handling()
         
+        # =====================================
+        # PHASE 4: INTELLIGENCE & INSIGHTS TESTS
+        # =====================================
+        
+        print("\n🧠 PHASE 4: INTELLIGENCE & INSIGHTS TESTS")
+        print("=" * 60)
+        
+        # Performance Tracking Service Tests
+        print("\n📊 PERFORMANCE TRACKING SERVICE")
+        print("-" * 40)
+        await self.test_performance_tracking_dashboard()
+        await self.test_performance_analysis()
+        await self.test_real_time_metrics()
+        await self.test_performance_insights()
+        
+        # Engagement Prediction Service Tests
+        print("\n🎯 ENGAGEMENT PREDICTION SERVICE")
+        print("-" * 40)
+        await self.test_engagement_prediction()
+        await self.test_best_posting_time()
+        await self.test_engagement_insights()
+        
+        # A/B Testing Service Tests
+        print("\n🧪 A/B TESTING SERVICE")
+        print("-" * 40)
+        await self.test_ab_testing_create()
+        await self.test_ab_testing_dashboard()
+        await self.test_ab_testing_suggestions()
+        await self.test_ab_testing_user_experiments()
+        
+        # Competitor Monitoring Service Tests
+        print("\n👁️ COMPETITOR MONITORING SERVICE")
+        print("-" * 40)
+        await self.test_competitor_monitoring_dashboard()
+        await self.test_competitor_monitoring_alerts()
+        await self.test_competitor_monitoring_benchmark()
+        
+        # Trend Forecasting Service Tests
+        print("\n🔮 TREND FORECASTING SERVICE")
+        print("-" * 40)
+        await self.test_trend_forecasting_dashboard()
+        await self.test_trend_forecasting_forecast()
+        await self.test_trend_forecasting_trending_topics()
+        await self.test_trend_forecasting_alerts()
+        
+        # Intelligence Dashboard Test (Combined Overview)
+        print("\n🎛️ INTELLIGENCE DASHBOARD")
+        print("-" * 40)
+        await self.test_intelligence_dashboard()
+        
+        # Phase 4 System Tests
+        print("\n🔧 PHASE 4 SYSTEM TESTS")
+        print("-" * 40)
+        await self.test_phase4_authentication_requirements()
+        await self.test_phase4_error_handling()
+        await self.test_phase4_ai_integration()
+        await self.test_phase4_statistical_calculations()
+        await self.test_phase4_data_aggregation()
+        
         # Print summary
         self.print_summary()
     
