@@ -1019,6 +1019,375 @@ class UpdateRoleRequest(BaseModel):
     is_default: Optional[bool] = None
     updated_by: str
 
+# =====================================
+# PHASE 6: SOCIAL MEDIA AUTOMATION MODELS
+# =====================================
+
+# Social Platform Integration Models
+class SocialPlatform(str, Enum):
+    FACEBOOK = "facebook"
+    INSTAGRAM = "instagram"
+    TWITTER = "twitter"
+    LINKEDIN = "linkedin"
+    TIKTOK = "tiktok"
+    YOUTUBE = "youtube"
+    PINTEREST = "pinterest"
+
+class SocialAccountStatus(str, Enum):
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"
+    ERROR = "error"
+    EXPIRED = "expired"
+    PENDING = "pending"
+
+class SocialAccount(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    platform: SocialPlatform
+    account_id: str  # Platform-specific account ID
+    account_name: str
+    username: str
+    access_token: str
+    refresh_token: Optional[str] = None
+    token_expires_at: Optional[datetime] = None
+    status: SocialAccountStatus = SocialAccountStatus.CONNECTED
+    followers_count: Optional[int] = None
+    profile_picture_url: Optional[str] = None
+    account_type: str = "personal"  # personal, business, creator
+    permissions: List[str] = []  # Platform-specific permissions
+    connected_at: datetime = Field(default_factory=datetime.utcnow)
+    last_sync: Optional[datetime] = None
+    metadata: Dict[str, Any] = {}
+
+# Social Media Posting Models
+class PostStatus(str, Enum):
+    DRAFT = "draft"
+    SCHEDULED = "scheduled"
+    PUBLISHING = "publishing"
+    PUBLISHED = "published"
+    FAILED = "failed"
+    DELETED = "deleted"
+
+class PostType(str, Enum):
+    TEXT = "text"
+    IMAGE = "image"
+    VIDEO = "video"
+    CAROUSEL = "carousel"
+    STORY = "story"
+    REEL = "reel"
+    THREAD = "thread"
+
+class MediaAsset(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    url: str
+    type: str  # image, video, gif
+    size: Optional[int] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    duration: Optional[int] = None  # For videos
+    thumbnail_url: Optional[str] = None
+    alt_text: Optional[str] = None
+    uploaded_at: datetime = Field(default_factory=datetime.utcnow)
+
+class SocialMediaPost(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    team_id: Optional[str] = None
+    title: str
+    content: str
+    platforms: List[SocialPlatform]
+    post_type: PostType = PostType.TEXT
+    media_assets: List[MediaAsset] = []
+    hashtags: List[str] = []
+    mentions: List[str] = []
+    location: Optional[str] = None
+    # Scheduling
+    scheduled_time: Optional[datetime] = None
+    publish_immediately: bool = False
+    status: PostStatus = PostStatus.DRAFT
+    # Platform-specific content
+    platform_content: Dict[str, Dict[str, Any]] = {}  # platform -> custom content
+    # Publishing results
+    published_posts: Dict[str, Dict[str, Any]] = {}  # platform -> post data
+    failed_platforms: List[str] = []
+    # Metadata
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+    published_at: Optional[datetime] = None
+    created_by: str
+
+class PublishingRequest(BaseModel):
+    user_id: str
+    post_id: str
+    platforms: List[SocialPlatform]
+    schedule_time: Optional[datetime] = None
+    publish_immediately: bool = True
+
+class PublishingResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    post_id: str
+    platform: SocialPlatform
+    platform_post_id: Optional[str] = None
+    status: PostStatus
+    error_message: Optional[str] = None
+    post_url: Optional[str] = None
+    metrics: Dict[str, Any] = {}
+    published_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Cross-Platform Publishing Models
+class PublishingStrategy(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    description: Optional[str] = None
+    platforms: List[SocialPlatform]
+    content_adaptations: Dict[str, Dict[str, Any]] = {}  # platform -> adaptations
+    timing_strategy: Dict[str, Any] = {}  # Optimal posting times per platform
+    hashtag_strategy: Dict[str, List[str]] = {}  # Platform-specific hashtags
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CrossPlatformCampaign(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    description: Optional[str] = None
+    base_content: str
+    base_media: List[MediaAsset] = []
+    target_platforms: List[SocialPlatform]
+    campaign_posts: List[str] = []  # Post IDs
+    start_date: datetime
+    end_date: Optional[datetime] = None
+    status: str = "draft"  # draft, active, completed, paused
+    performance_goals: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Social Media Analytics Models
+class SocialAnalytics(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    post_id: str
+    platform: SocialPlatform
+    platform_post_id: str
+    # Engagement Metrics
+    likes: int = 0
+    comments: int = 0
+    shares: int = 0
+    saves: int = 0
+    clicks: int = 0
+    # Reach Metrics
+    impressions: int = 0
+    reach: int = 0
+    # Video Metrics (if applicable)
+    views: int = 0
+    watch_time: int = 0  # seconds
+    completion_rate: float = 0.0
+    # Advanced Metrics
+    engagement_rate: float = 0.0
+    click_through_rate: float = 0.0
+    conversion_rate: float = 0.0
+    # Time-based
+    collected_at: datetime = Field(default_factory=datetime.utcnow)
+    period_start: datetime
+    period_end: datetime
+
+class SocialAccountAnalytics(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    account_id: str
+    platform: SocialPlatform
+    # Follower Metrics
+    followers_count: int = 0
+    following_count: int = 0
+    followers_growth: float = 0.0
+    # Content Metrics
+    posts_count: int = 0
+    avg_engagement_rate: float = 0.0
+    total_likes: int = 0
+    total_comments: int = 0
+    total_shares: int = 0
+    total_impressions: int = 0
+    # Time-based
+    date: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# CRM Integration Models
+class CRMPlatform(str, Enum):
+    HUBSPOT = "hubspot"
+    SALESFORCE = "salesforce"
+    PIPEDRIVE = "pipedrive"
+    ZOHO = "zoho"
+    MONDAY = "monday"
+    AIRTABLE = "airtable"
+
+class CRMIntegration(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    platform: CRMPlatform
+    api_key: str
+    base_url: Optional[str] = None
+    organization_id: Optional[str] = None
+    status: str = "active"  # active, inactive, error
+    sync_frequency: str = "daily"  # real_time, hourly, daily, weekly
+    last_sync: Optional[datetime] = None
+    settings: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CRMContact(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    crm_integration_id: str
+    crm_contact_id: str
+    email: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    company: Optional[str] = None
+    phone: Optional[str] = None
+    # Social Media Data
+    social_profiles: Dict[str, str] = {}  # platform -> username
+    engagement_score: float = 0.0
+    content_preferences: List[str] = []
+    # CRM Data
+    deal_stage: Optional[str] = None
+    lead_score: Optional[int] = None
+    tags: List[str] = []
+    custom_fields: Dict[str, Any] = {}
+    last_interaction: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+
+# Calendar Integration Models
+class CalendarProvider(str, Enum):
+    GOOGLE_CALENDAR = "google_calendar"
+    OUTLOOK = "outlook"
+    APPLE_CALENDAR = "apple_calendar"
+    CALENDLY = "calendly"
+
+class CalendarIntegration(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    provider: CalendarProvider
+    account_email: str
+    access_token: str
+    refresh_token: Optional[str] = None
+    calendar_ids: List[str] = []  # Specific calendars to sync
+    status: str = "active"
+    last_sync: Optional[datetime] = None
+    sync_settings: Dict[str, Any] = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ContentCalendarEvent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    calendar_integration_id: str
+    event_id: str  # Calendar provider event ID
+    title: str
+    description: Optional[str] = None
+    start_time: datetime
+    end_time: datetime
+    # Content Planning
+    content_type: Optional[ContentType] = None
+    platforms: List[SocialPlatform] = []
+    content_status: str = "planned"  # planned, in_progress, completed
+    assigned_to: Optional[str] = None
+    # Social Media Post Reference
+    post_id: Optional[str] = None
+    # Metadata
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
+
+# Automation Workflow Models
+class AutomationTrigger(str, Enum):
+    SCHEDULE = "schedule"
+    ENGAGEMENT_THRESHOLD = "engagement_threshold"
+    FOLLOWER_MILESTONE = "follower_milestone"
+    HASHTAG_PERFORMANCE = "hashtag_performance"
+    CONTENT_APPROVAL = "content_approval"
+    CRM_UPDATE = "crm_update"
+
+class AutomationAction(str, Enum):
+    PUBLISH_POST = "publish_post"
+    SEND_EMAIL = "send_email"
+    UPDATE_CRM = "update_crm"
+    CREATE_CALENDAR_EVENT = "create_calendar_event"
+    GENERATE_REPORT = "generate_report"
+    NOTIFY_TEAM = "notify_team"
+
+class AutomationWorkflow(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    description: Optional[str] = None
+    trigger: AutomationTrigger
+    trigger_conditions: Dict[str, Any] = {}
+    actions: List[Dict[str, Any]] = []  # action_type, parameters
+    is_active: bool = True
+    execution_count: int = 0
+    last_executed: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Request/Response Models
+class ConnectSocialAccountRequest(BaseModel):
+    platform: SocialPlatform
+    auth_code: str
+    redirect_uri: str
+
+class CreatePostRequest(BaseModel):
+    title: str
+    content: str
+    platforms: List[SocialPlatform]
+    post_type: PostType = PostType.TEXT
+    media_urls: List[str] = []
+    hashtags: List[str] = []
+    scheduled_time: Optional[datetime] = None
+    publish_immediately: bool = False
+    platform_customizations: Dict[str, Dict[str, Any]] = {}
+
+class SchedulePostsRequest(BaseModel):
+    posts: List[str]  # Post IDs
+    schedule_times: Dict[str, datetime]  # post_id -> schedule_time
+    timezone: str = "UTC"
+
+class SocialAnalyticsRequest(BaseModel):
+    platforms: List[SocialPlatform] = []
+    date_range: str = "30_days"  # 7_days, 30_days, 90_days, 1_year
+    metrics: List[str] = ["engagement_rate", "reach", "impressions"]
+    account_ids: List[str] = []
+
+class CRMSyncRequest(BaseModel):
+    crm_platform: CRMPlatform
+    sync_type: str = "contacts"  # contacts, deals, activities
+    filters: Dict[str, Any] = {}
+
+class CalendarSyncRequest(BaseModel):
+    calendar_provider: CalendarProvider
+    calendar_ids: List[str] = []
+    date_range_days: int = 30
+
+# Analytics Response Models
+class SocialPlatformMetrics(BaseModel):
+    platform: SocialPlatform
+    followers_count: int
+    posts_published: int
+    total_engagement: int
+    avg_engagement_rate: float
+    top_performing_post: Optional[Dict[str, Any]] = None
+
+class SocialMediaDashboard(BaseModel):
+    user_id: str
+    date_range: str
+    connected_accounts: List[SocialAccount]
+    platform_metrics: List[SocialPlatformMetrics]
+    scheduled_posts_count: int
+    published_posts_count: int
+    total_reach: int
+    total_engagement: int
+    growth_metrics: Dict[str, float]
+    top_content: List[Dict[str, Any]]
+    upcoming_posts: List[Dict[str, Any]]
+    generated_at: datetime = Field(default_factory=datetime.utcnow)
+
 class RoleAnalytics(BaseModel):
     team_id: str
     total_roles: int
