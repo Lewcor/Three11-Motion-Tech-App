@@ -236,6 +236,14 @@ const MobileNavbar = () => {
                             ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
                             : item.badge === 'E-COMMERCE'
                             ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+                            : item.badge === 'ANALYTICS'
+                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                            : item.badge === 'PREDICT'
+                            ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
+                            : item.badge === 'OPTIMIZE'
+                            ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
+                            : item.badge === 'FORECAST'
+                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                             : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
                         }`}
                       >
