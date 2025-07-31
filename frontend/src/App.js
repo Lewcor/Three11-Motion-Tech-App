@@ -78,6 +78,8 @@ function App() {
             <Route path="/performance-tracker" element={<PerformanceTracker />} />
             <Route path="/engagement-predictor" element={<EngagementPredictor />} />
             <Route path="/ab-testing-hub" element={<ABTestingHub />} />
+            <Route path="/competitor-monitor" element={<CompetitorMonitor />} />
+            <Route path="/trend-forecaster" element={<TrendForecaster />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
