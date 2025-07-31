@@ -85,6 +85,11 @@ function App() {
             <Route path="/ab-testing-hub" element={<ABTestingHub />} />
             <Route path="/competitor-monitor" element={<CompetitorMonitor />} />
             <Route path="/trend-forecaster" element={<TrendForecaster />} />
+            {/* PHASE 5: Team Collaboration Platform */}
+            <Route path="/team-dashboard" element={<TeamDashboard />} />
+            <Route path="/team-management" element={<TeamManagement />} />
+            <Route path="/role-management" element={<RoleManagement />} />
+            <Route path="/collaboration-tools" element={<CollaborationTools />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
