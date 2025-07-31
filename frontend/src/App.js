@@ -71,6 +71,11 @@ function App() {
             <Route path="/email-marketing" element={<EmailMarketingStudio />} />
             <Route path="/blog-generator" element={<BlogPostGenerator />} />
             <Route path="/product-descriptions" element={<ProductDescriptionGenerator />} />
+            {/* PHASE 4: Intelligence & Insights */}
+            <Route path="/intelligence-dashboard" element={<IntelligenceDashboard />} />
+            <Route path="/performance-tracker" element={<PerformanceTracker />} />
+            <Route path="/engagement-predictor" element={<EngagementPredictor />} />
+            <Route path="/ab-testing-hub" element={<ABTestingHub />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
