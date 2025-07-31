@@ -83,7 +83,8 @@ class Phase5Tester:
         # Try signup first
         signup_data = {
             "email": TEST_USER_EMAIL,
-            "name": TEST_USER_NAME
+            "name": TEST_USER_NAME,
+            "password": "SecurePass123!"  # Add password field
         }
         
         success, response = await self.make_request("POST", "/auth/signup", signup_data)
@@ -96,7 +97,8 @@ class Phase5Tester:
         else:
             # Try login if user already exists
             login_data = {
-                "email": TEST_USER_EMAIL
+                "email": TEST_USER_EMAIL,
+                "password": "SecurePass123!"  # Add password field
             }
             
             success, response = await self.make_request("POST", "/auth/login", login_data)
@@ -107,7 +109,7 @@ class Phase5Tester:
                 print(f"✅ Authentication setup successful - User ID: {self.user_id[:8]}...")
                 return True
             else:
-                print("❌ Authentication setup failed")
+                print(f"❌ Authentication setup failed: {response}")
                 return False
     
     async def test_team_management_endpoints(self):
