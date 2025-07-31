@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 # Test configuration
-BACKEND_URL = "https://421b48af-2848-4613-bb5f-dfb8b0c5e4bf.preview.emergentagent.com/api"
+BACKEND_URL = "https://99f8bfd0-8e38-4a0a-99d8-f0b68f38c63b.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "teamlead@three11motion.com"
 TEST_USER_NAME = "Team Lead"
 
