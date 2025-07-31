@@ -681,3 +681,268 @@ class CompetitiveContent(BaseModel):
     competitive_advantages: List[str] = []
     expected_performance: Dict[str, float] = {}
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# =====================================
+# PHASE 4: INTELLIGENCE & INSIGHTS MODELS
+# =====================================
+
+# Performance Tracking Models
+class ContentPerformanceMetrics(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    content_id: str  # References generated content
+    platform: Platform
+    category: ContentCategory
+    # Engagement Metrics
+    views: Optional[int] = None
+    likes: Optional[int] = None
+    shares: Optional[int] = None
+    comments: Optional[int] = None
+    saves: Optional[int] = None
+    clicks: Optional[int] = None
+    # Advanced Metrics
+    reach: Optional[int] = None
+    impressions: Optional[int] = None
+    engagement_rate: Optional[float] = None
+    conversion_rate: Optional[float] = None
+    ctr: Optional[float] = None  # Click-through rate
+    # Time-based Metrics
+    watch_time: Optional[int] = None  # For video content
+    completion_rate: Optional[float] = None
+    # Meta Data
+    posted_at: Optional[datetime] = None
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    data_source: str = "manual"  # manual, api, simulation
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PerformanceTrackingRequest(BaseModel):
+    user_id: str
+    platform: Optional[Platform] = None
+    category: Optional[ContentCategory] = None
+    date_range: str = "7_days"  # 7_days, 30_days, 90_days, 1_year
+    metrics: List[str] = ["engagement_rate", "views", "likes", "shares"]
+
+class PerformanceAnalysisResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    analysis_period: str
+    total_content_pieces: int
+    avg_engagement_rate: float
+    best_performing_content: List[Dict[str, Any]]
+    worst_performing_content: List[Dict[str, Any]]
+    platform_performance: Dict[str, Dict[str, float]]
+    category_performance: Dict[str, Dict[str, float]]
+    growth_insights: List[str]
+    optimization_recommendations: List[str]
+    predicted_trends: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Engagement Prediction Models
+class EngagementPredictionRequest(BaseModel):
+    user_id: str
+    content_type: ContentType
+    category: ContentCategory
+    platform: Platform
+    content_preview: str  # Caption/title preview
+    post_time: Optional[datetime] = None
+    hashtags: List[str] = []
+    has_visual: bool = True
+    content_length: Optional[int] = None
+    ai_providers: List[AIProvider] = [AIProvider.ANTHROPIC, AIProvider.OPENAI]
+
+class EngagementPrediction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    content_preview: str
+    platform: Platform
+    category: ContentCategory
+    # Predictions
+    predicted_likes: int
+    predicted_shares: int
+    predicted_comments: int
+    predicted_reach: int
+    predicted_engagement_rate: float
+    confidence_score: float  # 0-1
+    # Factors
+    positive_factors: List[str]
+    negative_factors: List[str]
+    optimization_suggestions: List[str]
+    best_posting_time: Optional[datetime] = None
+    # AI Analysis
+    ai_sentiment_score: float  # -1 to 1
+    trend_alignment_score: float  # 0-1
+    audience_match_score: float  # 0-1
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PredictionAccuracyTracker(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    prediction_id: str
+    actual_metrics: Dict[str, int]  # actual performance data
+    accuracy_scores: Dict[str, float]  # accuracy for each predicted metric
+    overall_accuracy: float
+    model_version: str = "v1.0"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# A/B Testing Models
+class ABTestExperiment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    test_name: str
+    test_type: str  # caption_ab, hashtag_ab, visual_ab, posting_time_ab
+    category: ContentCategory
+    platform: Platform
+    # Test Configuration
+    variant_a: Dict[str, Any]  # {"caption": "...", "hashtags": [...]}
+    variant_b: Dict[str, Any]
+    success_metric: str = "engagement_rate"  # engagement_rate, reach, conversions
+    sample_size_target: int = 100
+    confidence_level: float = 0.95
+    test_duration_days: int = 7
+    # Test Status
+    status: str = "draft"  # draft, running, completed, paused
+    started_at: Optional[datetime] = None
+    ended_at: Optional[datetime] = None
+    # Results
+    variant_a_performance: Dict[str, float] = {}
+    variant_b_performance: Dict[str, float] = {}
+    winner: Optional[str] = None  # "a", "b", or "no_difference"
+    statistical_significance: Optional[float] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ABTestRequest(BaseModel):
+    user_id: str
+    test_name: str
+    test_type: str
+    category: ContentCategory
+    platform: Platform
+    variant_a: Dict[str, Any]
+    variant_b: Dict[str, Any]
+    success_metric: str = "engagement_rate"
+    test_duration_days: int = 7
+
+class ABTestResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    experiment_id: str
+    winner: str  # "a", "b", or "tie"
+    improvement_percentage: float
+    confidence_level: float
+    sample_size: int
+    detailed_results: Dict[str, Any]
+    recommendations: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Enhanced Competitor Monitoring Models
+class CompetitorMonitoringAlert(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    competitor_id: str
+    alert_type: str  # new_content, viral_content, strategy_change, trend_adoption
+    content_data: Dict[str, Any]
+    performance_metrics: Dict[str, float]
+    alert_priority: str = "medium"  # low, medium, high, critical
+    action_recommendations: List[str]
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CompetitorInsightUpdate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    competitor_id: str
+    user_id: str
+    insight_type: str  # content_pattern, engagement_trend, strategy_shift
+    previous_data: Dict[str, Any]
+    current_data: Dict[str, Any]
+    change_percentage: float
+    impact_assessment: str  # low, medium, high
+    strategic_implications: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CompetitorBenchmark(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    # Benchmark Metrics
+    industry_avg_engagement: float
+    top_performer_engagement: float
+    user_current_performance: float
+    performance_percentile: float  # Where user ranks (0-100)
+    # Gap Analysis
+    gap_to_average: float
+    gap_to_top_performer: float
+    improvement_potential: float
+    # Recommendations
+    quick_wins: List[str]
+    long_term_strategies: List[str]
+    competitor_tactics_to_adopt: List[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Advanced Trend Forecasting Models
+class TrendForecast(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    category: ContentCategory
+    platform: Platform
+    # Trend Data
+    trend_topic: str
+    current_popularity_score: float  # 0-100
+    predicted_peak_date: datetime
+    predicted_decline_date: datetime
+    trend_duration_estimate: int  # days
+    confidence_score: float  # 0-1
+    # Analysis
+    driving_factors: List[str]
+    related_trends: List[str]
+    target_demographics: List[str]
+    content_opportunities: List[str]
+    recommended_action: str  # "act_now", "wait_and_see", "prepare_for_peak"
+    # Historical Context
+    similar_past_trends: List[str]
+    historical_performance_data: Dict[str, Any]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class TrendForecastRequest(BaseModel):
+    user_id: str
+    categories: List[ContentCategory] = []
+    platforms: List[Platform] = []
+    forecast_horizon_days: int = 30
+    include_emerging_trends: bool = True
+    include_declining_trends: bool = False
+    min_confidence_threshold: float = 0.7
+
+class TrendOpportunityAlert(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    trend_id: str
+    alert_type: str  # "emerging", "peaking", "declining", "opportunity"
+    urgency_level: str = "medium"  # low, medium, high, critical
+    opportunity_window: int  # days remaining to capitalize
+    potential_reach_increase: float  # estimated percentage
+    content_suggestions: List[str]
+    competitor_activity: Dict[str, Any]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Intelligence Dashboard Models
+class IntelligenceInsight(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    insight_type: str  # performance, prediction, trend, competitor, optimization
+    title: str
+    description: str
+    impact_level: str = "medium"  # low, medium, high
+    action_required: bool = False
+    data_points: Dict[str, Any]
+    recommendations: List[str]
+    expires_at: Optional[datetime] = None
+    is_dismissed: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class IntelligenceDashboardData(BaseModel):
+    user_id: str
+    performance_summary: Dict[str, Any]
+    recent_predictions: List[EngagementPrediction]
+    active_ab_tests: List[ABTestExperiment]
+    competitor_alerts: List[CompetitorMonitoringAlert]
+    trend_opportunities: List[TrendOpportunityAlert]
+    key_insights: List[IntelligenceInsight]
+    overall_intelligence_score: float  # 0-100
+    generated_at: datetime = Field(default_factory=datetime.utcnow)
