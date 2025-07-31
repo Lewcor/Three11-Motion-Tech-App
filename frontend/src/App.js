@@ -23,6 +23,11 @@ import PodcastContentGenerator from './components/PodcastContentGenerator';
 import EmailMarketingStudio from './components/EmailMarketingStudio';
 import BlogPostGenerator from './components/BlogPostGenerator';
 import ProductDescriptionGenerator from './components/ProductDescriptionGenerator';
+// PHASE 4: Intelligence & Insights
+import IntelligenceDashboard from './components/IntelligenceDashboard';
+import PerformanceTracker from './components/PerformanceTracker';
+import EngagementPredictor from './components/EngagementPredictor';
+import ABTestingHub from './components/ABTestingHub';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
