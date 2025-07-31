@@ -30,6 +30,11 @@ import EngagementPredictor from './components/EngagementPredictor';
 import ABTestingHub from './components/ABTestingHub';
 import CompetitorMonitor from './components/CompetitorMonitor';
 import TrendForecaster from './components/TrendForecaster';
+// PHASE 5: Team Collaboration Platform
+import TeamDashboard from './components/TeamDashboard';
+import TeamManagement from './components/TeamManagement';
+import RoleManagement from './components/RoleManagement';
+import CollaborationTools from './components/CollaborationTools';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
