@@ -362,6 +362,23 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/competitor-monitor">
+                <Button 
+                  variant={location.pathname === '/competitor-monitor' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <Target className="h-4 w-4 mr-1" />
+                  Monitor
+                  <Badge className="ml-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs">
+                    INTEL
+                  </Badge>
+                  {location.pathname === '/competitor-monitor' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/competitor-analysis">
                 <Button 
                   variant={location.pathname === '/competitor-analysis' ? 'default' : 'ghost'}
