@@ -198,7 +198,7 @@ const MobileNavbar = () => {
     { 
       path: '/presentation', 
       name: 'Platform Presentation', 
-      icon: <PresentationChart className="h-4 w-4" />,
+      icon: <Monitor className="h-4 w-4" />,
       badge: 'DEMO'
     },
     { 
