@@ -32,26 +32,26 @@ class AIService:
         # Provider capabilities
         self.provider_capabilities = {
             AIProvider.OPENAI: {
-                "name": "GPT-4o",
-                "description": "Advanced multimodal AI with vision, coding, and reasoning",
+                "name": "THREE11 Pro AI",
+                "description": "Advanced multimodal AI with vision, coding, and reasoning capabilities",
                 "strengths": ["Creative writing", "Technical content", "Multimodal processing"],
                 "best_for": ["Complex reasoning", "Code generation", "Image analysis"]
             },
             AIProvider.ANTHROPIC: {
-                "name": "Claude 3.5 Sonnet",
-                "description": "Most intelligent Claude model with superior reasoning",
+                "name": "THREE11 Creative AI",
+                "description": "Most intelligent AI model with superior reasoning and writing quality",
                 "strengths": ["Analysis", "Writing quality", "Complex reasoning"],
                 "best_for": ["Long-form content", "Research", "Critical thinking"]
             },
             AIProvider.GEMINI: {
-                "name": "Gemini 2.0 Flash",
-                "description": "Fastest multimodal model with real-time capabilities",
+                "name": "THREE11 Smart AI",
+                "description": "Fastest multimodal model with real-time processing capabilities",
                 "strengths": ["Speed", "Multimodal", "Real-time processing"],
                 "best_for": ["Quick responses", "Video analysis", "Live interactions"]
             },
             AIProvider.PERPLEXITY: {
-                "name": "Sonar Pro",
-                "description": "Real-time web search with current information",
+                "name": "THREE11 Research AI",
+                "description": "Real-time web search AI with current information and trend analysis",
                 "strengths": ["Current events", "Trend analysis", "Real-time data"],
                 "best_for": ["Trending topics", "Current affairs", "Market research"]
             }
