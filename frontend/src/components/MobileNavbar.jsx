@@ -196,6 +196,18 @@ const MobileNavbar = () => {
       badge: 'HELP'
     },
     { 
+      path: '/presentation', 
+      name: 'Platform Presentation', 
+      icon: <PresentationChart className="h-4 w-4" />,
+      badge: 'DEMO'
+    },
+    { 
+      path: '/user-guide', 
+      name: 'User Guide', 
+      icon: <BookOpen className="h-4 w-4" />,
+      badge: 'GUIDE'
+    },
+    { 
       path: '/premium', 
       name: 'Premium', 
       icon: <Crown className="h-4 w-4" />,
