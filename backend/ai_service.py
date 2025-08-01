@@ -4,7 +4,13 @@ import asyncio
 import time
 import os
 import logging
+from pathlib import Path
+from dotenv import load_dotenv
 from models import AIProvider, ContentCategory, Platform, AIResponse
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 logger = logging.getLogger(__name__)
 
