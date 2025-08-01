@@ -1278,6 +1278,166 @@ class BackendTester:
             self.log_test("Latest AI Models Verification", False, "Failed to verify AI models", response)
     
     # =====================================
+    # PERPLEXITY API KEY INTEGRATION TESTS
+    # =====================================
+    
+    async def test_perplexity_api_key_integration(self):
+        """Test 39: Perplexity API Key Integration Testing"""
+        if not self.auth_token:
+            self.log_test("Perplexity API Key Integration", False, "No auth token available")
+            return
+        
+        try:
+            # Test 1: Check if Perplexity is listed as available provider
+            success, response = await self.make_request("GET", "/ai/providers")
+            
+            if not success:
+                self.log_test("Perplexity API Key Integration", False, "Failed to get AI providers list", response)
+                return
+            
+            providers = response["data"].get("providers", [])
+            perplexity_provider = next((p for p in providers if p.get("provider") == "perplexity"), None)
+            
+            if not perplexity_provider:
+                self.log_test("Perplexity API Key Integration", False, "Perplexity provider not found in providers list")
+                return
+            
+            # Test 2: Check if Perplexity is marked as available
+            is_available = perplexity_provider.get("available", False)
+            if not is_available:
+                self.log_test("Perplexity API Key Integration", False, 
+                            f"Perplexity API key not loaded - Provider marked as unavailable: {perplexity_provider}")
+                return
+            
+            # Test 3: Check Perplexity provider details
+            success, detail_response = await self.make_request("GET", "/ai/providers/perplexity")
+            
+            if not success:
+                self.log_test("Perplexity API Key Integration", False, "Failed to get Perplexity provider details", detail_response)
+                return
+            
+            perplexity_details = detail_response["data"]
+            expected_model = "sonar-pro"
+            actual_model = perplexity_details.get("model", "")
+            
+            if actual_model != expected_model:
+                self.log_test("Perplexity API Key Integration", False, 
+                            f"Incorrect Perplexity model. Expected: {expected_model}, Got: {actual_model}")
+                return
+            
+            # Test 4: Test content generation with Perplexity
+            generation_data = {
+                "user_id": self.user_id,
+                "category": "fashion",
+                "platform": "instagram",
+                "content_description": "Latest fashion trends for spring 2025 with current market insights",
+                "ai_providers": ["perplexity"]
+            }
+            
+            success, gen_response = await self.make_request("POST", "/generate", generation_data)
+            
+            if success:
+                data = gen_response["data"]
+                if "captions" in data and "perplexity" in data["captions"]:
+                    perplexity_caption = data["captions"]["perplexity"]
+                    if perplexity_caption and not perplexity_caption.startswith("Error:"):
+                        self.log_test("Perplexity API Key Integration", True, 
+                                    f"✅ Perplexity API key integration SUCCESSFUL! Generated content: '{perplexity_caption[:100]}...'")
+                    else:
+                        self.log_test("Perplexity API Key Integration", False, 
+                                    f"Perplexity content generation failed: {perplexity_caption}")
+                else:
+                    self.log_test("Perplexity API Key Integration", False, 
+                                "Perplexity caption not found in generation response", gen_response)
+            else:
+                self.log_test("Perplexity API Key Integration", False, 
+                            "Content generation with Perplexity failed", gen_response)
+                
+        except Exception as e:
+            self.log_test("Perplexity API Key Integration", False, f"Perplexity integration test error: {str(e)}")
+    
+    async def test_all_four_ai_providers_functionality(self):
+        """Test 40: All Four AI Providers Functionality"""
+        if not self.auth_token:
+            self.log_test("All Four AI Providers", False, "No auth token available")
+            return
+        
+        try:
+            # Test all four providers: OpenAI GPT-4o, Anthropic Claude 3.5 Sonnet, Gemini 2.0 Flash, Perplexity Sonar Pro
+            providers_to_test = ["openai", "anthropic", "gemini", "perplexity"]
+            working_providers = []
+            failed_providers = []
+            
+            for provider in providers_to_test:
+                generation_data = {
+                    "user_id": self.user_id,
+                    "category": "business",
+                    "platform": "instagram",
+                    "content_description": f"Testing {provider} AI provider for business content generation",
+                    "ai_providers": [provider]
+                }
+                
+                success, response = await self.make_request("POST", "/generate", generation_data)
+                
+                if success:
+                    data = response["data"]
+                    if "captions" in data and provider in data["captions"]:
+                        caption = data["captions"][provider]
+                        if caption and not caption.startswith("Error:"):
+                            working_providers.append(provider)
+                            self.log_test(f"AI Provider ({provider})", True, 
+                                        f"✅ {provider.upper()} working - Generated: '{caption[:50]}...'")
+                        else:
+                            failed_providers.append(provider)
+                            self.log_test(f"AI Provider ({provider})", False, 
+                                        f"❌ {provider.upper()} failed: {caption}")
+                    else:
+                        failed_providers.append(provider)
+                        self.log_test(f"AI Provider ({provider})", False, 
+                                    f"❌ {provider.upper()} - No caption in response")
+                else:
+                    failed_providers.append(provider)
+                    self.log_test(f"AI Provider ({provider})", False, 
+                                f"❌ {provider.upper()} - Request failed: {response}")
+            
+            # Overall result
+            if len(working_providers) == 4:
+                self.log_test("All Four AI Providers", True, 
+                            f"🎉 ALL FOUR AI PROVIDERS WORKING! OpenAI GPT-4o, Anthropic Claude 3.5 Sonnet, Gemini 2.0 Flash, Perplexity Sonar Pro")
+            elif len(working_providers) >= 3:
+                self.log_test("All Four AI Providers", True, 
+                            f"✅ {len(working_providers)}/4 providers working: {working_providers}. Failed: {failed_providers}")
+            else:
+                self.log_test("All Four AI Providers", False, 
+                            f"❌ Only {len(working_providers)}/4 providers working: {working_providers}. Failed: {failed_providers}")
+                
+        except Exception as e:
+            self.log_test("All Four AI Providers", False, f"All providers test error: {str(e)}")
+    
+    async def test_perplexity_environment_variable_loading(self):
+        """Test 41: Perplexity Environment Variable Loading"""
+        try:
+            # Test if Perplexity API key is properly loaded from backend .env file
+            success, response = await self.make_request("GET", "/ai/providers/perplexity")
+            
+            if success:
+                data = response["data"]
+                is_available = data.get("available", False)
+                
+                if is_available:
+                    self.log_test("Perplexity Environment Variable", True, 
+                                "✅ Perplexity API key successfully loaded from backend .env file")
+                else:
+                    self.log_test("Perplexity Environment Variable", False, 
+                                "❌ Perplexity API key not loaded - Check PERPLEXITY_API_KEY in backend/.env")
+            else:
+                self.log_test("Perplexity Environment Variable", False, 
+                            "Failed to check Perplexity provider details", response)
+                
+        except Exception as e:
+            self.log_test("Perplexity Environment Variable", False, f"Environment variable test error: {str(e)}")
+
+    # =====================================
     # PHASE 5: TEAM COLLABORATION PLATFORM TESTS
     # =====================================
     
