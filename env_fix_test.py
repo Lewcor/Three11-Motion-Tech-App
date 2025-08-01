@@ -47,40 +47,37 @@ class EnvFixTester:
     async def authenticate(self):
         """Authenticate test user"""
         try:
-            # Try signup first
-            signup_data = {
-                "email": TEST_USER_EMAIL,
-                "name": TEST_USER_NAME
+            # Try login with admin account first
+            login_data = {
+                "email": "ceo@three11motiontech.com",
+                "password": "dummy"  # Simple login for demo
             }
             
-            async with self.session.post(f"{BACKEND_URL}/auth/signup", json=signup_data) as response:
-                if response.status in [200, 400]:  # 400 if user exists
-                    if response.status == 200:
-                        data = await response.json()
-                        self.auth_token = data["access_token"]
-                        self.user_id = data["user"]["id"]
-                        self.log_test("Authentication", True, "User signup successful")
-                        return True
-                    else:
-                        # User exists, try login
-                        login_data = {
-                            "email": TEST_USER_EMAIL,
-                            "password": "dummy"  # Simple login for demo
-                        }
-                        
-                        async with self.session.post(f"{BACKEND_URL}/auth/login", json=login_data) as login_response:
-                            if login_response.status == 200:
-                                data = await login_response.json()
-                                self.auth_token = data["access_token"]
-                                self.user_id = data["user"]["id"]
-                                self.log_test("Authentication", True, "User login successful")
-                                return True
-                            else:
-                                self.log_test("Authentication", False, f"Login failed: {login_response.status}")
-                                return False
+            async with self.session.post(f"{BACKEND_URL}/auth/login", json=login_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self.auth_token = data["access_token"]
+                    self.user_id = data["user"]["id"]
+                    self.log_test("Authentication", True, "Admin login successful")
+                    return True
                 else:
-                    self.log_test("Authentication", False, f"Signup failed: {response.status}")
-                    return False
+                    # Try signup with test user
+                    signup_data = {
+                        "email": TEST_USER_EMAIL,
+                        "name": TEST_USER_NAME
+                    }
+                    
+                    async with self.session.post(f"{BACKEND_URL}/auth/signup", json=signup_data) as signup_response:
+                        if signup_response.status == 200:
+                            data = await signup_response.json()
+                            self.auth_token = data["access_token"]
+                            self.user_id = data["user"]["id"]
+                            self.log_test("Authentication", True, "User signup successful")
+                            return True
+                        else:
+                            response_text = await signup_response.text()
+                            self.log_test("Authentication", False, f"Both login and signup failed. Signup status: {signup_response.status}, Response: {response_text[:200]}")
+                            return False
                     
         except Exception as e:
             self.log_test("Authentication", False, f"Authentication error: {str(e)}")
