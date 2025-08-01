@@ -332,7 +332,7 @@ class EnvFixTester:
         auth_success = await self.authenticate()
         if not auth_success:
             print("❌ Authentication failed - cannot proceed with tests")
-            return
+            return self.test_results
         
         print("\n📋 RUNNING FOCUSED TESTS:")
         print("-" * 40)
