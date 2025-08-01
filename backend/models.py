@@ -86,13 +86,22 @@ class User(BaseModel):
     email: EmailStr
     name: str
     tier: UserTier = UserTier.FREE
+    auth_provider: AuthProvider = AuthProvider.EMAIL
+    google_id: Optional[str] = None
+    password_hash: Optional[str] = None
+    is_active: bool = True
+    is_verified: bool = False
     daily_generations_used: int = 0
     total_generations: int = 0
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    last_login: Optional[datetime] = None
     subscription_expires_at: Optional[datetime] = None
     preferred_categories: List[ContentCategory] = []
     preferred_platforms: List[Platform] = []
+    # Team access
+    team_code_used: Optional[str] = None
+    invited_by: Optional[str] = None
 
 class UserCreate(BaseModel):
     email: EmailStr
