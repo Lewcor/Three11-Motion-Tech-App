@@ -96,11 +96,11 @@ class EnvFixTester:
                     
                     # Check if we have all 4 providers
                     expected_providers = ["openai", "anthropic", "gemini", "perplexity"]
-                    found_providers = [p["name"] for p in providers]
+                    found_providers = [p["provider"] for p in providers]  # Changed from "name" to "provider"
                     
                     # Check availability status
                     available_providers = [p for p in providers if p.get("available", False)]
-                    perplexity_provider = next((p for p in providers if p["name"] == "perplexity"), None)
+                    perplexity_provider = next((p for p in providers if p["provider"] == "perplexity"), None)
                     
                     details = {
                         "total_providers": len(providers),
