@@ -106,6 +106,10 @@ class User(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr
     name: str
+    password: Optional[str] = None
+    auth_provider: AuthProvider = AuthProvider.EMAIL
+    google_id: Optional[str] = None
+    team_code: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
