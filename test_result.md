@@ -638,9 +638,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Getting Started Guide Integration"
-    - "Perplexity API Key Integration"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
