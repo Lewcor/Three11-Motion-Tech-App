@@ -40,10 +40,10 @@ const AdvancedAnalyticsDashboard = () => {
   ];
 
   const aiProviders = [
-    { id: 'openai', name: 'OpenAI GPT-4o', icon: '🧠', color: 'bg-green-500' },
-    { id: 'anthropic', name: 'Claude 3.5 Sonnet', icon: '✨', color: 'bg-orange-500' },
-    { id: 'gemini', name: 'Gemini 2.0 Flash', icon: '⚡', color: 'bg-blue-500' },
-    { id: 'perplexity', name: 'Sonar Pro', icon: '🔍', color: 'bg-purple-500' }
+    { id: 'openai', name: 'THREE11 Pro AI', icon: '🧠', color: 'bg-green-500' },
+    { id: 'anthropic', name: 'THREE11 Creative AI', icon: '✨', color: 'bg-orange-500' },
+    { id: 'gemini', name: 'THREE11 Smart AI', icon: '⚡', color: 'bg-blue-500' },
+    { id: 'perplexity', name: 'THREE11 Research AI', icon: '🔍', color: 'bg-purple-500' }
   ];
 
   useEffect(() => {
