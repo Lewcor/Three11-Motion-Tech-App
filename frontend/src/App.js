@@ -107,6 +107,9 @@ function App() {
             <Route path="/crm-integration" element={<CRMIntegration />} />
             {/* Getting Started Guide */}
             <Route path="/getting-started" element={<GettingStartedGuide />} />
+            {/* Presentation and User Guide */}
+            <Route path="/presentation" element={<PlatformPresentation />} />
+            <Route path="/user-guide" element={<UserGuide />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
