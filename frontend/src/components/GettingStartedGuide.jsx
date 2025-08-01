@@ -128,7 +128,7 @@ const GettingStartedGuide = () => {
     {
       category: "AI Content Generation",
       items: [
-        { name: "Multi-AI Integration", description: "GPT-4o, Claude 3.5, Gemini 2.0, Perplexity" },
+        { name: "Multi-AI Integration", description: "THREE11 Pro AI, THREE11 Creative AI, THREE11 Smart AI, THREE11 Research AI" },
         { name: "9 Content Categories", description: "Fashion, Tech, Food, Travel, Fitness, Beauty, Business, Lifestyle, Education" },
         { name: "4 Platform Optimization", description: "TikTok, Instagram, YouTube, Facebook" },
         { name: "Advanced Content Types", description: "Videos, Podcasts, Emails, Blogs, Product Descriptions" }
