@@ -444,7 +444,7 @@ const GettingStartedGuide = () => {
                     <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</div>
                     <div>
                       <p className="font-medium">Choose Your AI Provider</p>
-                      <p className="text-sm text-gray-600">Select from GPT-4o, Claude 3.5, Gemini, or Perplexity</p>
+                      <p className="text-sm text-gray-600">Select from THREE11 Pro AI, THREE11 Creative AI, THREE11 Smart AI, or THREE11 Research AI</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
