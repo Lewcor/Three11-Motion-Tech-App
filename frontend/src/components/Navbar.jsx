@@ -551,6 +551,40 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/presentation">
+                <Button 
+                  variant={location.pathname === '/presentation' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <PresentationChart className="h-4 w-4 mr-1" />
+                  Demo
+                  <Badge className="ml-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs">
+                    DEMO
+                  </Badge>
+                  {location.pathname === '/presentation' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
+              <Link to="/user-guide">
+                <Button 
+                  variant={location.pathname === '/user-guide' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <BookOpen className="h-4 w-4 mr-1" />
+                  Manual
+                  <Badge className="ml-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
+                    GUIDE
+                  </Badge>
+                  {location.pathname === '/user-guide' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
