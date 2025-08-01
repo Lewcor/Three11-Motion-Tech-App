@@ -383,8 +383,11 @@ async def main():
         results = await tester.run_focused_tests()
         
         # Return exit code based on results
-        failed_tests = sum(1 for result in results.values() if not result["success"])
-        return 0 if failed_tests == 0 else 1
+        if results:
+            failed_tests = sum(1 for result in results.values() if not result["success"])
+            return 0 if failed_tests == 0 else 1
+        else:
+            return 1
 
 if __name__ == "__main__":
     exit_code = asyncio.run(main())
