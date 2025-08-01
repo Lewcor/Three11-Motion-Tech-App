@@ -244,7 +244,13 @@ class AuthService:
             return None
         
         db = await self.get_database()
-        user = await db.users.find_one({"_id": payload["user_id"]})
+        from bson import ObjectId
+        try:
+            user_id = ObjectId(payload["user_id"])
+            user = await db.users.find_one({"_id": user_id})
+        except:
+            # Fallback to string ID if ObjectId conversion fails
+            user = await db.users.find_one({"id": payload["user_id"]})
         
         if not user or not user.get('is_active', True):
             return None
