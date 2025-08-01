@@ -73,6 +73,7 @@ content_remix_engine = ContentRemixEngine()
 async def lifespan(app: FastAPI):
     # Startup
     await connect_to_mongo()
+    await initialize_admin()  # Initialize admin account
     logger.info("Application started")
     yield
     # Shutdown
