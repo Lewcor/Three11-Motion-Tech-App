@@ -534,6 +534,23 @@ const Navbar = () => {
                 </Button>
               </Link>
               
+              <Link to="/getting-started">
+                <Button 
+                  variant={location.pathname === '/getting-started' ? 'default' : 'ghost'}
+                  className="relative px-2"
+                  size="sm"
+                >
+                  <HelpCircle className="h-4 w-4 mr-1" />
+                  Guide
+                  <Badge className="ml-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs">
+                    HELP
+                  </Badge>
+                  {location.pathname === '/getting-started' && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </Button>
+              </Link>
+              
               <Link to="/premium">
                 <Button 
                   variant={location.pathname === '/premium' ? 'default' : 'outline'}
