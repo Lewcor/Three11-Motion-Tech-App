@@ -328,20 +328,14 @@ class EnvFixTester:
         print("🚀 STARTING FOCUSED ENVIRONMENT VARIABLE FIX TESTING")
         print("=" * 60)
         
-        # Authenticate
-        auth_success = await self.authenticate()
-        if not auth_success:
-            print("❌ Authentication failed - cannot proceed with tests")
-            return self.test_results
-        
         print("\n📋 RUNNING FOCUSED TESTS:")
         print("-" * 40)
         
-        # Test 1: AI Providers Endpoint
+        # Test 1: AI Providers Endpoint (no auth needed)
         print("\n1️⃣ Testing AI Providers Availability...")
         await self.test_ai_providers_endpoint()
         
-        # Test 2: Perplexity Specific Check
+        # Test 2: Perplexity Specific Check (no auth needed)
         print("\n2️⃣ Testing Perplexity Provider Specifically...")
         await self.test_perplexity_specific()
         
@@ -349,13 +343,22 @@ class EnvFixTester:
         print("\n3️⃣ Testing Environment Variable Loading...")
         await self.test_environment_variable_loading()
         
-        # Test 4: Perplexity Content Generation
-        print("\n4️⃣ Testing Perplexity Content Generation...")
-        await self.test_perplexity_content_generation()
+        # Authenticate for content generation tests
+        print("\n🔐 Authenticating for content generation tests...")
+        auth_success = await self.authenticate()
         
-        # Test 5: All Providers Content Generation
-        print("\n5️⃣ Testing All Providers Content Generation...")
-        await self.test_all_providers_content_generation()
+        if auth_success:
+            # Test 4: Perplexity Content Generation
+            print("\n4️⃣ Testing Perplexity Content Generation...")
+            await self.test_perplexity_content_generation()
+            
+            # Test 5: All Providers Content Generation
+            print("\n5️⃣ Testing All Providers Content Generation...")
+            await self.test_all_providers_content_generation()
+        else:
+            print("⚠️ Skipping content generation tests due to authentication failure")
+            self.log_test("Perplexity Content Generation", False, "Skipped due to authentication failure")
+            self.log_test("All Providers Content Generation", False, "Skipped due to authentication failure")
         
         # Summary
         print("\n" + "=" * 60)
