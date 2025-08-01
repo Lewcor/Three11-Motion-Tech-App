@@ -418,7 +418,7 @@ class EnhancedAuthTester:
             user_data = response["data"]
             tier = user_data.get("tier")
             
-            if tier == "UNLIMITED":
+            if tier.upper() == "UNLIMITED":
                 # Test that unlimited users can generate content without daily limits
                 generation_data = {
                     "category": "business",
