@@ -190,6 +190,12 @@ const MobileNavbar = () => {
       badge: 'SYNC'
     },
     { 
+      path: '/getting-started', 
+      name: 'Getting Started', 
+      icon: <HelpCircle className="h-4 w-4" />,
+      badge: 'HELP'
+    },
+    { 
       path: '/premium', 
       name: 'Premium', 
       icon: <Crown className="h-4 w-4" />,
