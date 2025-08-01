@@ -241,7 +241,7 @@ const GettingStartedGuide = () => {
                     <Brain className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="font-semibold mb-2">AI-Powered Content</h3>
-                  <p className="text-sm text-gray-600">Generate high-quality content using multiple AI models including GPT-4o, Claude 3.5 Sonnet, and Gemini 2.0 Flash</p>
+                  <p className="text-sm text-gray-600">Generate high-quality content using multiple THREE11 AI models including Pro AI, Creative AI, Smart AI, and Research AI</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
