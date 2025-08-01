@@ -4874,6 +4874,13 @@ class BackendTester:
         await self.test_enhanced_content_generation_with_providers()
         await self.test_latest_ai_models_verification()
         
+        # PERPLEXITY API KEY INTEGRATION TESTS
+        print("\n🔍 PERPLEXITY API KEY INTEGRATION TESTS")
+        print("-" * 40)
+        await self.test_perplexity_environment_variable_loading()
+        await self.test_perplexity_api_key_integration()
+        await self.test_all_four_ai_providers_functionality()
+        
         # PHASE 3: Content Type Expansion Tests
         print("\n🎬 PHASE 3: CONTENT TYPE EXPANSION TESTS")
         print("-" * 40)
