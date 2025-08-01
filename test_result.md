@@ -633,7 +633,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "PHASE 4: Intelligence & Insights - Complete Implementation"
+    - "Getting Started Guide Integration"
+    - "Perplexity API Key Integration"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
