@@ -40,6 +40,8 @@ import SocialMediaDashboard from './components/SocialMediaDashboard';
 import SocialMediaPublishing from './components/SocialMediaPublishing';
 import AutomationWorkflows from './components/AutomationWorkflows';
 import CRMIntegration from './components/CRMIntegration';
+// Getting Started Guide
+import GettingStartedGuide from './components/GettingStartedGuide';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
