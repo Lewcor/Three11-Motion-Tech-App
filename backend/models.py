@@ -9,6 +9,11 @@ class UserTier(str, Enum):
     PREMIUM = "premium"
     ADMIN = "admin"
     SUPER_ADMIN = "super_admin"
+    UNLIMITED = "unlimited"  # New tier for team members
+
+class AuthProvider(str, Enum):
+    EMAIL = "email"
+    GOOGLE = "google"
 
 class ContentCategory(str, Enum):
     FASHION = "fashion"
