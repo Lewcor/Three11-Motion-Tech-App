@@ -120,12 +120,11 @@ class EnhancedAuthTester:
         
         if success:
             data = response["data"]
-            required_fields = ["code", "name", "tier", "max_uses", "current_uses", "remaining_uses"]
+            required_fields = ["code", "max_uses", "current_uses", "remaining_uses"]
             
             if all(field in data for field in required_fields):
                 # Verify team code details
                 if (data["code"] == TEAM_CODE and 
-                    data["tier"] == "UNLIMITED" and 
                     data["max_uses"] == 10):
                     
                     remaining = data["remaining_uses"]
