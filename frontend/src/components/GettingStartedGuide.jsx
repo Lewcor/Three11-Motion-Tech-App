@@ -42,7 +42,7 @@ const GettingStartedGuide = () => {
     {
       phase: 1,
       title: "Advanced AI Integration Hub",
-      description: "Multi-AI content generation with Claude, GPT-4o, Gemini, and Perplexity",
+      description: "Multi-AI content generation with THREE11 Creative AI, THREE11 Pro AI, THREE11 Smart AI, and THREE11 Research AI",
       features: ["AI Provider Selection", "Multi-Model Content Generation", "Optimized Performance"],
       status: "Complete",
       icon: <Brain className="h-5 w-5" />
