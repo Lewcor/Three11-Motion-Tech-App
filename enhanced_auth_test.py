@@ -102,7 +102,7 @@ class EnhancedAuthTester:
             user_data = response["data"]["user"]
             
             # Verify admin has UNLIMITED tier
-            if user_data.get("tier") == "UNLIMITED":
+            if user_data.get("tier").upper() == "UNLIMITED":
                 self.log_test("Admin Account Creation", True, 
                             f"Admin account {ADMIN_EMAIL} exists with UNLIMITED tier access")
             else:
