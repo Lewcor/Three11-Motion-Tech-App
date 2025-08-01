@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Sparkles, Crown, Zap, Brain, Lightbulb, Mic, TrendingUp, Shuffle, Menu, Target, Calendar, BookOpen, BarChart3, Video, Headphones, Mail, PenTool, Package, TestTube, Telescope, Eye, Users2, UserCog, MessageSquareMore, Share2, Send, Database, Workflow, HelpCircle, PresentationChart } from 'lucide-react';
+import { Sparkles, Crown, Zap, Brain, Lightbulb, Mic, TrendingUp, Shuffle, Menu, Target, Calendar, BookOpen, BarChart3, Video, Headphones, Mail, PenTool, Package, TestTube, Telescope, Eye, Users2, UserCog, MessageSquareMore, Share2, Send, Database, Workflow, HelpCircle, Monitor } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
