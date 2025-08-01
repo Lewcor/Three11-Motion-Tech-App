@@ -13,7 +13,6 @@ import {
   CheckCircle2, 
   AlertTriangle,
   Loader2,
-  Google,
   Shield,
   Key,
   Users
