@@ -304,7 +304,7 @@ const AuthPage = () => {
                 className="w-full mt-3"
                 disabled
               >
-                <Google className="h-4 w-4 mr-2" />
+                <User className="h-4 w-4 mr-2" />
                 Google (Coming Soon)
               </Button>
             </div>
