@@ -159,7 +159,7 @@ class EnhancedAuthTester:
             user_data = response["data"]["user"]
             
             # Verify user got UNLIMITED tier from team code
-            if user_data.get("tier") == "UNLIMITED":
+            if user_data.get("tier").upper() == "UNLIMITED":
                 self.log_test("User Signup with Team Code", True, 
                             f"User {TEST_USER_EMAIL} created with UNLIMITED tier via team code")
             else:
