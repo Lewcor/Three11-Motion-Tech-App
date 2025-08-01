@@ -1141,23 +1141,22 @@ class BackendTester:
             data = response["data"]
             providers = data.get("providers", [])
             
-            # Check availability based on API keys
-            expected_available = ["openai", "anthropic", "gemini"]  # These have API keys
-            expected_unavailable = ["perplexity"]  # This doesn't have API key yet
+            # Check availability based on API keys - NOW INCLUDING PERPLEXITY
+            expected_available = ["openai", "anthropic", "gemini", "perplexity"]  # All should have API keys now
             
             available_providers = [p["provider"] for p in providers if p.get("available", False)]
             unavailable_providers = [p["provider"] for p in providers if not p.get("available", True)]
             
             # Check if expected providers are available
             available_correct = all(provider in available_providers for provider in expected_available)
-            unavailable_correct = all(provider in unavailable_providers for provider in expected_unavailable)
             
-            if available_correct and unavailable_correct:
+            if available_correct:
                 self.log_test("AI Provider Availability", True, 
-                            f"Provider availability correct - Available: {available_providers}, Unavailable: {unavailable_providers}")
+                            f"All providers available - Available: {available_providers}, Unavailable: {unavailable_providers}")
             else:
+                missing_providers = [p for p in expected_available if p not in available_providers]
                 self.log_test("AI Provider Availability", False, 
-                            f"Provider availability incorrect - Available: {available_providers}, Unavailable: {unavailable_providers}")
+                            f"Missing providers: {missing_providers}. Available: {available_providers}, Unavailable: {unavailable_providers}")
         else:
             self.log_test("AI Provider Availability", False, "Failed to check provider availability", response)
     
