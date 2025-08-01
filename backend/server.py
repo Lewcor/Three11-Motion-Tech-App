@@ -224,7 +224,7 @@ async def get_team_members(current_user: Dict = Depends(get_current_user_enhance
 @api_router.post("/generate", response_model=GenerationResultResponse)
 async def generate_content(
     request: GenerationRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user_enhanced)
 ):
     """Generate AI-powered captions and hashtags"""
     db = get_database()
