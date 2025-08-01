@@ -557,7 +557,7 @@ const Navbar = () => {
                   className="relative px-2"
                   size="sm"
                 >
-                  <PresentationChart className="h-4 w-4 mr-1" />
+                  <Monitor className="h-4 w-4 mr-1" />
                   Demo
                   <Badge className="ml-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs">
                     DEMO
