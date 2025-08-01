@@ -102,6 +102,8 @@ function App() {
             <Route path="/social-publishing" element={<SocialMediaPublishing />} />
             <Route path="/automation-workflows" element={<AutomationWorkflows />} />
             <Route path="/crm-integration" element={<CRMIntegration />} />
+            {/* Getting Started Guide */}
+            <Route path="/getting-started" element={<GettingStartedGuide />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/signup" element={<AuthPage />} />
