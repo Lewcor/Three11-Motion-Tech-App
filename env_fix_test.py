@@ -61,10 +61,11 @@ class EnvFixTester:
                     self.log_test("Authentication", True, "Admin login successful")
                     return True
                 else:
-                    # Try signup with test user
+                    # Try signup with test user (add password field)
                     signup_data = {
                         "email": TEST_USER_EMAIL,
-                        "name": TEST_USER_NAME
+                        "name": TEST_USER_NAME,
+                        "password": "TestPass123!"  # Add required password field
                     }
                     
                     async with self.session.post(f"{BACKEND_URL}/auth/signup", json=signup_data) as signup_response:
