@@ -291,7 +291,7 @@ class EnvFixTester:
                 env_status = {}
                 
                 for provider in providers:
-                    provider_name = provider.get("name")
+                    provider_name = provider.get("provider")  # Changed from "name" to "provider"
                     is_available = provider.get("available", False)
                     env_status[provider_name] = {
                         "available": is_available,
