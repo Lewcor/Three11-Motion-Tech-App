@@ -120,8 +120,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 async def check_generation_limit(user: User):
     """Check if user has exceeded daily generation limit"""
-    if user.tier in [UserTier.PREMIUM, UserTier.ADMIN, UserTier.SUPER_ADMIN]:
-        return True  # Premium and Admin users have unlimited generations
+    if user.tier in [UserTier.PREMIUM, UserTier.ADMIN, UserTier.SUPER_ADMIN, UserTier.UNLIMITED]:
+        return True  # Premium, Admin, and Unlimited users have unlimited generations
     
     # Free users have daily limit
     if user.daily_generations_used >= 10:  # Free limit is 10 per day
@@ -132,9 +132,92 @@ async def check_generation_limit(user: User):
     
     return True
 
-# Authentication Routes
-@api_router.post("/auth/signup", response_model=Token)
+# Enhanced Authentication Middleware
+async def get_current_user_enhanced(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Enhanced authentication that works with new auth service"""
+    try:
+        token = credentials.credentials
+        user_data = await auth_service.get_user_by_token(token)
+        
+        if not user_data:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+        
+        return user_data
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+# Initialize admin account on startup
+async def initialize_admin():
+    """Initialize the admin account on startup"""
+    try:
+        await auth_service.create_admin_account()
+        logger.info("Admin account initialization completed")
+    except Exception as e:
+        logger.error(f"Failed to initialize admin account: {e}")
+
+# Enhanced Authentication Routes
+@api_router.post("/auth/signup", response_model=Dict)
 async def signup(user_data: SignupRequest):
+    """Create a new user account with team code support"""
+    try:
+        result = await auth_service.signup_user(user_data)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Signup error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.post("/auth/login", response_model=Dict)
+async def login(login_data: LoginRequest):
+    """Login with email and password"""
+    try:
+        result = await auth_service.login_user(login_data)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.post("/auth/google", response_model=Dict)
+async def google_login(google_data: GoogleLoginRequest):
+    """Login/signup with Google OAuth (placeholder for future implementation)"""
+    raise HTTPException(status_code=501, detail="Google OAuth not yet implemented. Use email/password for now.")
+
+@api_router.get("/auth/me")
+async def get_current_user_info(current_user: Dict = Depends(get_current_user_enhanced)):
+    """Get current user information"""
+    return current_user
+
+@api_router.post("/auth/change-password")
+async def change_password(
+    old_password: str,
+    new_password: str,
+    current_user: Dict = Depends(get_current_user_enhanced)
+):
+    """Change user password"""
+    success = await auth_service.change_password(current_user["id"], old_password, new_password)
+    if not success:
+        raise HTTPException(status_code=400, detail="Invalid old password")
+    return {"message": "Password changed successfully"}
+
+@api_router.get("/auth/team-code/{code}")
+async def get_team_code_info(code: str):
+    """Get team code information"""
+    info = await auth_service.get_team_code_info(code)
+    if not info:
+        raise HTTPException(status_code=404, detail="Team code not found")
+    return info
+
+@api_router.get("/auth/team-members")
+async def get_team_members(current_user: Dict = Depends(get_current_user_enhanced)):
+    """Get team members (admin only)"""
+    if current_user.get("tier") != UserTier.UNLIMITED:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    members = await auth_service.get_team_members(current_user["id"])
+    return {"team_members": members}
     """Create a new user account"""
     db = get_database()
     
