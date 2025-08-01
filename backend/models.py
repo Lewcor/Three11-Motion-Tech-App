@@ -637,10 +637,30 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+class GoogleLoginRequest(BaseModel):
+    google_token: str
+    
+class TeamSignupRequest(BaseModel):
+    email: EmailStr
+    name: str
+    password: str
+    team_code: str
+
 class SignupRequest(BaseModel):
     email: EmailStr
     name: str
     password: str
+    team_code: Optional[str] = None
+
+class TeamCode(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    code: str
+    created_by: str  # Admin user ID
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: Optional[datetime] = None
+    max_uses: Optional[int] = None
+    current_uses: int = 0
+    is_active: bool = True
 
 # Subscription Models
 class SubscriptionPlan(BaseModel):
