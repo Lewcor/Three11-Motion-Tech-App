@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { Sparkles, Crown, Zap, Brain, Menu, X, Mic, TrendingUp, Shuffle, Target, Calendar, BookOpen, BarChart3, Video, Headphones, Mail, PenTool, Package, TestTube, Telescope, Eye, Users2, UserCog, MessageSquareMore, Share2, Send, Database, Workflow, HelpCircle } from 'lucide-react';
+import { Sparkles, Crown, Zap, Brain, Menu, X, Mic, TrendingUp, Shuffle, Target, Calendar, BookOpen, BarChart3, Video, Headphones, Mail, PenTool, Package, TestTube, Telescope, Eye, Users2, UserCog, MessageSquareMore, Share2, Send, Database, Workflow, HelpCircle, PresentationChart } from 'lucide-react';
 
 const MobileNavbar = () => {
   const location = useLocation();
