@@ -17,6 +17,7 @@ import random
 from models import *
 from database import connect_to_mongo, close_mongo_connection, get_database
 from ai_service import ai_service
+from auth_service import auth_service
 from content_creation_service import content_creation_service
 from stripe_service import stripe_service
 from voice_service import VoiceService
