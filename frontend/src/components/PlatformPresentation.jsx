@@ -29,7 +29,7 @@ import {
   CheckCircle2,
   ArrowRight,
   PlayCircle,
-  PresentationChart: Monitor,
+  Monitor,
   Mic,
   Video,
   Mail,
