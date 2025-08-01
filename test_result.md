@@ -601,6 +601,30 @@ frontend:
         agent: "main"
         comment: "Mock data system created for demo purposes, now being replaced with real API calls"
 
+  - task: "Getting Started Guide Integration"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/GettingStartedGuide.jsx, /app/frontend/src/components/Navbar.jsx, /app/frontend/src/components/MobileNavbar.jsx, /app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Successfully integrated GettingStartedGuide.jsx component into frontend navigation and routing. Added to both desktop (Navbar.jsx) and mobile (MobileNavbar.jsx) navigation with HELP badge. Added route to App.js for /getting-started path. Component provides comprehensive overview of all 6 phases completed, quick start guide, feature showcase, and user documentation."
+
+  - task: "Perplexity API Key Integration"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/.env, /app/backend/ai_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Successfully added Perplexity API key (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) to backend .env file. Backend server restarted to load new environment variable. API key should now be available for Perplexity AI integration in ai_service.py."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
