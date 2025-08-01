@@ -1,250 +1,368 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Sparkles } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Badge } from './ui/badge';
+import { 
+  Mail, 
+  Lock, 
+  User, 
+  Eye, 
+  EyeOff, 
+  Crown, 
+  Sparkles, 
+  CheckCircle2, 
+  AlertTriangle,
+  Loader2,
+  Google,
+  Shield,
+  Key,
+  Users
+} from 'lucide-react';
 
 const AuthPage = () => {
+  const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [signupData, setSignupData] = useState({ name: '', email: '', password: '' });
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [showTeamCode, setShowTeamCode] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+    teamCode: ''
+  });
 
-  const handleLogin = async (e) => {
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    // Clear errors when user starts typing
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/auth/login`, {
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+      
+      const payload = isLogin 
+        ? { email: formData.email, password: formData.password }
+        : { 
+            email: formData.email, 
+            password: formData.password, 
+            name: formData.name,
+            team_code: formData.teamCode || undefined
+          };
+
+      const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(payload),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('authToken', data.access_token);
+        // Store token and user info
+        localStorage.setItem('token', data.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/generator');
+        
+        setSuccess(isLogin ? 'Login successful! Redirecting...' : 'Account created successfully! Redirecting...');
+        
+        // Redirect to main app
+        setTimeout(() => {
+          window.location.href = '/generator';
+        }, 1500);
       } else {
-        const error = await response.json();
-        alert(`Login failed: ${error.detail || 'Unknown error'}`);
+        setError(data.detail || 'Authentication failed');
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('Login failed. Please try again.');
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Auth error:', err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleTeamCodeCheck = async () => {
+    if (!formData.teamCode) return;
     
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signupData),
-      });
-
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/auth/team-code/${formData.teamCode}`);
+      const data = await response.json();
+      
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('authToken', data.access_token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/generator');
+        setSuccess(`Team code valid! ${data.remaining_uses} uses remaining.`);
       } else {
-        const error = await response.json();
-        alert(`Registration failed: ${error.detail || 'Unknown error'}`);
+        setError('Invalid team code');
       }
-    } catch (error) {
-      console.error('Signup error:', error);
-      alert('Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      setError('Failed to verify team code');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full mb-4">
-            <Sparkles className="h-4 w-4 text-blue-600 mr-2" />
-            <span className="text-sm font-medium text-blue-600">THREE11 MOTION TECH</span>
+          <div className="flex items-center justify-center mb-4">
+            <Crown className="h-10 w-10 text-yellow-500 mr-2" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              THREE11 MOTION TECH
+            </h1>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
-          <p className="text-gray-600">Access your AI-powered content creation suite</p>
+          <p className="text-gray-600">The Ultimate AI-Powered Social Media Automation Platform</p>
         </div>
 
-        <Card className="shadow-xl border-0">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-center">Get Started</CardTitle>
-            <CardDescription className="text-center">
-              Sign in to your account or create a new one
+        {/* Main Auth Card */}
+        <Card className="shadow-xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">
+              {isLogin ? 'Welcome Back' : 'Join THREE11 MOTION TECH'}
+            </CardTitle>
+            <CardDescription>
+              {isLogin 
+                ? 'Sign in to access all your AI-powered features' 
+                : 'Create your account and start automating your social media'
+              }
             </CardDescription>
           </CardHeader>
+
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              {/* Login Tab */}
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="h-4 w-4 absolute left-3 top-3.5 text-gray-400" />
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-10"
-                        value={loginData.email}
-                        onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                        required
-                      />
-                    </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Name Field (Signup only) */}
+              {!isLogin && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your full name"
+                      required
+                    />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="h-4 w-4 absolute left-3 top-3.5 text-gray-400" />
-                      <Input
-                        id="login-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        className="pl-10 pr-10"
-                        value={loginData.password}
-                        onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                    disabled={isLoading}
+                </div>
+              )}
+
+              {/* Password Field */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-12 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
-                    {isLoading ? 'Signing In...' : 'Sign In'}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </form>
-              </TabsContent>
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Team Code Field (Signup only) */}
+              {!isLogin && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium">Team Code (Optional)</label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowTeamCode(!showTeamCode)}
+                      className="text-xs"
+                    >
+                      {showTeamCode ? 'Hide' : 'Have a team code?'}
+                    </Button>
+                  </div>
+                  
+                  {showTeamCode && (
+                    <div className="space-y-2">
+                      <div className="relative">
+                        <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <input
+                          type="text"
+                          name="teamCode"
+                          value={formData.teamCode}
+                          onChange={handleInputChange}
+                          onBlur={handleTeamCodeCheck}
+                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          placeholder="Enter team code for unlimited access"
+                        />
+                      </div>
+                      <div className="bg-purple-50 p-3 rounded-lg">
+                        <div className="flex items-start space-x-2">
+                          <Shield className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                          <div className="text-xs text-purple-700">
+                            <strong>Team Code Benefits:</strong>
+                            <ul className="mt-1 space-y-1">
+                              <li>• Unlimited AI generations</li>
+                              <li>• Access to all premium features</li>
+                              <li>• Team collaboration tools</li>
+                              <li>• Full admin privileges</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Error/Success Messages */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                    <span className="text-red-700 text-sm">{error}</span>
+                  </div>
+                </div>
+              )}
+
+              {success && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <span className="text-green-700 text-sm">{success}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Sparkles className="h-4 w-4 mr-2" />
+                )}
+                {loading 
+                  ? (isLogin ? 'Signing In...' : 'Creating Account...') 
+                  : (isLogin ? 'Sign In' : 'Create Account')
+                }
+              </Button>
+            </form>
+
+            {/* Google Login Placeholder */}
+            <div className="mt-4">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                </div>
+              </div>
               
-              {/* Signup Tab */}
-              <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <div className="relative">
-                      <User className="h-4 w-4 absolute left-3 top-3.5 text-gray-400" />
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        placeholder="Enter your full name"
-                        className="pl-10"
-                        value={signupData.name}
-                        onChange={(e) => setSignupData({...signupData, name: e.target.value})}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="h-4 w-4 absolute left-3 top-3.5 text-gray-400" />
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-10"
-                        value={signupData.email}
-                        onChange={(e) => setSignupData({...signupData, email: e.target.value})}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="h-4 w-4 absolute left-3 top-3.5 text-gray-400" />
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
-                        className="pl-10 pr-10"
-                        value={signupData.password}
-                        onChange={(e) => setSignupData({...signupData, password: e.target.value})}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Creating Account...' : 'Create Account'}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-            
-            {/* Quick Test Account */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>Quick Test:</strong> Use these credentials to test immediately:
-              </p>
-              <p className="text-xs text-gray-500">
-                Email: test@three11motion.com<br />
-                Password: <em>any password works</em>
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                Or create a new account with the Sign Up tab
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full mt-3"
+                disabled
+              >
+                <Google className="h-4 w-4 mr-2" />
+                Google (Coming Soon)
+              </Button>
+            </div>
+
+            {/* Toggle Login/Signup */}
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                {isLogin ? "Don't have an account?" : "Already have an account?"}
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setError('');
+                    setSuccess('');
+                    setFormData({ email: '', password: '', name: '', teamCode: '' });
+                  }}
+                  className="ml-1 p-0 h-auto text-blue-600 font-semibold"
+                >
+                  {isLogin ? 'Sign up' : 'Sign in'}
+                </Button>
               </p>
             </div>
           </CardContent>
         </Card>
-        
-        {/* Footer */}
-        <div className="text-center mt-6 text-sm text-gray-500">
-          Powered by THREE11 MOTION TECH - AI Content Creation Suite
+
+        {/* Demo Credentials Card */}
+        <Card className="mt-6 border-yellow-200 bg-yellow-50">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Crown className="h-5 w-5 text-yellow-600 mr-2" />
+                <h3 className="font-semibold text-yellow-800">Admin Access</h3>
+              </div>
+              <div className="space-y-2 text-sm text-yellow-700">
+                <p><strong>Email:</strong> lewcor311@gmail.com</p>
+                <p><strong>Password:</strong> THREE11admin2025!</p>
+                <p><strong>Team Code:</strong> THREE11-UNLIMITED-2025</p>
+              </div>
+              <Badge className="mt-3 bg-yellow-600 text-white">
+                <Users className="h-3 w-3 mr-1" />
+                10 Team Member Slots Available
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Features Preview */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500 mb-3">What you'll get access to:</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Badge variant="secondary">50+ Features</Badge>
+            <Badge variant="secondary">4 AI Models</Badge>
+            <Badge variant="secondary">Team Collaboration</Badge>
+            <Badge variant="secondary">Social Automation</Badge>
+            <Badge variant="secondary">Advanced Analytics</Badge>
+          </div>
         </div>
       </div>
     </div>
