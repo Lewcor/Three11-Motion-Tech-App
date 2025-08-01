@@ -214,7 +214,7 @@ async def get_team_code_info(code: str):
 @api_router.get("/auth/team-members")
 async def get_team_members(current_user: Dict = Depends(get_current_user_enhanced)):
     """Get team members (admin only)"""
-    if current_user.get("tier") != UserTier.UNLIMITED:
+    if current_user.get("tier", "").upper() != "UNLIMITED":
         raise HTTPException(status_code=403, detail="Admin access required")
     
     members = await auth_service.get_team_members(current_user["id"])
