@@ -157,7 +157,11 @@ const Navbar = () => {
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <div className="flex items-center space-x-3">
-              <Crown className="h-8 w-8 text-yellow-500" />
+              <img 
+                src="/logo.svg" 
+                alt="THREE11 MOTION TECH Logo" 
+                className="h-8 w-8"
+              />
               <div>
                 <h2 className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   THREE11 MOTION TECH
