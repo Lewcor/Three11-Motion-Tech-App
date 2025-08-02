@@ -111,7 +111,13 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 px-4 lg:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <Crown className="h-8 w-8 text-yellow-500 group-hover:scale-105 transition-transform duration-200" />
+            <div className="relative">
+              <img 
+                src="/logo.svg" 
+                alt="THREE11 MOTION TECH Logo" 
+                className="h-8 w-8 group-hover:scale-105 transition-transform duration-200"
+              />
+            </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 THREE11 MOTION TECH
