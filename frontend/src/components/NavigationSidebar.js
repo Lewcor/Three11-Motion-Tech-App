@@ -28,6 +28,18 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
           description: 'Real-time trend analysis',
           icon: '📈',
           badge: 'LIVE'
+        },
+        {
+          path: '/hashtag-research',
+          label: 'Hashtag Research',
+          description: 'Find trending hashtags',
+          icon: '#️⃣'
+        },
+        {
+          path: '/content-ideas',
+          label: 'Content Ideas',
+          description: 'Unlimited creative inspiration',
+          icon: '💡'
         }
       ]
     },
@@ -48,18 +60,61 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
           description: 'Complete content creation toolkit',
           icon: '🎨',
           badge: 'NEW'
+        },
+        {
+          path: '/ai-intelligence',
+          label: 'AI Intelligence',
+          description: 'Advanced AI content analysis',
+          icon: '🧠',
+          badge: 'AI'
+        },
+        {
+          path: '/automation-hub',
+          label: 'Automation Hub',
+          description: 'Social media automation',
+          icon: '🤖'
+        },
+        {
+          path: '/performance-optimizer',
+          label: 'Performance Optimizer',
+          description: 'Content performance optimization',
+          icon: '🚀'
         }
       ]
     },
     {
-      title: "Premium",
-      icon: "💎",
+      title: "Analytics & Insights",
+      icon: "📊",
       items: [
         {
-          path: '/premium',
-          label: 'View Premium',
-          description: 'Unlock advanced features',
-          icon: '⭐'
+          path: '/analytics-dashboard',
+          label: 'Analytics Dashboard',
+          description: 'Advanced performance tracking',
+          icon: '📈'
+        },
+        {
+          path: '/competitor-monitoring',
+          label: 'Competitor Monitor',
+          description: 'Track competitor performance',
+          icon: '🎯'
+        },
+        {
+          path: '/ab-testing',
+          label: 'A/B Testing Hub',
+          description: 'Test content variations',
+          icon: '🧪'
+        },
+        {
+          path: '/social-listening',
+          label: 'Social Listening',
+          description: 'Monitor brand mentions',
+          icon: '👂'
+        },
+        {
+          path: '/roi-tracker',
+          label: 'ROI Tracker',
+          description: 'Track return on investment',
+          icon: '💰'
         }
       ]
     },
@@ -68,40 +123,106 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
       icon: "🎬",
       items: [
         {
-          path: '/content-studio',
-          label: 'Content Studio',
-          description: 'Professional content workspace',
-          icon: '🎭'
-        },
-        {
           path: '/video-scripts',
           label: 'Video Scripts',
           description: 'Complete video script generation',
           icon: '📝'
         },
         {
-          path: '/strategy-planner',
-          label: 'Strategy Planner',
-          description: 'Content strategy and planning',
-          icon: '📊'
+          path: '/brand-voice',
+          label: 'Brand Voice Analyzer',
+          description: 'Maintain brand consistency',
+          icon: '🎭'
+        },
+        {
+          path: '/content-calendar',
+          label: 'Content Calendar',
+          description: 'Plan and schedule content',
+          icon: '📅'
+        },
+        {
+          path: '/asset-library',
+          label: 'Asset Library',
+          description: 'Manage media assets',
+          icon: '📚'
+        },
+        {
+          path: '/template-builder',
+          label: 'Template Builder',
+          description: 'Create content templates',
+          icon: '🏗️'
         }
       ]
     },
     {
-      title: "Team Hub",
+      title: "Team Collaboration",
       icon: "👥",
       items: [
         {
-          path: '/team-collaboration',
-          label: 'Team Collaboration',
-          description: 'Work together seamlessly',
-          icon: '🤝'
+          path: '/team-workspace',
+          label: 'Team Workspace',
+          description: 'Collaborative workspace',
+          icon: '🏢'
         },
         {
-          path: '/analytics-dashboard',
-          label: 'Analytics Dashboard',
-          description: 'Track content performance',
-          icon: '📈'
+          path: '/project-management',
+          label: 'Project Management',
+          description: 'Manage team projects',
+          icon: '📋'
+        },
+        {
+          path: '/approval-workflow',
+          label: 'Approval Workflow',
+          description: 'Content approval process',
+          icon: '✅'
+        },
+        {
+          path: '/team-analytics',
+          label: 'Team Analytics',
+          description: 'Team performance insights',
+          icon: '📊'
+        },
+        {
+          path: '/client-portal',
+          label: 'Client Portal',
+          description: 'Client collaboration space',
+          icon: '🤝'
+        }
+      ]
+    },
+    {
+      title: "Premium & Advanced",
+      icon: "💎",
+      items: [
+        {
+          path: '/premium',
+          label: 'Premium Features',
+          description: 'Unlock advanced capabilities',
+          icon: '⭐'
+        },
+        {
+          path: '/white-label',
+          label: 'White Label',
+          description: 'Custom branded solutions',
+          icon: '🏷️'
+        },
+        {
+          path: '/enterprise',
+          label: 'Enterprise Suite',
+          description: 'Enterprise-level features',
+          icon: '🏢'
+        },
+        {
+          path: '/api-access',
+          label: 'API Access',
+          description: 'Developer API integration',
+          icon: '⚡'
+        },
+        {
+          path: '/custom-integrations',
+          label: 'Custom Integrations',
+          description: 'Third-party integrations',
+          icon: '🔗'
         }
       ]
     }
