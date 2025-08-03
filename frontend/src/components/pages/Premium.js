@@ -149,8 +149,8 @@ const Premium = () => {
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
                     <div className="text-4xl font-bold text-purple-600 mb-2">
-                      Custom
-                      <span className="text-lg text-gray-600 font-normal">/pricing</span>
+                      $179.99
+                      <span className="text-lg text-gray-600 font-normal">/year</span>
                     </div>
                     <div className="text-sm text-gray-500 mb-4">
                       Team access codes • White label solutions
@@ -158,7 +158,7 @@ const Premium = () => {
                     <p className="text-gray-600 mb-6">For teams and enterprise organizations</p>
                     
                     <button className="w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-200">
-                      Contact Sales
+                      Start Enterprise Plan
                     </button>
                     
                     <p className="text-xs text-gray-500 mt-3">Custom integrations • Dedicated support</p>
