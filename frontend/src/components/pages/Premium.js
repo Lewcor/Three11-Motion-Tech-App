@@ -95,22 +95,76 @@ const Premium = () => {
               Transform your content creation with unlimited access to all THREE11 MOTION TECH features
             </p>
             
-            {/* Pricing */}
-            <div className="max-w-md mx-auto mb-12">
-              <div className="bg-white rounded-3xl shadow-2xl p-8 border-4 border-gradient-to-r from-yellow-400 to-orange-400">
-                <div className="text-center">
-                  <div className="text-5xl font-bold text-gray-900 mb-2">
-                    $29
-                    <span className="text-2xl text-gray-600 font-normal">/month</span>
+            {/* Competitive Pricing Plans */}
+            <div className="max-w-6xl mx-auto mb-12">
+              <div className="grid md:grid-cols-3 gap-8">
+                
+                {/* Basic Plan */}
+                <div className="bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-200">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Basic Plan</h3>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">
+                      $9.99
+                      <span className="text-lg text-gray-600 font-normal">/month</span>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-4">
+                      <span className="line-through">$119.88</span> $99.99/year (Save $19.89!)
+                    </div>
+                    <p className="text-gray-600 mb-6">Perfect for individual creators and small businesses</p>
+                    
+                    <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-200">
+                      Start Basic Plan
+                    </button>
+                    
+                    <p className="text-xs text-gray-500 mt-3">7-day free trial • Cancel anytime</p>
                   </div>
-                  <p className="text-gray-600 mb-6">Everything you need to dominate social media</p>
-                  
-                  <button className="w-full py-4 px-8 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
-                    Start Premium Now
-                  </button>
-                  
-                  <p className="text-xs text-gray-500 mt-3">7-day free trial • Cancel anytime</p>
                 </div>
+
+                {/* Unlimited Plan - POPULAR */}
+                <div className="bg-white rounded-3xl shadow-2xl p-8 border-4 border-gradient-to-r from-yellow-400 to-orange-400 transform scale-105">
+                  <div className="text-center">
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-4 py-1 rounded-full text-sm font-bold mb-4">
+                      MOST POPULAR
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Unlimited Plan</h3>
+                    <div className="text-5xl font-bold text-orange-600 mb-2">
+                      $29
+                      <span className="text-2xl text-gray-600 font-normal">/month</span>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-4">
+                      <span className="line-through">$348</span> $299/year (Save $49!)
+                    </div>
+                    <p className="text-gray-600 mb-6">Everything you need to dominate social media</p>
+                    
+                    <button className="w-full py-4 px-8 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+                      Start Unlimited Now
+                    </button>
+                    
+                    <p className="text-xs text-gray-500 mt-3">7-day free trial • Cancel anytime</p>
+                  </div>
+                </div>
+
+                {/* Enterprise Plan */}
+                <div className="bg-white rounded-3xl shadow-lg p-8 border-2 border-purple-200">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
+                    <div className="text-4xl font-bold text-purple-600 mb-2">
+                      Custom
+                      <span className="text-lg text-gray-600 font-normal">/pricing</span>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-4">
+                      Team access codes • White label solutions
+                    </div>
+                    <p className="text-gray-600 mb-6">For teams and enterprise organizations</p>
+                    
+                    <button className="w-full py-3 px-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all duration-200">
+                      Contact Sales
+                    </button>
+                    
+                    <p className="text-xs text-gray-500 mt-3">Custom integrations • Dedicated support</p>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
