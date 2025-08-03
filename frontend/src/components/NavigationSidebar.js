@@ -129,9 +129,11 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-content font-bold text-sm">
-              311
-            </div>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_sidebar-nav-fix/artifacts/891136ci_THREE11%20-%20LOGO.png" 
+              alt="THREE11 MOTION TECH"
+              className="w-10 h-10 object-contain"
+            />
             <div>
               <h2 className="font-bold text-lg">THREE11 MOTION TECH</h2>
               <p className="text-gray-400 text-sm">Navigation Menu</p>
