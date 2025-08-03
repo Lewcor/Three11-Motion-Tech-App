@@ -125,14 +125,20 @@ const CompetitivePricing = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                   <div className="mb-4">
                     <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
-                    {plan.price !== 'Custom' && (
-                      <span className="text-xl text-gray-600">/month</span>
+                    {plan.price !== 'Custom' && plan.price.includes('$') && (
+                      <span className="text-xl text-gray-600">{plan.name === 'Enterprise' ? '/year' : '/month'}</span>
                     )}
                   </div>
                   
-                  {plan.price !== 'Custom' && (
+                  {plan.price !== 'Custom' && plan.name !== 'Enterprise' && (
                     <div className="text-sm text-gray-500 mb-4">
                       <span className="line-through">${plan.price === '$9.99' ? '119.88' : '348'}</span> {plan.yearlyPrice}/year ({plan.yearlyDiscount})
+                    </div>
+                  )}
+                  
+                  {plan.name === 'Enterprise' && (
+                    <div className="text-sm text-gray-500 mb-4">
+                      {plan.yearlyDiscount}
                     </div>
                   )}
                   
