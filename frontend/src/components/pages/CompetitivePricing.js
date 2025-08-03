@@ -44,9 +44,9 @@ const CompetitivePricing = () => {
     },
     {
       name: 'Enterprise',
-      price: 'Custom',
-      yearlyPrice: 'Contact Sales',
-      yearlyDiscount: 'Volume discounts available',
+      price: '$179.99',
+      yearlyPrice: '$179.99',
+      yearlyDiscount: 'Annual billing only',
       color: 'purple',
       gradient: 'from-purple-500 to-purple-600',
       popular: false,
