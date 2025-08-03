@@ -97,6 +97,8 @@ function App() {
           <Route path="/content-remix" element={<ContentRemix />} />
           <Route path="/content-creation" element={<ContentCreation />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/team-access" element={<TeamAccess />} />
+          <Route path="/competitive-pricing" element={<CompetitivePricing />} />
           
           {/* New navigation pages */}
           <Route path="/content-studio" element={<ContentStudio />} />
