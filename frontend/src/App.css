@@ -1091,6 +1091,534 @@ body {
   align-self: flex-end;
 }
 
+/* Capture Studio Styles */
+.studio-layout {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+.recording-panel {
+  grid-column: span 6;
+}
+
+.recording-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.recording-status.recording {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.recording-status.standby {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s infinite;
+}
+
+.recording-controls {
+  text-align: center;
+}
+
+.record-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 200px;
+  padding: 16px 24px;
+  margin: 0 auto 24px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.record-btn.start {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.record-btn.stop {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+}
+
+.record-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+.record-icon {
+  font-size: 20px;
+}
+
+.recording-info {
+  color: #9ca3af;
+}
+
+.recording-time {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.recording-settings {
+  font-size: 14px;
+}
+
+.camera-views {
+  grid-column: span 6;
+}
+
+.view-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.view-btn {
+  padding: 6px 12px;
+  background: rgba(42, 42, 45, 0.8);
+  border: 1px solid #3a3a3d;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-btn.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.camera-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.camera-view {
+  aspect-ratio: 16/9;
+}
+
+.camera-feed {
+  width: 100%;
+  height: 100%;
+  background: #1a1a1d;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+}
+
+.camera-icon {
+  font-size: 24px;
+  color: #6b7280;
+}
+
+.camera-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.camera-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.camera-status.active {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.camera-status.standby {
+  background: rgba(107, 114, 128, 0.2);
+  color: #6b7280;
+}
+
+.motion-tracking {
+  grid-column: span 4;
+}
+
+.tracking-visualization {
+  margin-bottom: 20px;
+}
+
+.skeleton-view {
+  aspect-ratio: 1;
+  background: #1a1a1d;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeleton-placeholder {
+  text-align: center;
+  color: #6b7280;
+}
+
+.skeleton-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.tracking-points {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 8px;
+}
+
+.tracking-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.tracking-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(42, 42, 45, 0.8);
+  border: 1px solid #3a3a3d;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.session-settings {
+  grid-column: span 4;
+}
+
+.settings-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setting-item label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.setting-item input,
+.setting-item select {
+  padding: 10px 12px;
+  background: rgba(26, 26, 29, 0.8);
+  border: 1px solid #2a2a2d;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.recent-captures {
+  grid-column: span 4;
+}
+
+.capture-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.capture-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(42, 42, 45, 0.5);
+  border-radius: 8px;
+}
+
+.capture-thumb {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 8px;
+}
+
+.capture-info {
+  flex: 1;
+}
+
+.capture-info h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.capture-info span {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.capture-action {
+  padding: 6px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  color: #3b82f6;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Analytics Dashboard Styles */
+.analytics-dashboard {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+.metrics-card {
+  grid-column: span 12;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.metric-item {
+  text-align: center;
+  padding: 20px;
+  background: rgba(42, 42, 45, 0.3);
+  border-radius: 12px;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #3b82f6;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.metric-change {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.metric-change.positive {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.metric-change.negative {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.data-overview {
+  grid-column: span 8;
+}
+
+.header-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.time-filter {
+  padding: 6px 12px;
+  background: rgba(42, 42, 45, 0.8);
+  border: 1px solid #3a3a3d;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.chart-placeholder {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1d;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.chart-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #6b7280;
+}
+
+.chart-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.active-sessions {
+  grid-column: span 4;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.session-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(42, 42, 45, 0.3);
+  border-radius: 12px;
+}
+
+.session-status {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.session-status.active {
+  background: #22c55e;
+  animation: pulse 2s infinite;
+}
+
+.session-status.processing {
+  background: #3b82f6;
+  animation: pulse 2s infinite;
+}
+
+.session-status.standby {
+  background: #6b7280;
+}
+
+.session-info {
+  flex: 1;
+}
+
+.session-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.session-info p {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.session-duration {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.recent-analysis {
+  grid-column: span 6;
+}
+
+.analysis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.analysis-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(42, 42, 45, 0.3);
+  border-radius: 12px;
+}
+
+.analysis-type {
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.analysis-details {
+  flex: 1;
+}
+
+.analysis-details h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.analysis-details p {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.analysis-score {
+  font-size: 20px;
+  font-weight: 700;
+  color: #22c55e;
+}
+
 /* Animation Classes */
 .fade-in {
   animation: fadeIn 0.3s ease forwards;
@@ -1099,4 +1627,65 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .studio-layout {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .recording-panel,
+  .camera-views {
+    grid-column: span 6;
+  }
+  
+  .motion-tracking,
+  .session-settings,
+  .recent-captures {
+    grid-column: span 6;
+  }
+  
+  .analytics-dashboard {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .data-overview {
+    grid-column: span 6;
+  }
+  
+  .active-sessions,
+  .recent-analysis {
+    grid-column: span 6;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .studio-layout,
+  .analytics-dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .recording-panel,
+  .camera-views,
+  .motion-tracking,
+  .session-settings,
+  .recent-captures,
+  .data-overview,
+  .active-sessions,
+  .recent-analysis {
+    grid-column: span 1;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .camera-grid {
+    grid-template-columns: 1fr;
+  }
 }
