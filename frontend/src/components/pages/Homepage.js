@@ -44,6 +44,12 @@ const Homepage = () => {
                 to="/generator"
                 className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
+                Try FREE Demo Now!
+              </Link>
+              <Link 
+                to="/generator"
+                className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+              >
                 Start Creating Now
               </Link>
               <Link 
