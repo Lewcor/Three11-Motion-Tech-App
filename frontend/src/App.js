@@ -10,6 +10,8 @@ import TrendsAnalyzer from "./components/pages/TrendsAnalyzer";
 import ContentRemix from "./components/pages/ContentRemix";
 import ContentCreation from "./components/pages/ContentCreation";
 import Premium from "./components/pages/Premium";
+import TeamAccess from "./components/pages/TeamAccess";
+import CompetitivePricing from "./components/pages/CompetitivePricing";
 
 // Additional pages for new navigation structure
 const ContentStudio = () => (
