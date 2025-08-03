@@ -201,6 +201,19 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
           icon: '⭐'
         },
         {
+          path: '/team-access',
+          label: 'Team Access Codes',
+          description: '13 unlimited access codes',
+          icon: '👑',
+          badge: 'FREE'
+        },
+        {
+          path: '/competitive-pricing',
+          label: 'Competitive Pricing',
+          description: '$9.99 Basic • $29 Unlimited',
+          icon: '🏆'
+        },
+        {
           path: '/white-label',
           label: 'White Label',
           description: 'Custom branded solutions',
