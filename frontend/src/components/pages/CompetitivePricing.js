@@ -145,7 +145,7 @@ const CompetitivePricing = () => {
                   <p className="text-gray-600 mb-6">{plan.description}</p>
                   
                   <button className={`w-full py-3 px-6 bg-gradient-to-r ${plan.gradient} text-white font-bold rounded-xl hover:shadow-lg transition-all duration-200 ${plan.popular ? 'text-lg py-4' : ''}`}>
-                    {plan.price === 'Custom' ? 'Contact Sales' : 'Start Free Trial'}
+                    {plan.name === 'Enterprise' ? 'Start Enterprise Plan' : 'Start Free Trial'}
                   </button>
                   
                   <p className="text-xs text-gray-500 mt-3">7-day free trial • Cancel anytime</p>
