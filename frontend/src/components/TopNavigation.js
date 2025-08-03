@@ -23,9 +23,11 @@ const TopNavigation = () => {
             {/* Left: Logo and Brand */}
             <div className="flex items-center space-x-4">
               <Link to="/" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-white">
-                  311
-                </div>
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_sidebar-nav-fix/artifacts/891136ci_THREE11%20-%20LOGO.png" 
+                  alt="THREE11 MOTION TECH"
+                  className="w-12 h-12 object-contain"
+                />
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-bold text-gray-900">THREE11 MOTION TECH</h1>
                   <p className="text-sm text-gray-500">AI-Powered Content Creation</p>
