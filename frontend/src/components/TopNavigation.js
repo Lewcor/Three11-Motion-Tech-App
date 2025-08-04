@@ -16,7 +16,7 @@ const TopNavigation = () => {
   return (
     <>
       {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-200">
+      <nav className="sticky top-0 z-30 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-700 shadow-lg border-b border-purple-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             
