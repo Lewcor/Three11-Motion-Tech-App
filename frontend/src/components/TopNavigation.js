@@ -39,23 +39,23 @@ const TopNavigation = () => {
             <div className="hidden lg:flex items-center space-x-6">
               <Link 
                 to="/generator" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-white hover:text-yellow-300 font-medium transition-colors"
               >
                 Caption Generator
               </Link>
               <Link 
                 to="/voice-studio" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center space-x-1"
+                className="text-white hover:text-yellow-300 font-medium transition-colors flex items-center space-x-1"
               >
                 <span>Voice Studio</span>
-                <span className="px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full font-bold">BETA</span>
+                <span className="px-2 py-0.5 text-xs bg-orange-400 text-orange-900 rounded-full font-bold">BETA</span>
               </Link>
               <Link 
                 to="/trends-analyzer" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center space-x-1"
+                className="text-white hover:text-yellow-300 font-medium transition-colors flex items-center space-x-1"
               >
                 <span>Trends</span>
-                <span className="px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded-full font-bold">LIVE</span>
+                <span className="px-2 py-0.5 text-xs bg-red-400 text-red-900 rounded-full font-bold animate-pulse">LIVE</span>
               </Link>
             </div>
 
