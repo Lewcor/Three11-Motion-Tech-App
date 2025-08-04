@@ -29,8 +29,8 @@ const TopNavigation = () => {
                   className="w-12 h-12 object-contain"
                 />
                 <div className="hidden sm:block">
-                  <h1 className="text-xl font-bold text-gray-900">THREE11 MOTION TECH</h1>
-                  <p className="text-sm text-gray-500">AI-Powered Content Creation</p>
+                  <h1 className="text-xl font-bold text-white">THREE11 MOTION TECH</h1>
+                  <p className="text-sm text-purple-100">Revolutionary AI-Powered Content Creation Platform</p>
                 </div>
               </Link>
             </div>
