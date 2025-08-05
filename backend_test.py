@@ -315,6 +315,29 @@ def main():
     print("\n📍 PHASE 4: Testing CORS Configuration")
     cors_success = tester.test_cors_headers()
     
+    # AI Video Studio Tests
+    print("\n📍 PHASE 5: Testing AI Video Generation")
+    video_gen_success, project_id = tester.test_video_generation()
+    
+    print("\n📍 PHASE 6: Testing Video Project Management")
+    projects_success, projects = tester.test_get_video_projects()
+    
+    # Test specific project retrieval if we have a project ID
+    specific_project_success = False
+    if project_id:
+        specific_project_success, _ = tester.test_get_specific_video_project(project_id)
+    
+    print("\n📍 PHASE 7: Testing Error Handling")
+    error_handling_success = tester.test_video_generation_error_handling()
+    nonexistent_get_success = tester.test_nonexistent_project_retrieval()
+    nonexistent_delete_success = tester.test_nonexistent_project_deletion()
+    
+    # Test project deletion (if we have a project to delete)
+    delete_success = False
+    if project_id:
+        print("\n📍 PHASE 8: Testing Project Deletion")
+        delete_success = tester.test_delete_video_project(project_id)
+    
     # Print final results
     print("\n" + "=" * 60)
     print("📊 FINAL TEST RESULTS")
@@ -323,11 +346,18 @@ def main():
     print(f"Tests Passed: {tester.tests_passed}")
     print(f"Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
     
+    # Detailed results
+    print("\n📋 DETAILED RESULTS:")
+    print(f"✅ Basic API Tests: {'PASSED' if all([root_success, create_success, get_success, cors_success]) else 'FAILED'}")
+    print(f"✅ AI Video Generation: {'PASSED' if video_gen_success else 'FAILED'}")
+    print(f"✅ Project Management: {'PASSED' if projects_success else 'FAILED'}")
+    print(f"✅ Error Handling: {'PASSED' if all([error_handling_success, nonexistent_get_success, nonexistent_delete_success]) else 'FAILED'}")
+    
     if tester.tests_passed == tester.tests_run:
-        print("🎉 ALL TESTS PASSED! Backend is working correctly.")
+        print("\n🎉 ALL TESTS PASSED! AI Video Studio Backend is working correctly.")
         return 0
     else:
-        print("⚠️  Some tests failed. Check the details above.")
+        print("\n⚠️  Some tests failed. Check the details above.")
         return 1
 
 if __name__ == "__main__":
