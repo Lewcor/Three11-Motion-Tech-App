@@ -95,11 +95,11 @@ const SignIn = () => {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                required
+                required={!showAccessCode}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                placeholder="Enter your password"
+                placeholder={showAccessCode ? "Password (optional with access code)" : "Enter your password"}
               />
             </div>
 
