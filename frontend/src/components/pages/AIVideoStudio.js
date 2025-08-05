@@ -33,7 +33,7 @@ const AIVideoStudio = () => {
 
   const loadVideoProjects = async () => {
     try {
-      const response = await fetch(`${import.meta.env.REACT_APP_BACKEND_URL}/video/projects`);
+      const response = await fetch(`${import.meta.env.REACT_APP_BACKEND_URL}/api/video/projects`);
       if (response.ok) {
         const projects = await response.json();
         setVideoProjects(projects);
