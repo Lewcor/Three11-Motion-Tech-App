@@ -103,6 +103,7 @@ function App() {
           <Route path="/competitive-pricing" element={<CompetitivePricing />} />
           
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/ai-video-studio" element={<AIVideoStudio />} />
           
           {/* New navigation pages */}
           <Route path="/content-studio" element={<ContentStudio />} />
