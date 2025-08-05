@@ -198,9 +198,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "FastAPI Backend Server"
-    - "Sign In Page Integration"
-    - "Premium & Pricing Merge"
+    - "AI Video Studio Frontend"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
