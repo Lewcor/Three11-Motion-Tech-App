@@ -199,6 +199,8 @@ async def delete_video_project(project_id: str):
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Video project not found")
         return {"message": "Video project deleted successfully"}
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         logger.error(f"Error deleting video project: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to delete video project")
