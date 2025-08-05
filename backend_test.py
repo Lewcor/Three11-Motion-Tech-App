@@ -22,9 +22,11 @@ class THREE11MotionTechAPITester:
         
         try:
             if method == 'GET':
-                response = requests.get(url, headers=headers, timeout=10)
+                response = requests.get(url, headers=headers, timeout=30)
             elif method == 'POST':
-                response = requests.post(url, json=data, headers=headers, timeout=10)
+                response = requests.post(url, json=data, headers=headers, timeout=30)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=headers, timeout=30)
 
             print(f"   Response Status: {response.status_code}")
             
@@ -34,6 +36,11 @@ class THREE11MotionTechAPITester:
                 print(f"✅ PASSED - Status: {response.status_code}")
                 try:
                     response_data = response.json()
+                    # Truncate large base64 data for readability
+                    if isinstance(response_data, dict) and 'scenes' in response_data:
+                        for scene in response_data.get('scenes', []):
+                            if 'image_base64' in scene and len(scene['image_base64']) > 100:
+                                scene['image_base64'] = scene['image_base64'][:50] + "...[truncated]"
                     print(f"   Response: {json.dumps(response_data, indent=2)}")
                     return True, response_data
                 except:
