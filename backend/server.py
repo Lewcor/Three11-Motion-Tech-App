@@ -38,6 +38,31 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# AI Video Studio Models
+class VideoGenerationRequest(BaseModel):
+    title: str
+    script: str
+    video_format: str  # 'tiktok', 'youtube_shorts', 'youtube_standard'
+    voice_style: Optional[str] = "professional"
+    number_of_scenes: Optional[int] = 4
+
+class VideoScene(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    image_base64: str
+    text: str
+    duration: float  # seconds
+
+class VideoProject(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    script: str
+    video_format: str
+    voice_style: str
+    scenes: List[VideoScene]
+    status: str  # 'generating', 'completed', 'failed'
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
