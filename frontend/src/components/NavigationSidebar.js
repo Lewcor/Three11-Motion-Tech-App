@@ -191,13 +191,19 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
       ]
     },
     {
-      title: "Premium & Advanced",
+      title: "Premium & Pricing",
       icon: "💎",
       items: [
         {
+          path: '/competitive-pricing',
+          label: 'Pricing Plans',
+          description: '$9.99 Basic • $29 Unlimited • $179.99 Enterprise',
+          icon: '🏆'
+        },
+        {
           path: '/premium',
           label: 'Premium Features',
-          description: 'Unlock advanced capabilities',
+          description: 'Unlock all advanced capabilities',
           icon: '⭐'
         },
         {
@@ -208,27 +214,21 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
           badge: 'FREE'
         },
         {
-          path: '/competitive-pricing',
-          label: 'Competitive Pricing',
-          description: '$9.99 Basic • $29 Unlimited',
-          icon: '🏆'
-        },
-        {
           path: '/white-label',
-          label: 'White Label',
-          description: 'Custom branded solutions',
+          label: 'White Label Solutions',
+          description: 'Custom branded platform',
           icon: '🏷️'
         },
         {
           path: '/enterprise',
           label: 'Enterprise Suite',
-          description: 'Enterprise-level features',
+          description: 'Advanced enterprise features',
           icon: '🏢'
         },
         {
           path: '/api-access',
-          label: 'API Access',
-          description: 'Developer API integration',
+          label: 'Developer API',
+          description: 'API integration access',
           icon: '⚡'
         },
         {
