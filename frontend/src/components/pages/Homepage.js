@@ -42,19 +42,19 @@ const Homepage = () => {
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
               <Link 
                 to="/generator"
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                className="px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
                 Try FREE Demo Now!
               </Link>
               <Link 
                 to="/generator"
-                className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
               >
                 Start Creating Now
               </Link>
               <Link 
                 to="/content-creation"
-                className="px-8 py-4 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200"
+                className="px-8 py-4 bg-white text-purple-700 font-semibold rounded-xl border-2 border-purple-300 hover:border-purple-500 hover:shadow-lg transition-all duration-200"
               >
                 Explore Content Suite
               </Link>
