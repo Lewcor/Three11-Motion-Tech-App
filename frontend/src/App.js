@@ -12,6 +12,7 @@ import ContentCreation from "./components/pages/ContentCreation";
 import Premium from "./components/pages/Premium";
 import TeamAccess from "./components/pages/TeamAccess";
 import CompetitivePricing from "./components/pages/CompetitivePricing";
+import SignIn from "./components/pages/SignIn";
 
 // Additional pages for new navigation structure
 const ContentStudio = () => (
