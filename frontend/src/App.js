@@ -101,6 +101,8 @@ function App() {
           <Route path="/team-access" element={<TeamAccess />} />
           <Route path="/competitive-pricing" element={<CompetitivePricing />} />
           
+          <Route path="/signin" element={<SignIn />} />
+          
           {/* New navigation pages */}
           <Route path="/content-studio" element={<ContentStudio />} />
           <Route path="/video-scripts" element={<VideoScripts />} />
