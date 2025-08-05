@@ -7,10 +7,46 @@ const SignIn = () => {
   const [accessCode, setAccessCode] = useState('');
   const [showAccessCode, setShowAccessCode] = useState(false);
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    // Handle sign in logic here
-    console.log('Sign in attempted:', { email, password, accessCode });
+    
+    if (!email) {
+      alert('Please enter your email address.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password || null,
+          access_code: accessCode || null
+        })
+      });
+
+      const authResult = await response.json();
+      
+      if (authResult.success) {
+        // Store authentication data
+        localStorage.setItem('three11_token', authResult.token);
+        localStorage.setItem('three11_user', JSON.stringify(authResult.user));
+        
+        // Show success message
+        alert(`${authResult.message}\n\nWelcome ${authResult.user.role.replace('_', ' ').toUpperCase()}: ${authResult.user.email}`);
+        
+        // Redirect to homepage or dashboard
+        window.location.href = '/';
+      } else {
+        alert(`Sign In Failed: ${authResult.message}`);
+      }
+    } catch (error) {
+      console.error('Sign in error:', error);
+      alert('Sign in failed. Please check your connection and try again.');
+    }
   };
 
   return (
