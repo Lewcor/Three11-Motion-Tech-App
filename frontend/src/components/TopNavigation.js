@@ -59,8 +59,16 @@ const TopNavigation = () => {
               </Link>
             </div>
 
-            {/* Right: Menu Button */}
+            {/* Right: Sign In, Premium & Menu Button */}
             <div className="flex items-center space-x-4">
+              {/* Sign In Button */}
+              <Link 
+                to="/signin"
+                className="hidden sm:inline-flex items-center px-4 py-2 text-white hover:text-yellow-300 font-medium transition-colors"
+              >
+                Sign In
+              </Link>
+
               {/* Premium Button */}
               <Link 
                 to="/premium"
