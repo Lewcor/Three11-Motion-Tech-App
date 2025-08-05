@@ -80,6 +80,127 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# AI Video Studio Endpoints
+@api_router.post("/video/generate", response_model=VideoProject)
+async def generate_video(request: VideoGenerationRequest):
+    """Generate AI video with images and scenes"""
+    try:
+        # Initialize Gemini Image Generation
+        api_key = os.environ.get('GEMINI_API_KEY')
+        if not api_key:
+            raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured")
+        
+        image_gen = GeminiImageGeneration(api_key=api_key)
+        
+        # Create video project
+        video_project = VideoProject(
+            title=request.title,
+            script=request.script,
+            video_format=request.video_format,
+            voice_style=request.voice_style,
+            scenes=[],
+            status="generating"
+        )
+        
+        # Save initial project to database
+        await db.video_projects.insert_one(video_project.dict())
+        
+        # Split script into scenes based on sentences or paragraphs
+        script_parts = request.script.split('.')[:request.number_of_scenes]
+        if not script_parts[-1]:  # Remove empty last element if script ends with period
+            script_parts = script_parts[:-1]
+        
+        scenes = []
+        
+        for i, scene_text in enumerate(script_parts):
+            scene_text = scene_text.strip()
+            if not scene_text:
+                continue
+                
+            try:
+                # Generate image prompt based on scene text
+                image_prompt = f"Professional, high-quality scene: {scene_text}. Cinematic, vibrant colors, suitable for social media content."
+                
+                # Generate images using Gemini
+                images = await image_gen.generate_images(
+                    prompt=image_prompt,
+                    model="imagen-3.0-generate-002",
+                    number_of_images=1
+                )
+                
+                if images and len(images) > 0:
+                    # Convert image bytes to base64
+                    image_base64 = base64.b64encode(images[0]).decode('utf-8')
+                    
+                    # Create scene
+                    scene = VideoScene(
+                        image_base64=image_base64,
+                        text=scene_text,
+                        duration=3.0  # Default 3 seconds per scene
+                    )
+                    scenes.append(scene)
+                    
+            except Exception as e:
+                logger.error(f"Error generating image for scene {i}: {str(e)}")
+                # Create scene with placeholder if image generation fails
+                scene = VideoScene(
+                    image_base64="",
+                    text=scene_text,
+                    duration=3.0
+                )
+                scenes.append(scene)
+        
+        # Update project with scenes
+        video_project.scenes = scenes
+        video_project.status = "completed" if scenes else "failed"
+        video_project.updated_at = datetime.utcnow()
+        
+        # Update in database
+        await db.video_projects.update_one(
+            {"id": video_project.id},
+            {"$set": video_project.dict()}
+        )
+        
+        return video_project
+        
+    except Exception as e:
+        logger.error(f"Error generating video: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Video generation failed: {str(e)}")
+
+@api_router.get("/video/projects", response_model=List[VideoProject])
+async def get_video_projects():
+    """Get all video projects"""
+    try:
+        projects = await db.video_projects.find().sort("created_at", -1).to_list(100)
+        return [VideoProject(**project) for project in projects]
+    except Exception as e:
+        logger.error(f"Error fetching video projects: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch video projects")
+
+@api_router.get("/video/projects/{project_id}", response_model=VideoProject)
+async def get_video_project(project_id: str):
+    """Get specific video project"""
+    try:
+        project = await db.video_projects.find_one({"id": project_id})
+        if not project:
+            raise HTTPException(status_code=404, detail="Video project not found")
+        return VideoProject(**project)
+    except Exception as e:
+        logger.error(f"Error fetching video project: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch video project")
+
+@api_router.delete("/video/projects/{project_id}")
+async def delete_video_project(project_id: str):
+    """Delete video project"""
+    try:
+        result = await db.video_projects.delete_one({"id": project_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Video project not found")
+        return {"message": "Video project deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting video project: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to delete video project")
+
 # Include the router in the main app
 app.include_router(api_router)
 
