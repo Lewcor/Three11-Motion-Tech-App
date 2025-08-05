@@ -117,6 +117,114 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Authentication Endpoints
+@api_router.post("/auth/login", response_model=AuthResponse)
+async def login(auth_request: AuthRequest):
+    """Authenticate user with email and access code"""
+    try:
+        email = auth_request.email.lower().strip()
+        access_code = auth_request.access_code
+        
+        # Check if access code is provided and valid
+        if access_code and access_code in TEAM_ACCESS_CODES:
+            team_info = TEAM_ACCESS_CODES[access_code]
+            
+            # For team access codes, email must match or be flexible
+            if email == team_info["email"].lower() or email.endswith("@three11motiontech.com"):
+                # Check if user already exists
+                existing_user = await db.users.find_one({"email": email})
+                
+                if existing_user:
+                    user = User(**existing_user)
+                else:
+                    # Create new user with team access
+                    user = User(
+                        email=email,
+                        access_code=access_code,
+                        role=team_info["role"],
+                        is_active=True
+                    )
+                    await db.users.insert_one(user.dict())
+                
+                # Generate simple token (in production, use JWT)
+                token = f"THREE11-{user.id}-{access_code}"
+                
+                return AuthResponse(
+                    success=True,
+                    message=f"Welcome to THREE11 MOTION TECH! Signed in as {team_info['role'].replace('_', ' ').title()}",
+                    user=user,
+                    token=token
+                )
+            else:
+                return AuthResponse(
+                    success=False,
+                    message="Email does not match the access code. Please use the correct email address.",
+                    user=None,
+                    token=None
+                )
+        
+        # Regular email/password authentication (for future use)
+        elif auth_request.password:
+            # Check regular user login
+            existing_user = await db.users.find_one({"email": email})
+            if existing_user:
+                user = User(**existing_user)
+                token = f"THREE11-{user.id}-REGULAR"
+                return AuthResponse(
+                    success=True,
+                    message="Welcome back to THREE11 MOTION TECH!",
+                    user=user,
+                    token=token
+                )
+        
+        # Invalid credentials
+        return AuthResponse(
+            success=False,
+            message="Invalid credentials. Please check your email and access code.",
+            user=None,
+            token=None
+        )
+        
+    except Exception as e:
+        logger.error(f"Authentication error: {str(e)}")
+        return AuthResponse(
+            success=False,
+            message="Authentication failed. Please try again.",
+            user=None,
+            token=None
+        )
+
+@api_router.get("/auth/verify/{token}")
+async def verify_token(token: str):
+    """Verify authentication token"""
+    try:
+        if token.startswith("THREE11-"):
+            parts = token.split("-")
+            if len(parts) >= 3:
+                user_id = parts[1]
+                user = await db.users.find_one({"id": user_id})
+                if user:
+                    return {"valid": True, "user": User(**user)}
+        
+        return {"valid": False, "message": "Invalid token"}
+    except Exception as e:
+        logger.error(f"Token verification error: {str(e)}")
+        return {"valid": False, "message": "Token verification failed"}
+
+@api_router.get("/auth/access-codes")
+async def get_access_codes():
+    """Get list of available access codes (for admin/reference)"""
+    return {
+        "total_codes": len(TEAM_ACCESS_CODES),
+        "roles": {
+            "ceo": 1,
+            "co_ceo": 1, 
+            "team_member": 10,
+            "admin": 1
+        },
+        "codes": list(TEAM_ACCESS_CODES.keys())
+    }
+
 # AI Video Studio Endpoints
 @api_router.post("/video/generate", response_model=VideoProject)
 async def generate_video(request: VideoGenerationRequest):
