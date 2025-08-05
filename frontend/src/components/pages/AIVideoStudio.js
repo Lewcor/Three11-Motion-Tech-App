@@ -63,7 +63,7 @@ const AIVideoStudio = () => {
     setGeneratedVideo(null);
 
     try {
-      const response = await fetch(`${import.meta.env.REACT_APP_BACKEND_URL}/video/generate`, {
+      const response = await fetch(`${import.meta.env.REACT_APP_BACKEND_URL}/api/video/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
