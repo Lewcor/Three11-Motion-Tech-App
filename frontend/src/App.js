@@ -13,6 +13,7 @@ import Premium from "./components/pages/Premium";
 import TeamAccess from "./components/pages/TeamAccess";
 import CompetitivePricing from "./components/pages/CompetitivePricing";
 import SignIn from "./components/pages/SignIn";
+import AIVideoStudio from "./components/pages/AIVideoStudio";
 
 // Additional pages for new navigation structure
 const ContentStudio = () => (
