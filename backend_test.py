@@ -143,6 +143,155 @@ class THREE11MotionTechAPITester:
             self.tests_run += 1
             return False
 
+    # AI Video Studio Tests
+    def test_video_generation(self):
+        """Test AI video generation endpoint"""
+        test_data = {
+            "title": "Test Video Creation",
+            "script": "Welcome to THREE11 MOTION TECH. We create amazing content with AI. Join thousands of creators worldwide.",
+            "video_format": "tiktok",
+            "voice_style": "professional",
+            "number_of_scenes": 3
+        }
+        
+        success, response = self.run_test(
+            "AI Video Generation",
+            "POST",
+            "api/video/generate",
+            200,
+            data=test_data
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify the response structure
+            required_fields = ['id', 'title', 'script', 'video_format', 'voice_style', 'scenes', 'status', 'created_at']
+            for field in required_fields:
+                if field not in response:
+                    print(f"❌ Missing field '{field}' in response")
+                    return False, None
+            
+            # Verify scenes structure
+            scenes = response.get('scenes', [])
+            if not scenes:
+                print(f"❌ No scenes generated")
+                return False, None
+                
+            for i, scene in enumerate(scenes):
+                scene_fields = ['id', 'text', 'duration']
+                for field in scene_fields:
+                    if field not in scene:
+                        print(f"❌ Missing field '{field}' in scene {i}")
+                        return False, None
+            
+            print(f"   Generated {len(scenes)} scenes for video project")
+            print(f"   Project ID: {response.get('id')}")
+            print(f"   Status: {response.get('status')}")
+            return True, response.get('id')
+        
+        return False, None
+
+    def test_get_video_projects(self):
+        """Test retrieving all video projects"""
+        success, response = self.run_test(
+            "Get Video Projects",
+            "GET",
+            "api/video/projects",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            print(f"   Found {len(response)} video projects")
+            return True, response
+        
+        return False, []
+
+    def test_get_specific_video_project(self, project_id):
+        """Test retrieving a specific video project"""
+        if not project_id:
+            print("❌ No project ID provided for specific project test")
+            return False, None
+            
+        success, response = self.run_test(
+            f"Get Specific Video Project ({project_id})",
+            "GET",
+            f"api/video/projects/{project_id}",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            if response.get('id') == project_id:
+                print(f"   Successfully retrieved project: {response.get('title')}")
+                return True, response
+            else:
+                print(f"❌ Project ID mismatch: expected {project_id}, got {response.get('id')}")
+        
+        return False, None
+
+    def test_delete_video_project(self, project_id):
+        """Test deleting a video project"""
+        if not project_id:
+            print("❌ No project ID provided for deletion test")
+            return False
+            
+        success, response = self.run_test(
+            f"Delete Video Project ({project_id})",
+            "DELETE",
+            f"api/video/projects/{project_id}",
+            200
+        )
+        
+        if success:
+            print(f"   Successfully deleted project {project_id}")
+            return True
+        
+        return False
+
+    def test_video_generation_error_handling(self):
+        """Test error handling for video generation"""
+        print(f"\n🔍 Testing Video Generation Error Handling...")
+        
+        # Test with missing required fields
+        invalid_data = {
+            "title": "Test Video",
+            # Missing script, video_format
+        }
+        
+        success, response = self.run_test(
+            "Video Generation - Invalid Data",
+            "POST",
+            "api/video/generate",
+            422,  # Validation error
+            data=invalid_data
+        )
+        
+        return success
+
+    def test_nonexistent_project_retrieval(self):
+        """Test retrieving a non-existent project"""
+        fake_project_id = "nonexistent-project-id-12345"
+        
+        success, response = self.run_test(
+            "Get Non-existent Project",
+            "GET",
+            f"api/video/projects/{fake_project_id}",
+            404
+        )
+        
+        return success
+
+    def test_nonexistent_project_deletion(self):
+        """Test deleting a non-existent project"""
+        fake_project_id = "nonexistent-project-id-12345"
+        
+        success, response = self.run_test(
+            "Delete Non-existent Project",
+            "DELETE",
+            f"api/video/projects/{fake_project_id}",
+            404
+        )
+        
+        return success
+
 def main():
     print("🚀 Starting THREE11 MOTION TECH API Testing...")
     print("=" * 60)
