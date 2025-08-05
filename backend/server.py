@@ -38,6 +38,43 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# Authentication Models
+class User(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    access_code: Optional[str] = None
+    role: str = "user"  # user, ceo, co-ceo, team_member
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class AuthRequest(BaseModel):
+    email: str
+    password: Optional[str] = None
+    access_code: Optional[str] = None
+
+class AuthResponse(BaseModel):
+    success: bool
+    message: str
+    user: Optional[User] = None
+    token: Optional[str] = None
+
+# Predefined Team Access Codes
+TEAM_ACCESS_CODES = {
+    "THREE11-CEO-2025": {"role": "ceo", "email": "ceo@three11motiontech.com"},
+    "THREE11-COCEO-2025": {"role": "co-ceo", "email": "coceo@three11motiontech.com"},
+    "THREE11-TEAM01-2025": {"role": "team_member", "email": "team1@three11motiontech.com"},
+    "THREE11-TEAM02-2025": {"role": "team_member", "email": "team2@three11motiontech.com"},
+    "THREE11-TEAM03-2025": {"role": "team_member", "email": "team3@three11motiontech.com"},
+    "THREE11-TEAM04-2025": {"role": "team_member", "email": "team4@three11motiontech.com"},
+    "THREE11-TEAM05-2025": {"role": "team_member", "email": "team5@three11motiontech.com"},
+    "THREE11-TEAM06-2025": {"role": "team_member", "email": "team6@three11motiontech.com"},
+    "THREE11-TEAM07-2025": {"role": "team_member", "email": "team7@three11motiontech.com"},
+    "THREE11-TEAM08-2025": {"role": "team_member", "email": "team8@three11motiontech.com"},
+    "THREE11-TEAM09-2025": {"role": "team_member", "email": "team9@three11motiontech.com"},
+    "THREE11-TEAM10-2025": {"role": "team_member", "email": "team10@three11motiontech.com"},
+    "THREE11-ADMIN-2025": {"role": "admin", "email": "admin@three11motiontech.com"}
+}
+
 # AI Video Studio Models
 class VideoGenerationRequest(BaseModel):
     title: str
