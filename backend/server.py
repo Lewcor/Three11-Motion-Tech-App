@@ -185,6 +185,8 @@ async def get_video_project(project_id: str):
         if not project:
             raise HTTPException(status_code=404, detail="Video project not found")
         return VideoProject(**project)
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         logger.error(f"Error fetching video project: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch video project")
