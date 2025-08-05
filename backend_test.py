@@ -2,6 +2,8 @@ import requests
 import sys
 from datetime import datetime
 import json
+import time
+import base64
 
 class THREE11MotionTechAPITester:
     def __init__(self, base_url="https://b239be0c-b21a-457e-8061-7daef839fe41.preview.emergentagent.com"):
