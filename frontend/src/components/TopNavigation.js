@@ -64,7 +64,7 @@ const TopNavigation = () => {
               {/* Premium Button */}
               <Link 
                 to="/premium"
-                className="hidden sm:inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200"
+                className="hidden sm:inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 font-semibold rounded-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
               >
                 <span className="mr-1">⭐</span>
                 Premium
@@ -73,7 +73,7 @@ const TopNavigation = () => {
               {/* Menu Button */}
               <button
                 onClick={toggleSidebar}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-all duration-200 group"
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium rounded-lg transition-all duration-200 group shadow-lg hover:shadow-xl"
               >
                 <svg 
                   className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" 
