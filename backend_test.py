@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 
 class THREE11MotionTechAPITester:
-    def __init__(self, base_url="https://f06cc568-9ee7-4abf-9efa-08d36a1c9848.preview.emergentagent.com"):
+    def __init__(self, base_url="https://b239be0c-b21a-457e-8061-7daef839fe41.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
@@ -105,7 +105,7 @@ class THREE11MotionTechAPITester:
         try:
             # Make an OPTIONS request to check CORS
             response = requests.options(url, headers={
-                'Origin': 'https://f06cc568-9ee7-4abf-9efa-08d36a1c9848.preview.emergentagent.com',
+                'Origin': 'https://b239be0c-b21a-457e-8061-7daef839fe41.preview.emergentagent.com',
                 'Access-Control-Request-Method': 'GET'
             }, timeout=10)
             
