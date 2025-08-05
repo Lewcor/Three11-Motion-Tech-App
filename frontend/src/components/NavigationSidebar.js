@@ -123,6 +123,13 @@ const NavigationSidebar = ({ isOpen, onClose }) => {
       icon: "🎬",
       items: [
         {
+          path: '/ai-video-studio',
+          label: 'AI Video Studio',
+          description: 'Create videos with AI images & voice',
+          icon: '🎬',
+          badge: 'NEW'
+        },
+        {
           path: '/video-scripts',
           label: 'Video Scripts',
           description: 'Complete video script generation',
