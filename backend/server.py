@@ -348,23 +348,31 @@ async def generate_video(request: VideoGenerationRequest):
                 image_prompt = f"Professional, high-quality scene: {scene_text}. Cinematic, vibrant colors, suitable for social media content."
                 
                 # Generate images using Gemini
-                images = await image_gen.generate_images(
-                    prompt=image_prompt,
-                    model="imagen-3.0-generate-002",
-                    number_of_images=1
-                )
-                
-                if images and len(images) > 0:
-                    # Convert image bytes to base64
-                    image_base64 = base64.b64encode(images[0]).decode('utf-8')
-                    
-                    # Create scene
-                    scene = VideoScene(
-                        image_base64=image_base64,
-                        text=scene_text,
-                        duration=3.0  # Default 3 seconds per scene
+                try:
+                    images = await image_gen.generate_images(
+                        prompt=image_prompt,
+                        model="imagen-3.0-generate-002",
+                        number_of_images=1
                     )
-                    scenes.append(scene)
+                    
+                    if images and len(images) > 0:
+                        # Convert image bytes to base64
+                        image_base64 = base64.b64encode(images[0]).decode('utf-8')
+                    else:
+                        raise Exception("No images generated")
+                        
+                except Exception as gemini_error:
+                    logger.warning(f"Gemini API error for scene {i}: {str(gemini_error)}")
+                    # Create placeholder image when Gemini API fails (billing required)
+                    image_base64 = create_placeholder_image(scene_text, i+1)
+                
+                # Create scene
+                scene = VideoScene(
+                    image_base64=image_base64,
+                    text=scene_text,
+                    duration=3.0  # Default 3 seconds per scene
+                )
+                scenes.append(scene)
                     
             except Exception as e:
                 logger.error(f"Error generating image for scene {i}: {str(e)}")
