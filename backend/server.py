@@ -12,6 +12,8 @@ from datetime import datetime
 import base64
 import asyncio
 from emergentintegrations.llm.gemeni.image_generation import GeminiImageGeneration
+from PIL import Image, ImageDraw, ImageFont
+import io
 
 
 ROOT_DIR = Path(__file__).parent
