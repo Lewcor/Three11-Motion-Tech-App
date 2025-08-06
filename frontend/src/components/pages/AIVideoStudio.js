@@ -423,10 +423,21 @@ const AIVideoStudio = () => {
                   
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex space-x-2">
-                      <button className="flex-1 py-2 px-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm font-medium hover:from-green-600 hover:to-emerald-600 transition-colors">
+                      <button 
+                        onClick={() => handleDownload(generatedVideo)}
+                        className="flex-1 py-2 px-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg text-sm font-medium hover:from-green-600 hover:to-emerald-600 transition-colors"
+                      >
                         📥 Download MP4
                       </button>
-                      <button className="flex-1 py-2 px-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg text-sm font-medium hover:from-blue-600 hover:to-cyan-600 transition-colors">
+                      <button 
+                        onClick={() => handleRegenerate(generatedVideo)}
+                        disabled={isGenerating}
+                        className={`flex-1 py-2 px-4 bg-gradient-to-r text-white rounded-lg text-sm font-medium transition-colors ${
+                          isGenerating 
+                            ? 'from-gray-400 to-gray-500 cursor-not-allowed' 
+                            : 'from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600'
+                        }`}
+                      >
                         🔄 Regenerate
                       </button>
                     </div>
