@@ -461,6 +461,7 @@ def main():
     # Detailed results
     print("\n📋 DETAILED RESULTS:")
     print(f"✅ Basic API Tests: {'PASSED' if all([root_success, create_success, get_success, cors_success]) else 'FAILED'}")
+    print(f"✅ Authentication Tests: {'PASSED' if all([auth_login_success, auth_invalid_success, auth_codes_success, auth_verify_success]) else 'FAILED'}")
     print(f"✅ AI Video Generation: {'PASSED' if video_gen_success else 'FAILED'}")
     print(f"✅ Project Management: {'PASSED' if projects_success else 'FAILED'}")
     print(f"✅ Error Handling: {'PASSED' if all([error_handling_success, nonexistent_get_success, nonexistent_delete_success]) else 'FAILED'}")
