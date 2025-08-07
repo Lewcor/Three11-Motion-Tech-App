@@ -447,7 +447,7 @@ def main():
     # Test project deletion (if we have a project to delete)
     delete_success = False
     if project_id:
-        print("\n📍 PHASE 8: Testing Project Deletion")
+        print("\n📍 PHASE 9: Testing Project Deletion")
         delete_success = tester.test_delete_video_project(project_id)
     
     # Print final results
