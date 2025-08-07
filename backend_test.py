@@ -114,7 +114,7 @@ class THREE11MotionTechAPITester:
         try:
             # Make an OPTIONS request to check CORS
             response = requests.options(url, headers={
-                'Origin': 'https://aa0e4ae2-2066-4d52-994a-7dc6ae7f1f0b.preview.emergentagent.com',
+                'Origin': 'https://app.gentag.ai',
                 'Access-Control-Request-Method': 'GET'
             }, timeout=10)
             
