@@ -118,7 +118,7 @@ backend:
         comment: "Backend server needs verification after SignIn route integration"
       - working: true
         agent: "testing"
-        comment: "✅ ALL BACKEND TESTS PASSED (4/4 - 100% success rate). Server running correctly on 0.0.0.0:8001, all API endpoints responding properly (/api/, /api/status GET/POST), MongoDB connectivity working, status_checks collection operational. External URL https://b239be0c-b21a-457e-8061-7daef839fe41.preview.emergentagent.com/api/ accessible and functioning."
+        comment: "✅ ALL BACKEND TESTS PASSED (4/4 - 100% success rate). Server running correctly on 0.0.0.0:8001, all API endpoints responding properly (/api/, /api/status GET/POST), MongoDB connectivity working, status_checks collection operational. External URL https://aa0e4ae2-2066-4d52-994a-7dc6ae7f1f0b.preview.emergentagent.com/api/ accessible and functioning."
 
   - task: "CORS Configuration"
     implemented: true
