@@ -197,9 +197,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Domain Access Issue - Blank Page Fix"
+    - "AI Video Studio Frontend"
+    - "Sign In Page Integration"
+    - "Vertical Sidebar Navigation"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
   - task: "AI Video Studio Backend"
