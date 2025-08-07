@@ -6,7 +6,7 @@ import time
 import base64
 
 class THREE11MotionTechAPITester:
-    def __init__(self, base_url="https://aa0e4ae2-2066-4d52-994a-7dc6ae7f1f0b.preview.emergentagent.com"):
+    def __init__(self, base_url="https://app.gentag.ai"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
