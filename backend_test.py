@@ -439,7 +439,7 @@ def main():
     if project_id:
         specific_project_success, _ = tester.test_get_specific_video_project(project_id)
     
-    print("\n📍 PHASE 7: Testing Error Handling")
+    print("\n📍 PHASE 8: Testing Error Handling")
     error_handling_success = tester.test_video_generation_error_handling()
     nonexistent_get_success = tester.test_nonexistent_project_retrieval()
     nonexistent_delete_success = tester.test_nonexistent_project_deletion()
