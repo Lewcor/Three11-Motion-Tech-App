@@ -280,9 +280,13 @@ async def verify_token(token: str):
     """Verify authentication token"""
     try:
         if token.startswith("THREE11-"):
-            parts = token.split("-")
-            if len(parts) >= 3:
-                user_id = parts[1]
+            # Extract user ID from token (UUID format with dashes)
+            # Token format: THREE11-{uuid}-{access_code}
+            token_without_prefix = token[8:]  # Remove "THREE11-"
+            # Find the last occurrence of "THREE11" to separate UUID from access code
+            last_three11_pos = token_without_prefix.rfind("-THREE11")
+            if last_three11_pos > 0:
+                user_id = token_without_prefix[:last_three11_pos]
                 user = await db.users.find_one({"id": user_id})
                 if user:
                     return {"valid": True, "user": User(**user)}
