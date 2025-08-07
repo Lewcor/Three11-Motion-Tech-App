@@ -142,6 +142,107 @@ class THREE11MotionTechAPITester:
             print(f"❌ CORS test failed: {str(e)}")
             self.tests_run += 1
             return False
+    # Authentication Tests
+    def test_team_access_login(self):
+        """Test team access code login"""
+        test_data = {
+            "email": "ceo@three11motiontech.com",
+            "access_code": "THREE11-CEO-2025"
+        }
+        
+        success, response = self.run_test(
+            "Team Access Login",
+            "POST",
+            "api/auth/login",
+            200,
+            data=test_data
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify the response structure
+            required_fields = ['success', 'message', 'user', 'token']
+            for field in required_fields:
+                if field not in response:
+                    print(f"❌ Missing field '{field}' in response")
+                    return False, None
+            
+            if response.get('success') and response.get('token'):
+                print(f"   Login successful for CEO role")
+                print(f"   Token: {response.get('token')[:20]}...")
+                return True, response.get('token')
+            else:
+                print(f"❌ Login failed: {response.get('message')}")
+        
+        return False, None
+
+    def test_invalid_access_code_login(self):
+        """Test login with invalid access code"""
+        test_data = {
+            "email": "test@three11motiontech.com",
+            "access_code": "INVALID-CODE-2025"
+        }
+        
+        success, response = self.run_test(
+            "Invalid Access Code Login",
+            "POST",
+            "api/auth/login",
+            200,  # API returns 200 but with success: false
+            data=test_data
+        )
+        
+        if success and isinstance(response, dict):
+            if not response.get('success'):
+                print(f"   Correctly rejected invalid access code")
+                return True
+            else:
+                print(f"❌ Should have rejected invalid access code")
+        
+        return False
+
+    def test_token_verification(self, token):
+        """Test token verification"""
+        if not token:
+            print("❌ No token provided for verification test")
+            return False
+            
+        success, response = self.run_test(
+            f"Token Verification",
+            "GET",
+            f"api/auth/verify/{token}",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            if response.get('valid'):
+                print(f"   Token verified successfully")
+                return True
+            else:
+                print(f"❌ Token verification failed: {response.get('message')}")
+        
+        return False
+
+    def test_get_access_codes(self):
+        """Test retrieving access codes list"""
+        success, response = self.run_test(
+            "Get Access Codes",
+            "GET",
+            "api/auth/access-codes",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify the response structure
+            required_fields = ['total_codes', 'roles', 'codes']
+            for field in required_fields:
+                if field not in response:
+                    print(f"❌ Missing field '{field}' in response")
+                    return False
+            
+            print(f"   Found {response.get('total_codes')} access codes")
+            print(f"   Roles available: {list(response.get('roles', {}).keys())}")
+            return True
+        
+        return False
 
     # AI Video Studio Tests
     def test_video_generation(self):
