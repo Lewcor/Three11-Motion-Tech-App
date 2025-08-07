@@ -416,11 +416,22 @@ def main():
     print("\n📍 PHASE 4: Testing CORS Configuration")
     cors_success = tester.test_cors_headers()
     
+    # Test 5: Authentication Tests
+    print("\n📍 PHASE 5: Testing Authentication")
+    auth_login_success, auth_token = tester.test_team_access_login()
+    auth_invalid_success = tester.test_invalid_access_code_login()
+    auth_codes_success = tester.test_get_access_codes()
+    
+    # Test token verification if we have a token
+    auth_verify_success = False
+    if auth_token:
+        auth_verify_success = tester.test_token_verification(auth_token)
+    
     # AI Video Studio Tests
-    print("\n📍 PHASE 5: Testing AI Video Generation")
+    print("\n📍 PHASE 6: Testing AI Video Generation")
     video_gen_success, project_id = tester.test_video_generation()
     
-    print("\n📍 PHASE 6: Testing Video Project Management")
+    print("\n📍 PHASE 7: Testing Video Project Management")
     projects_success, projects = tester.test_get_video_projects()
     
     # Test specific project retrieval if we have a project ID
