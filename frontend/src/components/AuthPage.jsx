@@ -53,7 +53,11 @@ const AuthPage = () => {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
       
       const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
+        ? { 
+            email: formData.email, 
+            password: formData.password || '',
+            access_code: formData.teamCode || undefined
+          }
         : { 
             email: formData.email, 
             password: formData.password, 
