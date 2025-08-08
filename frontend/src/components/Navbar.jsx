@@ -44,7 +44,7 @@ const Navbar = () => {
       badge: 'STUDIO',
       badgeColor: 'bg-green-500',
       items: [
-        { path: '/ai-video-studio', name: 'AI Video Studio', icon: Video, badge: 'NEW' },
+        { path: '/ai-video-studio', name: 'AI Video Studio', icon: Sparkles, badge: 'NEW' },
         { path: '/video-content', name: 'Video Content', icon: Video, badge: 'VIDEO' },
         { path: '/podcast-content', name: 'Podcast Content', icon: Headphones, badge: 'AUDIO' },
         { path: '/email-marketing', name: 'Email Marketing', icon: Mail, badge: 'EMAIL' },
