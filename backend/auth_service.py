@@ -117,6 +117,49 @@ class AuthService:
         logger.info(f"Master team code created: {self.master_team_code}")
         return team_code.dict()
     
+    async def create_unlimited_access_codes(self, admin_id: str) -> List[Dict]:
+        """Create 10 individual unlimited access codes for THREE11 team"""
+        db = await self.get_database()
+        
+        # Define 10 unlimited access codes for the team
+        unlimited_codes = [
+            "THREE11-CEO-2025",           # For CEO
+            "THREE11-COCEO-2025",         # For Co-CEO  
+            "THREE11-CTO-2025",           # For CTO
+            "THREE11-CMO-2025",           # For CMO
+            "THREE11-LEAD-DEV-2025",      # For Lead Developer
+            "THREE11-CREATIVE-2025",      # For Creative Director
+            "THREE11-PRODUCT-2025",       # For Product Manager
+            "THREE11-MARKETING-2025",     # For Marketing Manager
+            "THREE11-OPERATIONS-2025",    # For Operations Manager
+            "THREE11-UNLIMITED-10-2025"   # Extra team member access
+        ]
+        
+        created_codes = []
+        
+        for code in unlimited_codes:
+            # Check if code already exists
+            existing_code = await db.team_codes.find_one({"code": code})
+            if not existing_code:
+                team_code = TeamCode(
+                    code=code,
+                    created_by=admin_id,
+                    max_uses=None,  # Unlimited uses
+                    current_uses=0,
+                    is_active=True,
+                    tier_granted=UserTier.UNLIMITED,
+                    description=f"Unlimited access code for THREE11 MOTION TECH team member"
+                )
+                
+                await db.team_codes.insert_one(team_code.dict())
+                created_codes.append(team_code.dict())
+                logger.info(f"Unlimited access code created: {code}")
+            else:
+                created_codes.append(existing_code)
+                logger.info(f"Unlimited access code already exists: {code}")
+        
+        return created_codes
+    
     async def signup_user(self, signup_data: SignupRequest) -> Dict:
         """Register new user"""
         db = await self.get_database()
