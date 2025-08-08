@@ -56,6 +56,43 @@ const LandingPage = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              {/* Primary Authentication Buttons */}
+              <Link to="/auth">
+                <Button size="lg" className="group relative overflow-hidden bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700">
+                  <span className="relative z-10 flex items-center">
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Get Started - FREE
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Button>
+              </Link>
+              
+              <Link to="/auth">
+                <Button size="lg" variant="outline" className="group relative overflow-hidden border-2 border-blue-500 text-blue-600 hover:bg-blue-50">
+                  <span className="relative z-10 flex items-center">
+                    <Users className="mr-2 h-4 w-4" />
+                    Team Sign In
+                    <Badge className="ml-2 bg-blue-500 text-white text-xs">
+                      UNLIMITED
+                    </Badge>
+                  </span>
+                </Button>
+              </Link>
+              
+              {/* Feature Buttons */}
+              <Link to="/generator">
+                <Button size="lg" className="group relative overflow-hidden" variant="outline">
+                  <span className="relative z-10 flex items-center">
+                    Caption Generator
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </Button>
+              </Link>
+            </div>
+            
+            {/* Secondary Feature Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Link to="/generator">
                 <Button size="lg" className="group relative overflow-hidden">
                   <span className="relative z-10 flex items-center">
