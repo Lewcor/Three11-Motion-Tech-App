@@ -232,27 +232,88 @@ class AuthService:
         }
     
     async def login_user(self, login_data: LoginRequest) -> Dict:
-        """Login user with email and password"""
+        """Login user with email and password or access code"""
         db = await self.get_database()
         
         # Find user
         user = await db.users.find_one({"email": login_data.email})
-        if not user:
-            raise ValueError("Invalid email or password")
         
-        # Verify password
-        if not user.get('password_hash') or not self.verify_password(login_data.password, user['password_hash']):
-            raise ValueError("Invalid email or password")
+        # If access code is provided, try access code authentication
+        if login_data.access_code:
+            # Verify access code exists and is active
+            team_code = await db.team_codes.find_one({
+                "code": login_data.access_code,
+                "is_active": True
+            })
+            
+            if not team_code:
+                raise ValueError("Invalid access code")
+            
+            # If user doesn't exist, create new user with unlimited tier
+            if not user:
+                # Create new user with unlimited access
+                new_user = User(
+                    email=login_data.email,
+                    name=login_data.email.split('@')[0].title(),  # Use email prefix as name
+                    tier=UserTier.UNLIMITED,
+                    auth_provider=AuthProvider.EMAIL,
+                    password_hash=None,  # No password needed for access code users
+                    is_active=True,
+                    is_verified=True,
+                    team_code_used=login_data.access_code,
+                    created_at=datetime.utcnow(),
+                    last_login=datetime.utcnow()
+                )
+                
+                result = await db.users.insert_one(new_user.dict())
+                user = new_user.dict()
+                user["_id"] = result.inserted_id
+                
+                # Update team code usage if it has a limit
+                if team_code.get('max_uses'):
+                    await db.team_codes.update_one(
+                        {"code": login_data.access_code},
+                        {"$inc": {"current_uses": 1}}
+                    )
+                    
+                logger.info(f"New unlimited user created with access code: {login_data.email}")
+            else:
+                # Existing user - grant unlimited access if they don't have it
+                if user.get("tier") != UserTier.UNLIMITED:
+                    await db.users.update_one(
+                        {"_id": user["_id"]},
+                        {"$set": {
+                            "tier": UserTier.UNLIMITED,
+                            "team_code_used": login_data.access_code,
+                            "last_login": datetime.utcnow()
+                        }}
+                    )
+                    user["tier"] = UserTier.UNLIMITED
+                    logger.info(f"User upgraded to unlimited with access code: {login_data.email}")
+                else:
+                    # Update last login
+                    await db.users.update_one(
+                        {"_id": user["_id"]},
+                        {"$set": {"last_login": datetime.utcnow()}}
+                    )
+        else:
+            # Traditional email/password authentication
+            if not user:
+                raise ValueError("Invalid email or password")
+            
+            # Verify password
+            if not login_data.password or not user.get('password_hash') or not self.verify_password(login_data.password, user['password_hash']):
+                raise ValueError("Invalid email or password")
+            
+            # Update last login
+            await db.users.update_one(
+                {"_id": user["_id"]},
+                {"$set": {"last_login": datetime.utcnow()}}
+            )
         
         # Check if user is active
         if not user.get('is_active', True):
             raise ValueError("Account is deactivated")
-        
-        # Update last login
-        await db.users.update_one(
-            {"_id": user["_id"]},
-            {"$set": {"last_login": datetime.utcnow()}}
-        )
         
         # Generate JWT token
         token = self.generate_jwt_token(str(user["_id"]), user["email"])
@@ -266,7 +327,8 @@ class AuthService:
                 "email": user["email"],
                 "name": user["name"],
                 "tier": user.get("tier", UserTier.FREE),
-                "is_unlimited": user.get("tier") == UserTier.UNLIMITED
+                "is_unlimited": user.get("tier") == UserTier.UNLIMITED,
+                "team_code_used": user.get("team_code_used")
             }
         }
     
