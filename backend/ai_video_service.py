@@ -127,15 +127,13 @@ class AIVideoService:
             if gemini_api_key:
                 try:
                     # Use the emergentintegrations Gemini image generation
-                    image_response = generate_image(
-                        prompt=enhanced_prompt,
-                        api_key=gemini_api_key
-                    )
+                    gemini_gen = GeminiImageGeneration(api_key=gemini_api_key)
+                    image_response = gemini_gen.generate_image(prompt=enhanced_prompt)
                     
-                    if image_response and 'image' in image_response:
+                    if image_response:
                         return {
-                            'image_url': f"data:image/png;base64,{image_response['image']}",
-                            'image_data': image_response['image']
+                            'image_url': f"data:image/png;base64,{image_response}",
+                            'image_data': image_response
                         }
                 except Exception as e:
                     logger.error(f"Gemini image generation failed: {e}")
