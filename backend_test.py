@@ -5022,6 +5022,22 @@ class BackendTester:
         await self.test_team_collaboration_error_handling()
         await self.test_team_collaboration_integration()
         
+        # =====================================
+        # AI VIDEO STUDIO TESTS
+        # =====================================
+        
+        print("\n🎬 AI VIDEO STUDIO TESTS")
+        print("=" * 60)
+        
+        await self.test_ai_video_generation()
+        await self.test_ai_video_projects_list()
+        await self.test_ai_video_project_retrieval()
+        await self.test_ai_video_project_deletion()
+        await self.test_ai_video_preview()
+        await self.test_ai_video_authentication()
+        await self.test_ai_video_generation_limits()
+        await self.test_ai_video_error_handling()
+        
         # Print summary
         self.print_summary()
     
