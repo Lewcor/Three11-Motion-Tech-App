@@ -221,6 +221,32 @@ async def get_team_members(current_user: Dict = Depends(get_current_user_enhance
     members = await auth_service.get_team_members(current_user["id"])
     return {"team_members": members}
 
+@api_router.get("/auth/access-codes")
+async def get_access_codes(current_user: Dict = Depends(get_current_user_enhanced)):
+    """Get all unlimited access codes (admin only)"""
+    if current_user.get("tier", "").upper() != "UNLIMITED":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        codes = await auth_service.get_unlimited_access_codes()
+        return {"success": True, "access_codes": codes}
+    except Exception as e:
+        logger.error(f"Error getting access codes: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get access codes")
+
+@api_router.post("/auth/create-access-codes")
+async def create_access_codes(current_user: Dict = Depends(get_current_user_enhanced)):
+    """Create unlimited access codes (admin only)"""
+    if current_user.get("tier", "").upper() != "UNLIMITED":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        codes = await auth_service.create_unlimited_access_codes(current_user["id"])
+        return {"success": True, "message": "Access codes created successfully", "access_codes": codes}
+    except Exception as e:
+        logger.error(f"Error creating access codes: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create access codes")
+
 # Enhanced Content Generation Routes (Updated for new auth)
 @api_router.post("/generate", response_model=GenerationResultResponse)
 async def generate_content(
