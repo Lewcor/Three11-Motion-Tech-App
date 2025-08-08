@@ -45,7 +45,7 @@ import GettingStartedGuide from './components/GettingStartedGuide';
 // Presentation and User Guide
 import PlatformPresentation from './components/PlatformPresentation';
 import UserGuide from './components/UserGuide';
-import AIVideoStudio from './components/AIVideoStudio';
+import AIVideoStudio from './components/AIVideoStudio.jsx';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
