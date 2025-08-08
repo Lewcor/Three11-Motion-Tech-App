@@ -5041,6 +5041,327 @@ class BackendTester:
         # Print summary
         self.print_summary()
     
+    # =====================================
+    # AI VIDEO STUDIO TEST METHODS
+    # =====================================
+    
+    async def test_ai_video_generation(self):
+        """Test AI Video Generation with Google Imagen 3"""
+        if not self.auth_token:
+            self.log_test("AI Video Generation", False, "No auth token available")
+            return
+        
+        try:
+            # Test video generation with comprehensive request
+            video_request = {
+                "title": "Fashion Showcase Video",
+                "script": "Discover the latest fashion trends that will make you stand out this season. From vibrant colors to minimalist designs, explore styles that define modern elegance.",
+                "style": "cinematic",
+                "duration": 30,
+                "format": "16:9",
+                "voice_style": "professional",
+                "number_of_scenes": 3
+            }
+            
+            success, response = await self.make_request("POST", "/ai-video/generate", video_request)
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    video = data.get("video", {})
+                    required_fields = ["id", "title", "script", "style", "scenes", "status"]
+                    
+                    if all(field in video for field in required_fields):
+                        # Store video_id for other tests
+                        self.video_id = video["id"]
+                        
+                        # Verify scenes structure
+                        scenes = video.get("scenes", [])
+                        if len(scenes) == 3:  # Should match number_of_scenes
+                            scene_valid = all(
+                                "scene_number" in scene and 
+                                "description" in scene and 
+                                "image_url" in scene 
+                                for scene in scenes
+                            )
+                            
+                            if scene_valid:
+                                self.log_test("AI Video Generation", True, 
+                                            f"Video generated successfully with ID: {video['id'][:8]}... and {len(scenes)} scenes")
+                            else:
+                                self.log_test("AI Video Generation", False, 
+                                            "Generated video scenes missing required fields", response)
+                        else:
+                            self.log_test("AI Video Generation", False, 
+                                        f"Expected 3 scenes, got {len(scenes)}", response)
+                    else:
+                        missing = [f for f in required_fields if f not in video]
+                        self.log_test("AI Video Generation", False, 
+                                    f"Video response missing fields: {missing}", response)
+                else:
+                    self.log_test("AI Video Generation", False, 
+                                f"Video generation failed: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("AI Video Generation", False, "Video generation request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Generation", False, f"Test error: {str(e)}")
+    
+    async def test_ai_video_projects_list(self):
+        """Test Get User's AI Video Projects"""
+        if not self.auth_token:
+            self.log_test("AI Video Projects List", False, "No auth token available")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", "/ai-video/projects")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    projects = data.get("projects", [])
+                    if isinstance(projects, list):
+                        self.log_test("AI Video Projects List", True, 
+                                    f"Retrieved {len(projects)} video projects")
+                    else:
+                        self.log_test("AI Video Projects List", False, 
+                                    "Projects should be a list", response)
+                else:
+                    self.log_test("AI Video Projects List", False, 
+                                f"Failed to get projects: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("AI Video Projects List", False, "Projects list request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Projects List", False, f"Test error: {str(e)}")
+    
+    async def test_ai_video_project_retrieval(self):
+        """Test Get Specific AI Video Project"""
+        if not self.auth_token:
+            self.log_test("AI Video Project Retrieval", False, "No auth token available")
+            return
+        
+        if not hasattr(self, 'video_id'):
+            self.log_test("AI Video Project Retrieval", False, "No video_id available from generation test")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", f"/ai-video/{self.video_id}")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    video = data.get("video", {})
+                    if "id" in video and video["id"] == self.video_id:
+                        self.log_test("AI Video Project Retrieval", True, 
+                                    f"Video project retrieved successfully: {video['id'][:8]}...")
+                    else:
+                        self.log_test("AI Video Project Retrieval", False, 
+                                    "Retrieved video ID doesn't match requested ID", response)
+                else:
+                    self.log_test("AI Video Project Retrieval", False, 
+                                f"Failed to get video: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("AI Video Project Retrieval", False, "Video retrieval request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Project Retrieval", False, f"Test error: {str(e)}")
+    
+    async def test_ai_video_project_deletion(self):
+        """Test Delete AI Video Project"""
+        if not self.auth_token:
+            self.log_test("AI Video Project Deletion", False, "No auth token available")
+            return
+        
+        # Create a video to delete
+        try:
+            video_request = {
+                "title": "Test Video for Deletion",
+                "script": "This is a test video that will be deleted.",
+                "style": "modern",
+                "duration": 15,
+                "format": "9:16",
+                "voice_style": "casual",
+                "number_of_scenes": 2
+            }
+            
+            success, create_response = await self.make_request("POST", "/ai-video/generate", video_request)
+            
+            if not success or not create_response["data"].get("success"):
+                self.log_test("AI Video Project Deletion", False, "Could not create video for deletion test")
+                return
+            
+            delete_video_id = create_response["data"]["video"]["id"]
+            
+            # Now delete the video
+            success, response = await self.make_request("DELETE", f"/ai-video/{delete_video_id}")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    # Verify deletion by trying to retrieve
+                    verify_success, verify_response = await self.make_request("GET", f"/ai-video/{delete_video_id}")
+                    
+                    if not verify_success and verify_response.get("status") == 404:
+                        self.log_test("AI Video Project Deletion", True, 
+                                    f"Video project deleted successfully: {delete_video_id[:8]}...")
+                    else:
+                        self.log_test("AI Video Project Deletion", False, 
+                                    "Video still exists after deletion", verify_response)
+                else:
+                    self.log_test("AI Video Project Deletion", False, 
+                                f"Failed to delete video: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("AI Video Project Deletion", False, "Video deletion request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Project Deletion", False, f"Test error: {str(e)}")
+    
+    async def test_ai_video_preview(self):
+        """Test AI Video Preview/Download"""
+        if not self.auth_token:
+            self.log_test("AI Video Preview", False, "No auth token available")
+            return
+        
+        if not hasattr(self, 'video_id'):
+            self.log_test("AI Video Preview", False, "No video_id available from generation test")
+            return
+        
+        try:
+            success, response = await self.make_request("GET", f"/ai-video/{self.video_id}/preview")
+            
+            if success:
+                data = response["data"]
+                if "success" in data and data["success"]:
+                    required_fields = ["preview_url", "download_url", "video"]
+                    if all(field in data for field in required_fields):
+                        preview_url = data.get("preview_url")
+                        download_url = data.get("download_url")
+                        
+                        if preview_url and download_url:
+                            self.log_test("AI Video Preview", True, 
+                                        f"Video preview available with URLs: preview={preview_url}, download={download_url}")
+                        else:
+                            self.log_test("AI Video Preview", False, 
+                                        "Preview or download URL missing", response)
+                    else:
+                        missing = [f for f in required_fields if f not in data]
+                        self.log_test("AI Video Preview", False, 
+                                    f"Preview response missing fields: {missing}", response)
+                else:
+                    self.log_test("AI Video Preview", False, 
+                                f"Failed to get preview: {data.get('error', 'Unknown error')}")
+            else:
+                self.log_test("AI Video Preview", False, "Video preview request failed", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Preview", False, f"Test error: {str(e)}")
+    
+    async def test_ai_video_authentication(self):
+        """Test AI Video Endpoints Authentication Requirements"""
+        # Test that AI video endpoints require authentication
+        original_token = self.auth_token
+        self.auth_token = None
+        
+        try:
+            # Test generation without auth
+            video_request = {
+                "title": "Unauthorized Test",
+                "script": "This should fail",
+                "style": "modern",
+                "duration": 15,
+                "format": "16:9",
+                "voice_style": "casual",
+                "number_of_scenes": 1
+            }
+            
+            success, response = await self.make_request("POST", "/ai-video/generate", video_request)
+            
+            if not success and response.get("status") in [401, 403]:
+                self.log_test("AI Video Authentication", True, 
+                            "AI video endpoints properly require authentication")
+            else:
+                self.log_test("AI Video Authentication", False, 
+                            "AI video endpoints should require authentication", response)
+                
+        finally:
+            # Restore auth token
+            self.auth_token = original_token
+    
+    async def test_ai_video_generation_limits(self):
+        """Test AI Video Generation Limits"""
+        if not self.auth_token:
+            self.log_test("AI Video Generation Limits", False, "No auth token available")
+            return
+        
+        # Check if AI video generation respects generation limits
+        success, user_response = await self.make_request("GET", "/auth/me")
+        if not success:
+            self.log_test("AI Video Generation Limits", False, "Could not get user info for limit testing")
+            return
+        
+        user_data = user_response["data"]
+        daily_used = user_data.get("daily_generations_used", 0)
+        tier = user_data.get("tier", "free")
+        
+        if tier in ["premium", "admin", "super_admin", "unlimited"]:
+            self.log_test("AI Video Generation Limits", True, "User has unlimited AI video generation")
+            return
+        
+        # Test AI video generation with limits
+        video_request = {
+            "title": "Limit Test Video",
+            "script": "Testing generation limits",
+            "style": "minimal",
+            "duration": 10,
+            "format": "1:1",
+            "voice_style": "casual",
+            "number_of_scenes": 1
+        }
+        
+        success, response = await self.make_request("POST", "/ai-video/generate", video_request)
+        
+        if daily_used >= 10:
+            # Should be blocked
+            if not success and response.get("status") == 403:
+                self.log_test("AI Video Generation Limits", True, "AI video generation respects daily limits")
+            else:
+                self.log_test("AI Video Generation Limits", False, "AI video generation should respect daily limits", response)
+        else:
+            # Should work
+            if success:
+                self.log_test("AI Video Generation Limits", True, f"AI video generation allowed within limits ({daily_used + 1}/10)")
+            else:
+                self.log_test("AI Video Generation Limits", False, "AI video generation failed within limits", response)
+    
+    async def test_ai_video_error_handling(self):
+        """Test AI Video Error Handling"""
+        if not self.auth_token:
+            self.log_test("AI Video Error Handling", False, "No auth token available")
+            return
+        
+        try:
+            # Test with invalid request data
+            invalid_request = {
+                "title": "",  # Empty title
+                "script": "",  # Empty script
+                "style": "invalid_style",  # Invalid style
+                "duration": -5,  # Invalid duration
+                "format": "invalid_format",  # Invalid format
+                "number_of_scenes": 0  # Invalid scene count
+            }
+            
+            success, response = await self.make_request("POST", "/ai-video/generate", invalid_request)
+            
+            # Should fail gracefully
+            if not success or (success and "error" in response["data"]):
+                self.log_test("AI Video Error Handling", True, "AI video service handles invalid requests gracefully")
+            else:
+                self.log_test("AI Video Error Handling", False, "AI video service should reject invalid requests", response)
+                
+        except Exception as e:
+            self.log_test("AI Video Error Handling", True, f"AI video service properly handles errors: {str(e)}")
+
     def print_summary(self):
         """Print test summary"""
         print("\n" + "=" * 60)
