@@ -69,7 +69,7 @@ const MobileNavbar = () => {
     { 
       path: '/ai-video-studio', 
       name: 'AI Video Studio', 
-      icon: <Video className="h-4 w-4" />,
+      icon: <Sparkles className="h-4 w-4" />,
       badge: 'NEW'
     },
     { 
