@@ -3251,6 +3251,11 @@ async def get_social_media_dashboard_endpoint(
 # AI VIDEO STUDIO API ENDPOINTS
 # =====================================
 
+@api_router.get("/ai-video/test")
+async def test_ai_video_endpoint():
+    """Test AI Video Studio endpoint"""
+    return {"message": "AI Video Studio endpoint is working!", "timestamp": datetime.utcnow()}
+
 @api_router.post("/ai-video/generate")
 async def generate_ai_video_endpoint(
     request: dict,
