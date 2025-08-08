@@ -1,0 +1,51 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sphereGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" style="stop-color:#00BFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="ringGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6600;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF9900;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="ringGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#660099;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9900CC;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main sphere -->
+  <circle cx="100" cy="80" r="35" fill="url(#sphereGradient)" />
+  
+  <!-- Orange orbital ring -->
+  <ellipse cx="100" cy="80" rx="70" ry="20" 
+           fill="none" 
+           stroke="url(#ringGradient1)" 
+           stroke-width="6" 
+           opacity="0.8"
+           transform="rotate(15 100 80)" />
+  
+  <!-- Purple orbital ring -->
+  <ellipse cx="100" cy="80" rx="65" ry="18" 
+           fill="none" 
+           stroke="url(#ringGradient2)" 
+           stroke-width="4" 
+           opacity="0.6"
+           transform="rotate(-25 100 80)" />
+  
+  <!-- THREE11 Text -->
+  <text x="100" y="140" 
+        text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="#00AADD">THREE11</text>
+  
+  <!-- MOTION TECH Text -->
+  <text x="100" y="160" 
+        text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="14" 
+        font-weight="normal" 
+        fill="#FF7700">MOTION TECH</text>
+</svg>
