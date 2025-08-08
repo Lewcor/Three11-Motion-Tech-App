@@ -129,16 +129,32 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="flex items-center space-x-2"
-          >
-            <Menu className="h-5 w-5" />
-            <span className="hidden sm:block">Menu</span>
-          </Button>
+          {/* Authentication Buttons */}
+          <div className="flex items-center space-x-3">
+            <Link 
+              to="/auth" 
+              className="hidden md:inline-flex items-center justify-center h-9 px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-md text-sm font-medium transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link 
+              to="/auth" 
+              className="hidden md:inline-flex items-center justify-center h-9 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md text-sm font-medium transition-colors hover:from-blue-700 hover:to-purple-700"
+            >
+              Get Started
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="flex items-center space-x-2"
+            >
+              <Menu className="h-5 w-5" />
+              <span className="hidden sm:block">Menu</span>
+            </Button>
+          </div>
         </div>
       </header>
 
