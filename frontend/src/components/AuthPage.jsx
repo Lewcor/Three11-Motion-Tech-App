@@ -201,54 +201,54 @@ const AuthPage = () => {
                 </div>
               </div>
 
-              {/* Team Code Field (Signup only) */}
-              {!isLogin && (
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium">Team Code (Optional)</label>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowTeamCode(!showTeamCode)}
-                      className="text-xs"
-                    >
-                      {showTeamCode ? 'Hide' : 'Have a team code?'}
-                    </Button>
-                  </div>
-                  
-                  {showTeamCode && (
-                    <div className="space-y-2">
-                      <div className="relative">
-                        <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <input
-                          type="text"
-                          name="teamCode"
-                          value={formData.teamCode}
-                          onChange={handleInputChange}
-                          onBlur={handleTeamCodeCheck}
-                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                          placeholder="Enter team code for unlimited access"
-                        />
-                      </div>
-                      <div className="bg-purple-50 p-3 rounded-lg">
-                        <div className="flex items-start space-x-2">
-                          <Shield className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                          <div className="text-xs text-purple-700">
-                            <strong>Team Code Benefits:</strong>
-                            <ul className="mt-1 space-y-1">
-                              <li>• Unlimited AI generations</li>
-                              <li>• Access to all premium features</li>
-                              <li>• Team collaboration tools</li>
-                              <li>• Full admin privileges</li>
-                            </ul>
-                          </div>
+              {/* Team Code Field (Login & Signup) */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium">
+                    {isLogin ? 'Access Code (Optional)' : 'Team Code (Optional)'}
+                  </label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowTeamCode(!showTeamCode)}
+                    className="text-xs"
+                  >
+                    {showTeamCode ? 'Hide' : (isLogin ? 'Have an access code?' : 'Have a team code?')}
+                  </Button>
+                </div>
+                
+                {showTeamCode && (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <input
+                        type="text"
+                        name="teamCode"
+                        value={formData.teamCode}
+                        onChange={handleInputChange}
+                        onBlur={handleTeamCodeCheck}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder={isLogin ? "Enter your access code (e.g., THREE11-CEO-2025)" : "Enter team code for unlimited access"}
+                      />
+                    </div>
+                    <div className="bg-purple-50 p-3 rounded-lg">
+                      <div className="flex items-start space-x-2">
+                        <Shield className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                        <div className="text-xs text-purple-700">
+                          <strong>{isLogin ? 'Access Code Benefits:' : 'Team Code Benefits:'}</strong>
+                          <ul className="mt-1 space-y-1">
+                            <li>• Unlimited AI generations</li>
+                            <li>• Access to all premium features</li>
+                            <li>• Team collaboration tools</li>
+                            <li>• Full admin privileges</li>
+                          </ul>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
 
               {/* Error/Success Messages */}
               {error && (
