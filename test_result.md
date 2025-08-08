@@ -638,7 +638,8 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "AI Video Studio Backend Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
