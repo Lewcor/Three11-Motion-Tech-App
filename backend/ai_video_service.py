@@ -123,18 +123,22 @@ class AIVideoService:
             - Perfect lighting and composition
             """
             
-            if self.gemini_integration:
-                # Try to generate image using Gemini's capabilities
-                image_response = await self.gemini_integration.generate_image(
-                    prompt=enhanced_prompt,
-                    aspect_ratio="16:9"  # Default, can be adjusted based on video format
-                )
-                
-                if image_response.get('success'):
-                    return {
-                        'image_url': image_response.get('image_url'),
-                        'image_data': image_response.get('image_data')
-                    }
+            gemini_api_key = os.getenv('GEMINI_API_KEY')
+            if gemini_api_key:
+                try:
+                    # Use the emergentintegrations Gemini image generation
+                    image_response = generate_image(
+                        prompt=enhanced_prompt,
+                        api_key=gemini_api_key
+                    )
+                    
+                    if image_response and 'image' in image_response:
+                        return {
+                            'image_url': f"data:image/png;base64,{image_response['image']}",
+                            'image_data': image_response['image']
+                        }
+                except Exception as e:
+                    logger.error(f"Gemini image generation failed: {e}")
             
             # Fallback to placeholder image
             placeholder = await self._create_placeholder_image(scene['description'])
