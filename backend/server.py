@@ -48,6 +48,7 @@ from social_media_publishing_service import social_publishing_service
 from crm_integration_service import crm_integration_service
 from calendar_integration_service import calendar_integration_service
 from social_media_automation_service import social_automation_service
+from ai_video_service import ai_video_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
