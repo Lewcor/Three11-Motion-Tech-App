@@ -98,33 +98,9 @@ class AIVideoService:
         await self.initialize()
         
         try:
-            prompt = f"""
-            Break down this video script into {num_scenes} distinct scenes for video generation.
-            
-            Script: {script}
-            Style: {style}
-            
-            For each scene, provide:
-            1. A detailed visual description (suitable for image generation)
-            2. The timestamp when it should appear
-            3. Duration in seconds
-            4. Any specific visual style notes
-            
-            Format as a list with each scene having: description, timestamp, duration.
-            Make sure the descriptions are vivid and include details about lighting, composition, colors, and mood that match the {style} style.
-            
-            Return only the scene data, no extra text.
-            """
-            
-            if self.gemini_integration:
-                response = await self.gemini_integration.generate_content(prompt)
-                scenes_text = response.get('text', '')
-            else:
-                # Fallback scene generation
-                scenes_text = self._create_fallback_scenes(script, num_scenes)
-            
-            # Parse the response into structured scenes
-            scenes = self._parse_scenes_response(scenes_text, num_scenes)
+            # For now, use fallback scene generation since we need proper Gemini text integration
+            # In a full implementation, you'd use Gemini for text generation here
+            scenes = self._create_fallback_scenes(script, num_scenes)
             return scenes
             
         except Exception as e:
