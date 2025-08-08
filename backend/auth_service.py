@@ -93,6 +93,9 @@ class AuthService:
         # Create master team code
         await self.create_master_team_code(admin_user.id)
         
+        # Create 10 unlimited access codes for team
+        await self.create_unlimited_access_codes(admin_user.id)
+        
         logger.info(f"Admin account created for lewcor311@gmail.com with temporary password: THREE11admin2025!")
         return admin_user.dict()
     
