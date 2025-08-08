@@ -72,6 +72,7 @@ function App() {
           <Routes>
             <Route path="/" element={<GeneratorPage />} />
             <Route path="/landing" element={<LandingPage />} />
+            <Route path="/home" element={<GeneratorPage />} />
             <Route path="/generator" element={<GeneratorPage />} />
             <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
