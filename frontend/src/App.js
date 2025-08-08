@@ -70,7 +70,8 @@ function App() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
           {isMobile ? <MobileNavbar /> : <Navbar />}
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<GeneratorPage />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/generator" element={<GeneratorPage />} />
             <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
