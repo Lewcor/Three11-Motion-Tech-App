@@ -3247,6 +3247,136 @@ async def get_social_media_dashboard_endpoint(
     """Get comprehensive social media automation dashboard"""
     return await social_automation_service.get_social_media_dashboard(current_user.id, date_range)
 
+# =====================================
+# AI VIDEO STUDIO API ENDPOINTS
+# =====================================
+
+@api_router.post("/ai-video/generate")
+async def generate_ai_video_endpoint(
+    request: dict,
+    current_user: User = Depends(get_current_user_enhanced)
+):
+    """Generate AI video using Google Imagen 3"""
+    await check_generation_limit(current_user)
+    
+    try:
+        logger.info(f"Generating AI video for user {current_user.get('id', 'unknown')}")
+        
+        # Add user ID to request
+        request['user_id'] = current_user.get('id', str(uuid.uuid4()))
+        
+        # Generate the video
+        result = await ai_video_service.generate_video(request)
+        
+        if result.get('success'):
+            # Update user generation count
+            db = get_database()
+            await db.users.update_one(
+                {"id": current_user.get('id')},
+                {"$inc": {"daily_generations_used": 1}},
+                upsert=True
+            )
+            
+            logger.info(f"AI video generated successfully: {result['video']['id']}")
+            return result
+        else:
+            logger.error(f"AI video generation failed: {result.get('error')}")
+            raise HTTPException(status_code=500, detail=result.get('error', 'Video generation failed'))
+        
+    except Exception as e:
+        logger.error(f"Error in AI video generation endpoint: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate AI video")
+
+@api_router.get("/ai-video/projects")
+async def get_ai_video_projects_endpoint(
+    current_user: User = Depends(get_current_user_enhanced)
+):
+    """Get user's AI video projects"""
+    try:
+        projects = await ai_video_service.get_video_projects(current_user.get('id'))
+        
+        return {
+            "success": True,
+            "projects": projects
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting AI video projects: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get video projects")
+
+@api_router.get("/ai-video/{video_id}")
+async def get_ai_video_endpoint(
+    video_id: str,
+    current_user: User = Depends(get_current_user_enhanced)
+):
+    """Get specific AI video project"""
+    try:
+        video = await ai_video_service.get_video_by_id(video_id)
+        
+        if not video:
+            raise HTTPException(status_code=404, detail="Video project not found")
+        
+        return {
+            "success": True,
+            "video": video
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting AI video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get video project")
+
+@api_router.delete("/ai-video/{video_id}")
+async def delete_ai_video_endpoint(
+    video_id: str,
+    current_user: User = Depends(get_current_user_enhanced)
+):
+    """Delete AI video project"""
+    try:
+        success = await ai_video_service.delete_video_project(video_id, current_user.get('id'))
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Video project not found")
+        
+        return {
+            "success": True,
+            "message": "Video project deleted successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting AI video: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete video project")
+
+@api_router.get("/ai-video/{video_id}/preview")
+async def get_ai_video_preview_endpoint(
+    video_id: str,
+    current_user: User = Depends(get_current_user_enhanced)
+):
+    """Get AI video preview/download"""
+    try:
+        video = await ai_video_service.get_video_by_id(video_id)
+        
+        if not video:
+            raise HTTPException(status_code=404, detail="Video project not found")
+        
+        # In a real implementation, this would serve the actual video file
+        # For now, return the preview URL or generate a download link
+        return {
+            "success": True,
+            "preview_url": video.get('preview_url'),
+            "download_url": f"/api/ai-video/{video_id}/download",
+            "video": video
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting AI video preview: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get video preview")
+
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
