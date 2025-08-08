@@ -163,6 +163,33 @@ class AuthService:
         
         return created_codes
     
+    async def get_unlimited_access_codes(self) -> List[Dict]:
+        """Get all unlimited access codes"""
+        db = await self.get_database()
+        
+        # Get all team codes that grant unlimited access
+        codes = await db.team_codes.find({
+            "$or": [
+                {"tier_granted": UserTier.UNLIMITED},
+                {"code": {"$regex": "THREE11.*2025$"}},  # All THREE11 codes
+                {"max_uses": None}  # Unlimited use codes
+            ],
+            "is_active": True
+        }).to_list(None)
+        
+        return [
+            {
+                "code": code["code"],
+                "description": code.get("description", "Unlimited access code"),
+                "max_uses": code.get("max_uses"),
+                "current_uses": code.get("current_uses", 0),
+                "is_active": code.get("is_active", True),
+                "created_at": code.get("created_at"),
+                "remaining_uses": code.get("max_uses") - code.get("current_uses", 0) if code.get("max_uses") else "Unlimited"
+            }
+            for code in codes
+        ]
+    
     async def signup_user(self, signup_data: SignupRequest) -> Dict:
         """Register new user"""
         db = await self.get_database()
