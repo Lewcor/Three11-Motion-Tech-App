@@ -259,13 +259,49 @@ class AIVideoService:
         return style_specs.get(style, 'Professional high-quality visual style')
 
     def _create_fallback_scenes(self, script: str, num_scenes: int) -> List[Dict]:
-        """Create fallback scenes when AI generation fails"""
-        scene_duration = 30 // num_scenes  # Distribute evenly
+        """Create intelligent fallback scenes when AI generation fails"""
+        scene_duration = 30 // num_scenes if num_scenes > 0 else 10  # Distribute evenly
         scenes = []
         
+        # Create more intelligent scene descriptions based on the script
+        script_words = script.lower().split()
+        
+        # Basic scene templates based on common video types
+        if any(word in script_words for word in ['fashion', 'style', 'clothing', 'outfit']):
+            scene_templates = [
+                "Close-up of fashionable clothing with elegant lighting and modern aesthetic",
+                "Fashion model showcasing the latest trends in a contemporary studio setting", 
+                "Stylish accessories arranged artistically with professional product photography"
+            ]
+        elif any(word in script_words for word in ['business', 'professional', 'corporate']):
+            scene_templates = [
+                "Modern office environment with professional lighting and clean aesthetics",
+                "Business meeting in contemporary conference room with natural lighting",
+                "Professional workspace with modern technology and minimalist design"
+            ]
+        elif any(word in script_words for word in ['travel', 'adventure', 'explore']):
+            scene_templates = [
+                "Stunning landscape view with cinematic wide-angle composition",
+                "Travel destination with vibrant colors and engaging perspective",
+                "Adventure scene with dynamic movement and inspiring atmosphere"
+            ]
+        else:
+            # Generic templates
+            scene_templates = [
+                f"Professional scene showcasing the main concept with {'' if len(scenes) == 0 else 'continuing '} visual narrative",
+                f"Dynamic composition highlighting key elements with engaging cinematography",
+                f"Compelling visual that supports the story with professional lighting and composition"
+            ]
+        
         for i in range(num_scenes):
+            # Use script content to create more relevant descriptions
+            if i < len(scene_templates):
+                description = scene_templates[i]
+            else:
+                description = f"Scene {i+1}: Continuation of visual narrative with professional cinematography emphasizing the core message"
+            
             scenes.append({
-                'description': f"Scene {i+1}: Visual representation of the script content with professional {'' if i == 0 else 'continuation of '} cinematography",
+                'description': f"{description}. Theme: {script[:100]}..." if len(script) > 100 else description,
                 'timestamp': i * scene_duration,
                 'duration': scene_duration
             })
