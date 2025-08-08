@@ -662,6 +662,8 @@ class TeamCode(BaseModel):
     max_uses: Optional[int] = None
     current_uses: int = 0
     is_active: bool = True
+    tier_granted: Optional[UserTier] = UserTier.FREE
+    description: Optional[str] = None
 
 # Subscription Models
 class SubscriptionPlan(BaseModel):
