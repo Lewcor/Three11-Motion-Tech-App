@@ -635,7 +635,8 @@ class Token(BaseModel):
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: Optional[str] = None
+    access_code: Optional[str] = None
 
 class GoogleLoginRequest(BaseModel):
     google_token: str
