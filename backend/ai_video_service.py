@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from models import *
 from database import get_database
-from emergentintegrations.llm.gemeni.image_generation import generate_image
+from emergentintegrations.llm.gemeni.image_generation import GeminiImageGeneration
 from PIL import Image, ImageDraw, ImageFont
 import io
 import base64
