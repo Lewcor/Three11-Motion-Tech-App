@@ -15,17 +15,11 @@ logger = logging.getLogger(__name__)
 class AIVideoService:
     def __init__(self):
         self.db = None
-        self.gemini_integration = None
         
     async def initialize(self):
-        """Initialize database connection and Gemini integration"""
+        """Initialize database connection"""
         if not self.db:
             self.db = get_database()
-        
-        if not self.gemini_integration:
-            gemini_api_key = os.getenv('GEMINI_API_KEY')
-            if gemini_api_key:
-                self.gemini_integration = EmergeGeminiIntegration(api_key=gemini_api_key)
 
     async def generate_video(self, request: dict) -> dict:
         """Generate AI video using Google Imagen 3"""
