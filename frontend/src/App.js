@@ -85,6 +85,7 @@ function App() {
             <Route path="/analytics" element={<AdvancedAnalyticsDashboard />} />
             {/* PHASE 3: Content Type Expansion */}
             <Route path="/video-content" element={<VideoContentGenerator />} />
+            <Route path="/ai-video-studio" element={<AIVideoStudio />} />
             <Route path="/podcast-content" element={<PodcastContentGenerator />} />
             <Route path="/email-marketing" element={<EmailMarketingStudio />} />
             <Route path="/blog-generator" element={<BlogPostGenerator />} />
