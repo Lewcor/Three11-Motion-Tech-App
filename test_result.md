@@ -637,9 +637,25 @@ metadata:
   test_sequence: 1
   run_ui: false
 
+  - task: "Custom Domain Network Error Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/.env"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "CRITICAL USER REPORT: Network error during login attempts and front page not displaying properly on custom domain https://app.gentag.ai. User unable to access application despite multiple previous fixes."
+      - working: true
+        agent: "main"
+        comment: "CRITICAL ISSUE RESOLVED: troubleshoot_agent identified root cause - REACT_APP_BACKEND_URL was pointing to preview domain (https://be3b742e-03e4-41ba-8bac-a87f56836504.preview.emergentagent.com) instead of custom domain. Updated to https://app.gentag.ai, rebuilt frontend, restarted services. Backend verified accessible at custom domain with proper API responses."
+
 test_plan:
   current_focus:
-    - "AI Video Studio Backend Implementation"
+    - "Custom Domain Network Error Fix"
+    - "Authentication System Verification"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
