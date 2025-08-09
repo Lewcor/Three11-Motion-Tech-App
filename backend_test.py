@@ -17,8 +17,8 @@ from typing import Dict, Any, Optional
 from pydub import AudioSegment
 from pydub.generators import Sine
 
-# Test configuration - UPDATED FOR CUSTOM DOMAIN
-BACKEND_URL = "https://app.gentag.ai/api"
+# Test configuration
+BACKEND_URL = "https://839a0db6-2d87-4f14-b0e4-d1fb836c192a.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "fashionista@three11motion.com"
 TEST_USER_NAME = "Fashion Creator"
 TEST_USER_PASSWORD = "SecurePass123!"
@@ -81,69 +81,8 @@ class BackendTester:
         except Exception as e:
             return False, {"error": str(e)}
     
-    async def test_custom_domain_access_fix(self):
-        """Test 1: CRITICAL - Custom Domain Network Error Fix Verification"""
-        print("\n🚨 CRITICAL DOMAIN ACCESS FIX VERIFICATION")
-        print("=" * 60)
-        
-        # Test 1.1: Basic connectivity to custom domain
-        try:
-            url = f"{BACKEND_URL}/"
-            async with self.session.get(url) as response:
-                if response.status == 200:
-                    self.log_test("Custom Domain Basic Connectivity", True, 
-                                f"Backend accessible at custom domain: {BACKEND_URL}")
-                else:
-                    self.log_test("Custom Domain Basic Connectivity", False, 
-                                f"Backend not accessible - Status: {response.status}")
-                    return
-        except Exception as e:
-            self.log_test("Custom Domain Basic Connectivity", False, 
-                        f"Network error accessing custom domain: {str(e)}")
-            return
-        
-        # Test 1.2: CORS headers verification
-        try:
-            url = f"{BACKEND_URL}/"
-            headers = {"Origin": "https://app.gentag.ai"}
-            async with self.session.options(url, headers=headers) as response:
-                cors_headers = {
-                    "Access-Control-Allow-Origin": response.headers.get("Access-Control-Allow-Origin"),
-                    "Access-Control-Allow-Methods": response.headers.get("Access-Control-Allow-Methods"),
-                    "Access-Control-Allow-Headers": response.headers.get("Access-Control-Allow-Headers")
-                }
-                
-                if cors_headers["Access-Control-Allow-Origin"]:
-                    self.log_test("Custom Domain CORS Configuration", True, 
-                                f"CORS properly configured for custom domain: {cors_headers}")
-                else:
-                    self.log_test("Custom Domain CORS Configuration", False, 
-                                f"CORS headers missing or incorrect: {cors_headers}")
-        except Exception as e:
-            self.log_test("Custom Domain CORS Configuration", False, 
-                        f"CORS verification failed: {str(e)}")
-        
-        # Test 1.3: API prefix routing verification
-        try:
-            url = f"{BACKEND_URL}/"
-            async with self.session.get(url) as response:
-                if response.status == 200:
-                    response_data = await response.json()
-                    if "THREE11 MOTION TECH" in str(response_data):
-                        self.log_test("Custom Domain API Routing", True, 
-                                    "API routes properly accessible with /api prefix")
-                    else:
-                        self.log_test("Custom Domain API Routing", False, 
-                                    f"Unexpected API response: {response_data}")
-                else:
-                    self.log_test("Custom Domain API Routing", False, 
-                                f"API routing failed - Status: {response.status}")
-        except Exception as e:
-            self.log_test("Custom Domain API Routing", False, 
-                        f"API routing test failed: {str(e)}")
-
     async def test_health_check(self):
-        """Test 2: Health Check Endpoint"""
+        """Test 1: Health Check Endpoint"""
         success, response = await self.make_request("GET", "/health")
         
         if success and response["data"].get("status") == "healthy":
@@ -152,7 +91,7 @@ class BackendTester:
             self.log_test("Health Check", False, "Health check failed", response)
     
     async def test_user_signup(self):
-        """Test 3: User Signup"""
+        """Test 2: User Signup"""
         signup_data = {
             "email": TEST_USER_EMAIL,
             "name": TEST_USER_NAME,
@@ -170,7 +109,7 @@ class BackendTester:
             await self.test_user_login()
     
     async def test_user_login(self):
-        """Test 4: User Login"""
+        """Test 3: User Login"""
         login_data = {
             "email": TEST_USER_EMAIL,
             "password": TEST_USER_PASSWORD
@@ -186,7 +125,7 @@ class BackendTester:
             self.log_test("User Login", False, "Login failed", response)
     
     async def test_get_current_user(self):
-        """Test 5: Get Current User Info"""
+        """Test 4: Get Current User Info"""
         if not self.auth_token:
             self.log_test("Get Current User", False, "No auth token available")
             return
@@ -198,56 +137,8 @@ class BackendTester:
         else:
             self.log_test("Get Current User", False, "Failed to get user info", response)
     
-    async def test_critical_authentication_endpoints(self):
-        """Test 6: CRITICAL - Authentication Endpoints on Custom Domain"""
-        print("\n🔐 CRITICAL AUTHENTICATION ENDPOINTS VERIFICATION")
-        print("=" * 60)
-        
-        # Test signup endpoint
-        signup_data = {
-            "email": f"test_{datetime.utcnow().timestamp()}@three11motion.com",
-            "name": "Test User",
-            "password": "TestPass123!"
-        }
-        
-        success, response = await self.make_request("POST", "/auth/signup", signup_data)
-        
-        if success and "access_token" in response["data"]:
-            temp_token = response["data"]["access_token"]
-            self.log_test("Critical Auth - Signup", True, 
-                        "Signup endpoint working on custom domain")
-            
-            # Test login endpoint with the same user
-            login_data = {
-                "email": signup_data["email"],
-                "password": signup_data["password"]
-            }
-            
-            success, response = await self.make_request("POST", "/auth/login", login_data)
-            
-            if success and "access_token" in response["data"]:
-                self.log_test("Critical Auth - Login", True, 
-                            "Login endpoint working on custom domain")
-                
-                # Test /auth/me endpoint
-                headers = {"Authorization": f"Bearer {temp_token}"}
-                success, response = await self.make_request("GET", "/auth/me", headers=headers)
-                
-                if success and "email" in response["data"]:
-                    self.log_test("Critical Auth - Me Endpoint", True, 
-                                "Me endpoint working on custom domain")
-                else:
-                    self.log_test("Critical Auth - Me Endpoint", False, 
-                                "Me endpoint failed on custom domain", response)
-            else:
-                self.log_test("Critical Auth - Login", False, 
-                            "Login endpoint failed on custom domain", response)
-        else:
-            self.log_test("Critical Auth - Signup", False, 
-                        "Signup endpoint failed on custom domain", response)
-
     async def test_ai_content_generation(self):
-        """Test 7: AI Content Generation with All Three Providers"""
+        """Test 5: AI Content Generation with All Three Providers"""
         if not self.auth_token:
             self.log_test("AI Content Generation", False, "No auth token available")
             return
@@ -772,8 +663,8 @@ class BackendTester:
         """Test 20: Static File Serving - Logo SVG"""
         # Test that logo.svg is accessible
         try:
-            # Use the custom domain frontend URL to test static file serving
-            frontend_url = "https://app.gentag.ai"
+            # Use the frontend URL to test static file serving
+            frontend_url = "https://839a0db6-2d87-4f14-b0e4-d1fb836c192a.preview.emergentagent.com"
             logo_url = f"{frontend_url}/logo.svg"
             
             async with self.session.get(logo_url) as response:
@@ -5131,346 +5022,9 @@ class BackendTester:
         await self.test_team_collaboration_error_handling()
         await self.test_team_collaboration_integration()
         
-        # =====================================
-        # AI VIDEO STUDIO TESTS
-        # =====================================
-        
-        print("\n🎬 AI VIDEO STUDIO TESTS")
-        print("=" * 60)
-        
-        await self.test_ai_video_generation()
-        await self.test_ai_video_projects_list()
-        await self.test_ai_video_project_retrieval()
-        await self.test_ai_video_project_deletion()
-        await self.test_ai_video_preview()
-        await self.test_ai_video_authentication()
-        await self.test_ai_video_generation_limits()
-        await self.test_ai_video_error_handling()
-        
         # Print summary
         self.print_summary()
     
-    # =====================================
-    # AI VIDEO STUDIO TEST METHODS
-    # =====================================
-    
-    async def test_ai_video_generation(self):
-        """Test AI Video Generation with Google Imagen 3"""
-        if not self.auth_token:
-            self.log_test("AI Video Generation", False, "No auth token available")
-            return
-        
-        try:
-            # Test video generation with comprehensive request
-            video_request = {
-                "title": "Fashion Showcase Video",
-                "script": "Discover the latest fashion trends that will make you stand out this season. From vibrant colors to minimalist designs, explore styles that define modern elegance.",
-                "style": "cinematic",
-                "duration": 30,
-                "format": "16:9",
-                "voice_style": "professional",
-                "number_of_scenes": 3
-            }
-            
-            success, response = await self.make_request("POST", "/ai-video/generate", video_request)
-            
-            if success:
-                data = response["data"]
-                if "success" in data and data["success"]:
-                    video = data.get("video", {})
-                    required_fields = ["id", "title", "script", "style", "scenes", "status"]
-                    
-                    if all(field in video for field in required_fields):
-                        # Store video_id for other tests
-                        self.video_id = video["id"]
-                        
-                        # Verify scenes structure
-                        scenes = video.get("scenes", [])
-                        if len(scenes) == 3:  # Should match number_of_scenes
-                            scene_valid = all(
-                                "scene_number" in scene and 
-                                "description" in scene and 
-                                "image_url" in scene 
-                                for scene in scenes
-                            )
-                            
-                            if scene_valid:
-                                self.log_test("AI Video Generation", True, 
-                                            f"Video generated successfully with ID: {video['id'][:8]}... and {len(scenes)} scenes")
-                            else:
-                                self.log_test("AI Video Generation", False, 
-                                            "Generated video scenes missing required fields", response)
-                        else:
-                            self.log_test("AI Video Generation", False, 
-                                        f"Expected 3 scenes, got {len(scenes)}", response)
-                    else:
-                        missing = [f for f in required_fields if f not in video]
-                        self.log_test("AI Video Generation", False, 
-                                    f"Video response missing fields: {missing}", response)
-                else:
-                    self.log_test("AI Video Generation", False, 
-                                f"Video generation failed: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("AI Video Generation", False, "Video generation request failed", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Generation", False, f"Test error: {str(e)}")
-    
-    async def test_ai_video_projects_list(self):
-        """Test Get User's AI Video Projects"""
-        if not self.auth_token:
-            self.log_test("AI Video Projects List", False, "No auth token available")
-            return
-        
-        try:
-            success, response = await self.make_request("GET", "/ai-video/projects")
-            
-            if success:
-                data = response["data"]
-                if "success" in data and data["success"]:
-                    projects = data.get("projects", [])
-                    if isinstance(projects, list):
-                        self.log_test("AI Video Projects List", True, 
-                                    f"Retrieved {len(projects)} video projects")
-                    else:
-                        self.log_test("AI Video Projects List", False, 
-                                    "Projects should be a list", response)
-                else:
-                    self.log_test("AI Video Projects List", False, 
-                                f"Failed to get projects: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("AI Video Projects List", False, "Projects list request failed", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Projects List", False, f"Test error: {str(e)}")
-    
-    async def test_ai_video_project_retrieval(self):
-        """Test Get Specific AI Video Project"""
-        if not self.auth_token:
-            self.log_test("AI Video Project Retrieval", False, "No auth token available")
-            return
-        
-        if not hasattr(self, 'video_id'):
-            self.log_test("AI Video Project Retrieval", False, "No video_id available from generation test")
-            return
-        
-        try:
-            success, response = await self.make_request("GET", f"/ai-video/{self.video_id}")
-            
-            if success:
-                data = response["data"]
-                if "success" in data and data["success"]:
-                    video = data.get("video", {})
-                    if "id" in video and video["id"] == self.video_id:
-                        self.log_test("AI Video Project Retrieval", True, 
-                                    f"Video project retrieved successfully: {video['id'][:8]}...")
-                    else:
-                        self.log_test("AI Video Project Retrieval", False, 
-                                    "Retrieved video ID doesn't match requested ID", response)
-                else:
-                    self.log_test("AI Video Project Retrieval", False, 
-                                f"Failed to get video: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("AI Video Project Retrieval", False, "Video retrieval request failed", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Project Retrieval", False, f"Test error: {str(e)}")
-    
-    async def test_ai_video_project_deletion(self):
-        """Test Delete AI Video Project"""
-        if not self.auth_token:
-            self.log_test("AI Video Project Deletion", False, "No auth token available")
-            return
-        
-        # Create a video to delete
-        try:
-            video_request = {
-                "title": "Test Video for Deletion",
-                "script": "This is a test video that will be deleted.",
-                "style": "modern",
-                "duration": 15,
-                "format": "9:16",
-                "voice_style": "casual",
-                "number_of_scenes": 2
-            }
-            
-            success, create_response = await self.make_request("POST", "/ai-video/generate", video_request)
-            
-            if not success or not create_response["data"].get("success"):
-                self.log_test("AI Video Project Deletion", False, "Could not create video for deletion test")
-                return
-            
-            delete_video_id = create_response["data"]["video"]["id"]
-            
-            # Now delete the video
-            success, response = await self.make_request("DELETE", f"/ai-video/{delete_video_id}")
-            
-            if success:
-                data = response["data"]
-                if "success" in data and data["success"]:
-                    # Verify deletion by trying to retrieve
-                    verify_success, verify_response = await self.make_request("GET", f"/ai-video/{delete_video_id}")
-                    
-                    if not verify_success and verify_response.get("status") == 404:
-                        self.log_test("AI Video Project Deletion", True, 
-                                    f"Video project deleted successfully: {delete_video_id[:8]}...")
-                    else:
-                        self.log_test("AI Video Project Deletion", False, 
-                                    "Video still exists after deletion", verify_response)
-                else:
-                    self.log_test("AI Video Project Deletion", False, 
-                                f"Failed to delete video: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("AI Video Project Deletion", False, "Video deletion request failed", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Project Deletion", False, f"Test error: {str(e)}")
-    
-    async def test_ai_video_preview(self):
-        """Test AI Video Preview/Download"""
-        if not self.auth_token:
-            self.log_test("AI Video Preview", False, "No auth token available")
-            return
-        
-        if not hasattr(self, 'video_id'):
-            self.log_test("AI Video Preview", False, "No video_id available from generation test")
-            return
-        
-        try:
-            success, response = await self.make_request("GET", f"/ai-video/{self.video_id}/preview")
-            
-            if success:
-                data = response["data"]
-                if "success" in data and data["success"]:
-                    required_fields = ["preview_url", "download_url", "video"]
-                    if all(field in data for field in required_fields):
-                        preview_url = data.get("preview_url")
-                        download_url = data.get("download_url")
-                        
-                        if preview_url and download_url:
-                            self.log_test("AI Video Preview", True, 
-                                        f"Video preview available with URLs: preview={preview_url}, download={download_url}")
-                        else:
-                            self.log_test("AI Video Preview", False, 
-                                        "Preview or download URL missing", response)
-                    else:
-                        missing = [f for f in required_fields if f not in data]
-                        self.log_test("AI Video Preview", False, 
-                                    f"Preview response missing fields: {missing}", response)
-                else:
-                    self.log_test("AI Video Preview", False, 
-                                f"Failed to get preview: {data.get('error', 'Unknown error')}")
-            else:
-                self.log_test("AI Video Preview", False, "Video preview request failed", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Preview", False, f"Test error: {str(e)}")
-    
-    async def test_ai_video_authentication(self):
-        """Test AI Video Endpoints Authentication Requirements"""
-        # Test that AI video endpoints require authentication
-        original_token = self.auth_token
-        self.auth_token = None
-        
-        try:
-            # Test generation without auth
-            video_request = {
-                "title": "Unauthorized Test",
-                "script": "This should fail",
-                "style": "modern",
-                "duration": 15,
-                "format": "16:9",
-                "voice_style": "casual",
-                "number_of_scenes": 1
-            }
-            
-            success, response = await self.make_request("POST", "/ai-video/generate", video_request)
-            
-            if not success and response.get("status") in [401, 403]:
-                self.log_test("AI Video Authentication", True, 
-                            "AI video endpoints properly require authentication")
-            else:
-                self.log_test("AI Video Authentication", False, 
-                            "AI video endpoints should require authentication", response)
-                
-        finally:
-            # Restore auth token
-            self.auth_token = original_token
-    
-    async def test_ai_video_generation_limits(self):
-        """Test AI Video Generation Limits"""
-        if not self.auth_token:
-            self.log_test("AI Video Generation Limits", False, "No auth token available")
-            return
-        
-        # Check if AI video generation respects generation limits
-        success, user_response = await self.make_request("GET", "/auth/me")
-        if not success:
-            self.log_test("AI Video Generation Limits", False, "Could not get user info for limit testing")
-            return
-        
-        user_data = user_response["data"]
-        daily_used = user_data.get("daily_generations_used", 0)
-        tier = user_data.get("tier", "free")
-        
-        if tier in ["premium", "admin", "super_admin", "unlimited"]:
-            self.log_test("AI Video Generation Limits", True, "User has unlimited AI video generation")
-            return
-        
-        # Test AI video generation with limits
-        video_request = {
-            "title": "Limit Test Video",
-            "script": "Testing generation limits",
-            "style": "minimal",
-            "duration": 10,
-            "format": "1:1",
-            "voice_style": "casual",
-            "number_of_scenes": 1
-        }
-        
-        success, response = await self.make_request("POST", "/ai-video/generate", video_request)
-        
-        if daily_used >= 10:
-            # Should be blocked
-            if not success and response.get("status") == 403:
-                self.log_test("AI Video Generation Limits", True, "AI video generation respects daily limits")
-            else:
-                self.log_test("AI Video Generation Limits", False, "AI video generation should respect daily limits", response)
-        else:
-            # Should work
-            if success:
-                self.log_test("AI Video Generation Limits", True, f"AI video generation allowed within limits ({daily_used + 1}/10)")
-            else:
-                self.log_test("AI Video Generation Limits", False, "AI video generation failed within limits", response)
-    
-    async def test_ai_video_error_handling(self):
-        """Test AI Video Error Handling"""
-        if not self.auth_token:
-            self.log_test("AI Video Error Handling", False, "No auth token available")
-            return
-        
-        try:
-            # Test with invalid request data
-            invalid_request = {
-                "title": "",  # Empty title
-                "script": "",  # Empty script
-                "style": "invalid_style",  # Invalid style
-                "duration": -5,  # Invalid duration
-                "format": "invalid_format",  # Invalid format
-                "number_of_scenes": 0  # Invalid scene count
-            }
-            
-            success, response = await self.make_request("POST", "/ai-video/generate", invalid_request)
-            
-            # Should fail gracefully
-            if not success or (success and "error" in response["data"]):
-                self.log_test("AI Video Error Handling", True, "AI video service handles invalid requests gracefully")
-            else:
-                self.log_test("AI Video Error Handling", False, "AI video service should reject invalid requests", response)
-                
-        except Exception as e:
-            self.log_test("AI Video Error Handling", True, f"AI video service properly handles errors: {str(e)}")
-
     def print_summary(self):
         """Print test summary"""
         print("\n" + "=" * 60)

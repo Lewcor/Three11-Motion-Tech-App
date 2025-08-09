@@ -45,7 +45,6 @@ import GettingStartedGuide from './components/GettingStartedGuide';
 // Presentation and User Guide
 import PlatformPresentation from './components/PlatformPresentation';
 import UserGuide from './components/UserGuide';
-import AIVideoStudio from './components/AIVideoStudio.jsx';
 import Navbar from './components/Navbar';
 import MobileNavbar from './components/MobileNavbar';
 import { useEffect, useState } from 'react';
@@ -72,7 +71,6 @@ function App() {
           <Routes>
             <Route path="/" element={<GeneratorPage />} />
             <Route path="/landing" element={<LandingPage />} />
-            <Route path="/home" element={<GeneratorPage />} />
             <Route path="/generator" element={<GeneratorPage />} />
             <Route path="/content-creation" element={<ContentCreationPage />} />
             <Route path="/premium" element={<PremiumPage />} />
@@ -87,7 +85,6 @@ function App() {
             <Route path="/analytics" element={<AdvancedAnalyticsDashboard />} />
             {/* PHASE 3: Content Type Expansion */}
             <Route path="/video-content" element={<VideoContentGenerator />} />
-            <Route path="/ai-video-studio" element={<AIVideoStudio />} />
             <Route path="/podcast-content" element={<PodcastContentGenerator />} />
             <Route path="/email-marketing" element={<EmailMarketingStudio />} />
             <Route path="/blog-generator" element={<BlogPostGenerator />} />

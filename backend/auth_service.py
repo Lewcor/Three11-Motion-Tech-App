@@ -93,9 +93,6 @@ class AuthService:
         # Create master team code
         await self.create_master_team_code(admin_user.id)
         
-        # Create 10 unlimited access codes for team
-        await self.create_unlimited_access_codes(admin_user.id)
-        
         logger.info(f"Admin account created for lewcor311@gmail.com with temporary password: THREE11admin2025!")
         return admin_user.dict()
     
@@ -119,76 +116,6 @@ class AuthService:
         await db.team_codes.insert_one(team_code.dict())
         logger.info(f"Master team code created: {self.master_team_code}")
         return team_code.dict()
-    
-    async def create_unlimited_access_codes(self, admin_id: str) -> List[Dict]:
-        """Create 10 individual unlimited access codes for THREE11 team"""
-        db = await self.get_database()
-        
-        # Define 10 unlimited access codes for the team
-        unlimited_codes = [
-            "THREE11-CEO-2025",           # For CEO
-            "THREE11-COCEO-2025",         # For Co-CEO  
-            "THREE11-CTO-2025",           # For CTO
-            "THREE11-CMO-2025",           # For CMO
-            "THREE11-LEAD-DEV-2025",      # For Lead Developer
-            "THREE11-CREATIVE-2025",      # For Creative Director
-            "THREE11-PRODUCT-2025",       # For Product Manager
-            "THREE11-MARKETING-2025",     # For Marketing Manager
-            "THREE11-OPERATIONS-2025",    # For Operations Manager
-            "THREE11-UNLIMITED-10-2025"   # Extra team member access
-        ]
-        
-        created_codes = []
-        
-        for code in unlimited_codes:
-            # Check if code already exists
-            existing_code = await db.team_codes.find_one({"code": code})
-            if not existing_code:
-                team_code = TeamCode(
-                    code=code,
-                    created_by=admin_id,
-                    max_uses=None,  # Unlimited uses
-                    current_uses=0,
-                    is_active=True,
-                    tier_granted=UserTier.UNLIMITED,
-                    description=f"Unlimited access code for THREE11 MOTION TECH team member"
-                )
-                
-                await db.team_codes.insert_one(team_code.dict())
-                created_codes.append(team_code.dict())
-                logger.info(f"Unlimited access code created: {code}")
-            else:
-                created_codes.append(existing_code)
-                logger.info(f"Unlimited access code already exists: {code}")
-        
-        return created_codes
-    
-    async def get_unlimited_access_codes(self) -> List[Dict]:
-        """Get all unlimited access codes"""
-        db = await self.get_database()
-        
-        # Get all team codes that grant unlimited access
-        codes = await db.team_codes.find({
-            "$or": [
-                {"tier_granted": UserTier.UNLIMITED},
-                {"code": {"$regex": "THREE11.*2025$"}},  # All THREE11 codes
-                {"max_uses": None}  # Unlimited use codes
-            ],
-            "is_active": True
-        }).to_list(None)
-        
-        return [
-            {
-                "code": code["code"],
-                "description": code.get("description", "Unlimited access code"),
-                "max_uses": code.get("max_uses"),
-                "current_uses": code.get("current_uses", 0),
-                "is_active": code.get("is_active", True),
-                "created_at": code.get("created_at"),
-                "remaining_uses": code.get("max_uses") - code.get("current_uses", 0) if code.get("max_uses") else "Unlimited"
-            }
-            for code in codes
-        ]
     
     async def signup_user(self, signup_data: SignupRequest) -> Dict:
         """Register new user"""
@@ -259,88 +186,27 @@ class AuthService:
         }
     
     async def login_user(self, login_data: LoginRequest) -> Dict:
-        """Login user with email and password or access code"""
+        """Login user with email and password"""
         db = await self.get_database()
         
         # Find user
         user = await db.users.find_one({"email": login_data.email})
+        if not user:
+            raise ValueError("Invalid email or password")
         
-        # If access code is provided, try access code authentication
-        if login_data.access_code:
-            # Verify access code exists and is active
-            team_code = await db.team_codes.find_one({
-                "code": login_data.access_code,
-                "is_active": True
-            })
-            
-            if not team_code:
-                raise ValueError("Invalid access code")
-            
-            # If user doesn't exist, create new user with unlimited tier
-            if not user:
-                # Create new user with unlimited access
-                new_user = User(
-                    email=login_data.email,
-                    name=login_data.email.split('@')[0].title(),  # Use email prefix as name
-                    tier=UserTier.UNLIMITED,
-                    auth_provider=AuthProvider.EMAIL,
-                    password_hash=None,  # No password needed for access code users
-                    is_active=True,
-                    is_verified=True,
-                    team_code_used=login_data.access_code,
-                    created_at=datetime.utcnow(),
-                    last_login=datetime.utcnow()
-                )
-                
-                result = await db.users.insert_one(new_user.dict())
-                user = new_user.dict()
-                user["_id"] = result.inserted_id
-                
-                # Update team code usage if it has a limit
-                if team_code.get('max_uses'):
-                    await db.team_codes.update_one(
-                        {"code": login_data.access_code},
-                        {"$inc": {"current_uses": 1}}
-                    )
-                    
-                logger.info(f"New unlimited user created with access code: {login_data.email}")
-            else:
-                # Existing user - grant unlimited access if they don't have it
-                if user.get("tier") != UserTier.UNLIMITED:
-                    await db.users.update_one(
-                        {"_id": user["_id"]},
-                        {"$set": {
-                            "tier": UserTier.UNLIMITED,
-                            "team_code_used": login_data.access_code,
-                            "last_login": datetime.utcnow()
-                        }}
-                    )
-                    user["tier"] = UserTier.UNLIMITED
-                    logger.info(f"User upgraded to unlimited with access code: {login_data.email}")
-                else:
-                    # Update last login
-                    await db.users.update_one(
-                        {"_id": user["_id"]},
-                        {"$set": {"last_login": datetime.utcnow()}}
-                    )
-        else:
-            # Traditional email/password authentication
-            if not user:
-                raise ValueError("Invalid email or password")
-            
-            # Verify password
-            if not login_data.password or not user.get('password_hash') or not self.verify_password(login_data.password, user['password_hash']):
-                raise ValueError("Invalid email or password")
-            
-            # Update last login
-            await db.users.update_one(
-                {"_id": user["_id"]},
-                {"$set": {"last_login": datetime.utcnow()}}
-            )
+        # Verify password
+        if not user.get('password_hash') or not self.verify_password(login_data.password, user['password_hash']):
+            raise ValueError("Invalid email or password")
         
         # Check if user is active
         if not user.get('is_active', True):
             raise ValueError("Account is deactivated")
+        
+        # Update last login
+        await db.users.update_one(
+            {"_id": user["_id"]},
+            {"$set": {"last_login": datetime.utcnow()}}
+        )
         
         # Generate JWT token
         token = self.generate_jwt_token(str(user["_id"]), user["email"])
@@ -354,8 +220,7 @@ class AuthService:
                 "email": user["email"],
                 "name": user["name"],
                 "tier": user.get("tier", UserTier.FREE),
-                "is_unlimited": user.get("tier") == UserTier.UNLIMITED,
-                "team_code_used": user.get("team_code_used")
+                "is_unlimited": user.get("tier") == UserTier.UNLIMITED
             }
         }
     

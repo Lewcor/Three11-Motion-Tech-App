@@ -635,8 +635,7 @@ class Token(BaseModel):
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: Optional[str] = None
-    access_code: Optional[str] = None
+    password: str
 
 class GoogleLoginRequest(BaseModel):
     google_token: str
@@ -662,8 +661,6 @@ class TeamCode(BaseModel):
     max_uses: Optional[int] = None
     current_uses: int = 0
     is_active: bool = True
-    tier_granted: Optional[UserTier] = UserTier.FREE
-    description: Optional[str] = None
 
 # Subscription Models
 class SubscriptionPlan(BaseModel):

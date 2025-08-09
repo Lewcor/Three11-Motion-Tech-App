@@ -67,12 +67,6 @@ const MobileNavbar = () => {
     },
     // PHASE 3: Content Type Expansion
     { 
-      path: '/ai-video-studio', 
-      name: 'AI Video Studio', 
-      icon: <Sparkles className="h-4 w-4" />,
-      badge: 'NEW'
-    },
-    { 
       path: '/video-content', 
       name: 'Video Content', 
       icon: <Video className="h-4 w-4" />,
