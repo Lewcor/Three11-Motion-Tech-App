@@ -102,266 +102,240 @@ const AuthPage = () => {
       const data = await response.json();
       
       if (response.ok) {
-        setSuccess(`Team code valid! ${data.remaining_uses} uses remaining.`);
+        setSuccess(`Team code valid! Access level: ${data.team_code.access_level}`);
       } else {
         setError('Invalid team code');
       }
     } catch (err) {
-      setError('Failed to verify team code');
+      setError('Error validating team code');
+      console.error('Team code validation error:', err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Crown className="h-10 w-10 text-yellow-500 mr-2" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              THREE11 MOTION TECH
-            </h1>
+          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full mb-4">
+            <Sparkles className="h-4 w-4 mr-2" />
+            <span className="text-sm font-medium">THREE11 MOTION TECH</span>
           </div>
-          <p className="text-gray-600">The Ultimate AI-Powered Social Media Automation Platform</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {isLogin ? 'Welcome Back!' : 'Join THREE11'}
+          </h1>
+          <p className="text-gray-600">
+            {isLogin 
+              ? 'Sign in to access your AI content creation platform' 
+              : 'Create your account to get started with AI-powered content'
+            }
+          </p>
         </div>
 
         {/* Main Auth Card */}
-        <Card className="shadow-xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">
-              {isLogin ? 'Welcome Back' : 'Join THREE11 MOTION TECH'}
-            </CardTitle>
-            <CardDescription>
-              {isLogin 
-                ? 'Sign in to access all your AI-powered features' 
-                : 'Create your account and start automating your social media'
-              }
-            </CardDescription>
+        <Card className="shadow-xl border-0">
+          <CardHeader className="pb-4">
+            <div className="flex justify-center mb-4">
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setIsLogin(true)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isLogin
+                      ? 'bg-white text-purple-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => setIsLogin(false)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    !isLogin
+                      ? 'bg-white text-purple-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email Field */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Name Field (Signup only) */}
+              {/* Name Field (Sign Up Only) */}
               {!isLogin && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center">
+                    <User className="h-4 w-4 mr-2 text-purple-600" />
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter your full name"
+                    required={!isLogin}
+                  />
                 </div>
               )}
 
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 flex items-center">
+                  <Mail className="h-4 w-4 mr-2 text-purple-600" />
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
               {/* Password Field */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Password</label>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 flex items-center">
+                  <Lock className="h-4 w-4 mr-2 text-purple-600" />
+                  Password
+                </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-12 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="Enter your password"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Team Code Field (Signup only) */}
+              {/* Team Code Field (Sign Up Only) */}
               {!isLogin && (
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium">Team Code (Optional)</label>
-                    <Button
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 flex items-center">
+                      <Key className="h-4 w-4 mr-2 text-purple-600" />
+                      Team Access Code
+                      <span className="text-gray-400 text-xs ml-1">(Optional)</span>
+                    </label>
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="sm"
                       onClick={() => setShowTeamCode(!showTeamCode)}
-                      className="text-xs"
+                      className="text-xs text-purple-600 hover:text-purple-700"
                     >
-                      {showTeamCode ? 'Hide' : 'Have a team code?'}
-                    </Button>
+                      {showTeamCode ? 'Hide' : 'Have a code?'}
+                    </button>
                   </div>
                   
                   {showTeamCode && (
-                    <div className="space-y-2">
-                      <div className="relative">
-                        <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <input
-                          type="text"
-                          name="teamCode"
-                          value={formData.teamCode}
-                          onChange={handleInputChange}
-                          onBlur={handleTeamCodeCheck}
-                          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                          placeholder="Enter team code for unlimited access"
-                        />
-                      </div>
-                      <div className="bg-purple-50 p-3 rounded-lg">
-                        <div className="flex items-start space-x-2">
-                          <Shield className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                          <div className="text-xs text-purple-700">
-                            <strong>Team Code Benefits:</strong>
-                            <ul className="mt-1 space-y-1">
-                              <li>• Unlimited AI generations</li>
-                              <li>• Access to all premium features</li>
-                              <li>• Team collaboration tools</li>
-                              <li>• Full admin privileges</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="flex space-x-2">
+                      <input
+                        type="text"
+                        name="teamCode"
+                        value={formData.teamCode}
+                        onChange={handleInputChange}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="Enter team code"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleTeamCodeCheck}
+                        variant="outline"
+                        size="sm"
+                        className="px-3"
+                      >
+                        <Shield className="h-4 w-4" />
+                      </Button>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Error/Success Messages */}
+              {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <span className="text-red-700 text-sm">{error}</span>
-                  </div>
+                <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
+                  <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm">{error}</span>
                 </div>
               )}
 
+              {/* Success Message */}
               {success && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span className="text-green-700 text-sm">{success}</span>
-                  </div>
+                <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
+                  <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm">{success}</span>
                 </div>
               )}
 
               {/* Submit Button */}
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              <Button
+                type="submit"
                 disabled={loading}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2.5"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <div className="flex items-center">
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {isLogin ? 'Signing In...' : 'Creating Account...'}
+                  </div>
                 ) : (
-                  <Sparkles className="h-4 w-4 mr-2" />
+                  <div className="flex items-center">
+                    {isLogin ? <Sparkles className="h-4 w-4 mr-2" /> : <Crown className="h-4 w-4 mr-2" />}
+                    {isLogin ? 'Sign In' : 'Create Account'}
+                  </div>
                 )}
-                {loading 
-                  ? (isLogin ? 'Signing In...' : 'Creating Account...') 
-                  : (isLogin ? 'Sign In' : 'Create Account')
-                }
               </Button>
             </form>
 
-            {/* Google Login Placeholder */}
-            <div className="mt-4">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+            {/* Team Access Info */}
+            {!isLogin && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg">
+                <div className="flex items-start space-x-3">
+                  <Users className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-purple-900">Team Access Codes</h4>
+                    <p className="text-xs text-purple-700 mt-1">
+                      Have a team access code? Use it to unlock premium features and join your organization's workspace.
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <Badge variant="outline" className="text-xs text-purple-600 border-purple-200">
+                        Unlimited Generations
+                      </Badge>
+                      <Badge variant="outline" className="text-xs text-purple-600 border-purple-200">
+                        Premium Features
+                      </Badge>
+                      <Badge variant="outline" className="text-xs text-purple-600 border-purple-200">
+                        Team Collaboration
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <Button 
-                type="button" 
-                variant="outline" 
-                className="w-full mt-3"
-                disabled
-              >
-                <User className="h-4 w-4 mr-2" />
-                Google (Coming Soon)
-              </Button>
-            </div>
-
-            {/* Toggle Login/Signup */}
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                {isLogin ? "Don't have an account?" : "Already have an account?"}
-                <Button
-                  type="button"
-                  variant="link"
-                  onClick={() => {
-                    setIsLogin(!isLogin);
-                    setError('');
-                    setSuccess('');
-                    setFormData({ email: '', password: '', name: '', teamCode: '' });
-                  }}
-                  className="ml-1 p-0 h-auto text-blue-600 font-semibold"
-                >
-                  {isLogin ? 'Sign up' : 'Sign in'}
-                </Button>
-              </p>
-            </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Demo Credentials Card */}
-        <Card className="mt-6 border-yellow-200 bg-yellow-50">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Crown className="h-5 w-5 text-yellow-600 mr-2" />
-                <h3 className="font-semibold text-yellow-800">Admin Access</h3>
-              </div>
-              <div className="space-y-2 text-sm text-yellow-700">
-                <p><strong>Email:</strong> lewcor311@gmail.com</p>
-                <p><strong>Password:</strong> THREE11admin2025!</p>
-                <p><strong>Team Code:</strong> THREE11-UNLIMITED-2025</p>
-              </div>
-              <Badge className="mt-3 bg-yellow-600 text-white">
-                <Users className="h-3 w-3 mr-1" />
-                10 Team Member Slots Available
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Features Preview */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500 mb-3">What you'll get access to:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            <Badge variant="secondary">50+ Features</Badge>
-            <Badge variant="secondary">4 AI Models</Badge>
-            <Badge variant="secondary">Team Collaboration</Badge>
-            <Badge variant="secondary">Social Automation</Badge>
-            <Badge variant="secondary">Advanced Analytics</Badge>
-          </div>
+        {/* Footer */}
+        <div className="text-center mt-6">
+          <p className="text-xs text-gray-500">
+            By continuing, you agree to THREE11 MOTION TECH's Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>
