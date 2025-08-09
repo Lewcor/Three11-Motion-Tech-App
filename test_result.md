@@ -657,7 +657,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Custom Domain Network Error Fix"
     - "Authentication System Verification"
   stuck_tasks: []
   test_all: false
