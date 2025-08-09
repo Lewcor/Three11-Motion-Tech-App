@@ -8,7 +8,7 @@ import aiohttp
 import json
 from datetime import datetime
 
-BACKEND_URL = "https://839a0db6-2d87-4f14-b0e4-d1fb836c192a.preview.emergentagent.com/api"
+BACKEND_URL = "https://62026ea1-c285-45e5-8d7d-08217e83b971.preview.emergentagent.com/api"
 
 async def test_ai_providers():
     """Test the new Advanced AI Provider functionality"""
