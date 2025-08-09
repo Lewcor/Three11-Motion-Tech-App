@@ -17,8 +17,8 @@ from typing import Dict, Any, Optional
 from pydub import AudioSegment
 from pydub.generators import Sine
 
-# Test configuration
-BACKEND_URL = "https://be3b742e-03e4-41ba-8bac-a87f56836504.preview.emergentagent.com/api"
+# Test configuration - UPDATED FOR CUSTOM DOMAIN
+BACKEND_URL = "https://app.gentag.ai/api"
 TEST_USER_EMAIL = "fashionista@three11motion.com"
 TEST_USER_NAME = "Fashion Creator"
 TEST_USER_PASSWORD = "SecurePass123!"
