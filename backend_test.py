@@ -186,7 +186,7 @@ class BackendTester:
             self.log_test("User Login", False, "Login failed", response)
     
     async def test_get_current_user(self):
-        """Test 4: Get Current User Info"""
+        """Test 5: Get Current User Info"""
         if not self.auth_token:
             self.log_test("Get Current User", False, "No auth token available")
             return
