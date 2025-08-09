@@ -170,7 +170,7 @@ class BackendTester:
             await self.test_user_login()
     
     async def test_user_login(self):
-        """Test 3: User Login"""
+        """Test 4: User Login"""
         login_data = {
             "email": TEST_USER_EMAIL,
             "password": TEST_USER_PASSWORD
