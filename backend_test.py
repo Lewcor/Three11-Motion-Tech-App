@@ -18,7 +18,7 @@ from pydub import AudioSegment
 from pydub.generators import Sine
 
 # Test configuration
-BACKEND_URL = "https://839a0db6-2d87-4f14-b0e4-d1fb836c192a.preview.emergentagent.com/api"
+BACKEND_URL = "https://be3b742e-03e4-41ba-8bac-a87f56836504.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "fashionista@three11motion.com"
 TEST_USER_NAME = "Fashion Creator"
 TEST_USER_PASSWORD = "SecurePass123!"
@@ -664,7 +664,7 @@ class BackendTester:
         # Test that logo.svg is accessible
         try:
             # Use the frontend URL to test static file serving
-            frontend_url = "https://839a0db6-2d87-4f14-b0e4-d1fb836c192a.preview.emergentagent.com"
+            frontend_url = "https://be3b742e-03e4-41ba-8bac-a87f56836504.preview.emergentagent.com"
             logo_url = f"{frontend_url}/logo.svg"
             
             async with self.session.get(logo_url) as response:
