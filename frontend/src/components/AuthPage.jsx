@@ -49,7 +49,7 @@ const AuthPage = () => {
     setSuccess('');
 
     try {
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
       
       const payload = isLogin 
@@ -97,7 +97,7 @@ const AuthPage = () => {
     if (!formData.teamCode) return;
     
     try {
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/auth/team-code/${formData.teamCode}`);
       const data = await response.json();
       

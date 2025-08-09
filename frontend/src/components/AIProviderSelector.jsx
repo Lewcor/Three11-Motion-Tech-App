@@ -14,7 +14,7 @@ const AIProviderSelector = ({ selectedProviders, onProvidersChange, disabled = f
   const [showDetails, setShowDetails] = useState({});
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
 
   // Provider icons mapping
   const providerIcons = {
