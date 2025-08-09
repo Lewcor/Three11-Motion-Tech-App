@@ -198,8 +198,56 @@ class BackendTester:
         else:
             self.log_test("Get Current User", False, "Failed to get user info", response)
     
+    async def test_critical_authentication_endpoints(self):
+        """Test 6: CRITICAL - Authentication Endpoints on Custom Domain"""
+        print("\n🔐 CRITICAL AUTHENTICATION ENDPOINTS VERIFICATION")
+        print("=" * 60)
+        
+        # Test signup endpoint
+        signup_data = {
+            "email": f"test_{datetime.utcnow().timestamp()}@three11motion.com",
+            "name": "Test User",
+            "password": "TestPass123!"
+        }
+        
+        success, response = await self.make_request("POST", "/auth/signup", signup_data)
+        
+        if success and "access_token" in response["data"]:
+            temp_token = response["data"]["access_token"]
+            self.log_test("Critical Auth - Signup", True, 
+                        "Signup endpoint working on custom domain")
+            
+            # Test login endpoint with the same user
+            login_data = {
+                "email": signup_data["email"],
+                "password": signup_data["password"]
+            }
+            
+            success, response = await self.make_request("POST", "/auth/login", login_data)
+            
+            if success and "access_token" in response["data"]:
+                self.log_test("Critical Auth - Login", True, 
+                            "Login endpoint working on custom domain")
+                
+                # Test /auth/me endpoint
+                headers = {"Authorization": f"Bearer {temp_token}"}
+                success, response = await self.make_request("GET", "/auth/me", headers=headers)
+                
+                if success and "email" in response["data"]:
+                    self.log_test("Critical Auth - Me Endpoint", True, 
+                                "Me endpoint working on custom domain")
+                else:
+                    self.log_test("Critical Auth - Me Endpoint", False, 
+                                "Me endpoint failed on custom domain", response)
+            else:
+                self.log_test("Critical Auth - Login", False, 
+                            "Login endpoint failed on custom domain", response)
+        else:
+            self.log_test("Critical Auth - Signup", False, 
+                        "Signup endpoint failed on custom domain", response)
+
     async def test_ai_content_generation(self):
-        """Test 5: AI Content Generation with All Three Providers"""
+        """Test 7: AI Content Generation with All Three Providers"""
         if not self.auth_token:
             self.log_test("AI Content Generation", False, "No auth token available")
             return
