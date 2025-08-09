@@ -663,8 +663,8 @@ class BackendTester:
         """Test 20: Static File Serving - Logo SVG"""
         # Test that logo.svg is accessible
         try:
-            # Use the frontend URL to test static file serving
-            frontend_url = "https://be3b742e-03e4-41ba-8bac-a87f56836504.preview.emergentagent.com"
+            # Use the custom domain frontend URL to test static file serving
+            frontend_url = "https://app.gentag.ai"
             logo_url = f"{frontend_url}/logo.svg"
             
             async with self.session.get(logo_url) as response:
