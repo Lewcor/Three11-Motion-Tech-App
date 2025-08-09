@@ -81,8 +81,69 @@ class BackendTester:
         except Exception as e:
             return False, {"error": str(e)}
     
+    async def test_custom_domain_access_fix(self):
+        """Test 1: CRITICAL - Custom Domain Network Error Fix Verification"""
+        print("\n🚨 CRITICAL DOMAIN ACCESS FIX VERIFICATION")
+        print("=" * 60)
+        
+        # Test 1.1: Basic connectivity to custom domain
+        try:
+            url = f"{BACKEND_URL}/"
+            async with self.session.get(url) as response:
+                if response.status == 200:
+                    self.log_test("Custom Domain Basic Connectivity", True, 
+                                f"Backend accessible at custom domain: {BACKEND_URL}")
+                else:
+                    self.log_test("Custom Domain Basic Connectivity", False, 
+                                f"Backend not accessible - Status: {response.status}")
+                    return
+        except Exception as e:
+            self.log_test("Custom Domain Basic Connectivity", False, 
+                        f"Network error accessing custom domain: {str(e)}")
+            return
+        
+        # Test 1.2: CORS headers verification
+        try:
+            url = f"{BACKEND_URL}/"
+            headers = {"Origin": "https://app.gentag.ai"}
+            async with self.session.options(url, headers=headers) as response:
+                cors_headers = {
+                    "Access-Control-Allow-Origin": response.headers.get("Access-Control-Allow-Origin"),
+                    "Access-Control-Allow-Methods": response.headers.get("Access-Control-Allow-Methods"),
+                    "Access-Control-Allow-Headers": response.headers.get("Access-Control-Allow-Headers")
+                }
+                
+                if cors_headers["Access-Control-Allow-Origin"]:
+                    self.log_test("Custom Domain CORS Configuration", True, 
+                                f"CORS properly configured for custom domain: {cors_headers}")
+                else:
+                    self.log_test("Custom Domain CORS Configuration", False, 
+                                f"CORS headers missing or incorrect: {cors_headers}")
+        except Exception as e:
+            self.log_test("Custom Domain CORS Configuration", False, 
+                        f"CORS verification failed: {str(e)}")
+        
+        # Test 1.3: API prefix routing verification
+        try:
+            url = f"{BACKEND_URL}/"
+            async with self.session.get(url) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    if "THREE11 MOTION TECH" in str(response_data):
+                        self.log_test("Custom Domain API Routing", True, 
+                                    "API routes properly accessible with /api prefix")
+                    else:
+                        self.log_test("Custom Domain API Routing", False, 
+                                    f"Unexpected API response: {response_data}")
+                else:
+                    self.log_test("Custom Domain API Routing", False, 
+                                f"API routing failed - Status: {response.status}")
+        except Exception as e:
+            self.log_test("Custom Domain API Routing", False, 
+                        f"API routing test failed: {str(e)}")
+
     async def test_health_check(self):
-        """Test 1: Health Check Endpoint"""
+        """Test 2: Health Check Endpoint"""
         success, response = await self.make_request("GET", "/health")
         
         if success and response["data"].get("status") == "healthy":
