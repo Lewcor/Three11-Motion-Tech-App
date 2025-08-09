@@ -152,7 +152,7 @@ class BackendTester:
             self.log_test("Health Check", False, "Health check failed", response)
     
     async def test_user_signup(self):
-        """Test 2: User Signup"""
+        """Test 3: User Signup"""
         signup_data = {
             "email": TEST_USER_EMAIL,
             "name": TEST_USER_NAME,
