@@ -305,7 +305,7 @@ async def generate_content(
         # Save analytics
         for ai_response in result["ai_responses"]:
             analytics = UsageAnalytics(
-                user_id=current_user.id,
+                user_id=current_user["id"],
                 category=request.category,
                 platform=request.platform,
                 ai_provider=ai_response.provider,
