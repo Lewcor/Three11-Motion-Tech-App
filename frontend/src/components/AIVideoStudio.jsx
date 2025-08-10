@@ -364,7 +364,15 @@ const AIVideoStudio = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
-                    <span>Generated Video</span>
+                    <div className="flex items-center gap-2">
+                      <span>Generated Video</span>
+                      {generatedVideo.status === 'completed' && (
+                        <Badge variant="default" className="bg-green-100 text-green-800">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                          Completed
+                        </Badge>
+                      )}
+                    </div>
                     <div className="flex gap-2">
                       <Button onClick={downloadVideo} size="sm">
                         <Download className="w-4 h-4 mr-2" />
