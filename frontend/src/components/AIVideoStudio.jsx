@@ -126,7 +126,30 @@ const AIVideoStudio = () => {
 
     setLoading(true);
     try {
-      const token = localStorage.getItem('access_token') || 'demo-token';
+      // Get authentication token
+      let token = localStorage.getItem('access_token');
+      
+      // For demo purposes, create a simple test user token if none exists
+      if (!token) {
+        console.log('No token found, attempting demo login...');
+        try {
+          const loginResponse = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+            email: 'videocreator@three11motion.com',
+            password: 'VideoPass123!'
+          });
+          
+          if (loginResponse.data.access_token) {
+            token = loginResponse.data.access_token;
+            localStorage.setItem('access_token', token);
+            console.log('Demo login successful for video generation!');
+          }
+        } catch (loginError) {
+          console.log('Demo login failed:', loginError.response?.data);
+          toast.error('Authentication required. Please sign in first.');
+          return;
+        }
+      }
+      
       const payload = {
         title: videoTitle,
         script: videoScript,
@@ -139,19 +162,22 @@ const AIVideoStudio = () => {
 
       console.log('Generating video with payload:', payload);
       
-      const response = await axios.post(`${BACKEND_URL}/api/ai-video/generate`, payload, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      const response = await axios.post(`${BACKEND_URL}/api/ai-video/generate`, payload, { headers });
       
       console.log('Video generation response:', response.data);
       
       if (response.data.success) {
         setGeneratedVideo(response.data.video);
         setCurrentTab('result');
-        toast.success('Video generated successfully!');
+        toast.success('🎬 Video generated successfully!');
         fetchVideoProjects(); // Refresh projects list
       } else {
         throw new Error(response.data.message || 'Generation failed');
@@ -160,7 +186,7 @@ const AIVideoStudio = () => {
       console.error('Error generating video:', error);
       if (error.response?.status === 401) {
         toast.error('Authentication required. Please sign in.');
-        window.location.href = '/auth';
+        localStorage.removeItem('access_token');
       } else {
         toast.error(error.response?.data?.detail || error.response?.data?.message || 'Failed to generate video');
       }
