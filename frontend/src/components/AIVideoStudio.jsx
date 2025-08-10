@@ -121,7 +121,7 @@ const AIVideoStudio = () => {
       const token = await ensureAuthentication();
       console.log('Fetching video projects with valid token...');
       
-      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
+      const response = await axios.get(`${BACKEND_URL}/ai-video/projects`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
