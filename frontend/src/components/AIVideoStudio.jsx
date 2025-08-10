@@ -116,6 +116,26 @@ const AIVideoStudio = () => {
     throw new Error('No valid authentication token');
   };
 
+  const fetchVideoProjects = async () => {
+    try {
+      const token = await ensureAuthentication();
+      console.log('Fetching video projects with valid token...');
+      
+      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('✅ Projects response:', response.data);
+      setVideoProjects(response.data.projects || []);
+    } catch (error) {
+      console.error('❌ Error fetching video projects:', error);
+      toast.error('Failed to load video projects');
+    }
+  };
+
   const generateVideo = async () => {
     if (!videoTitle || !videoScript) {
       toast.error('Please provide both title and script');
