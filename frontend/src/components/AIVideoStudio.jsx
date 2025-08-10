@@ -96,7 +96,7 @@ const AIVideoStudio = () => {
     if (!token) {
       try {
         console.log('Attempting automatic authentication...');
-        const loginResponse = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+        const loginResponse = await axios.post(`${BACKEND_URL}/auth/login`, {
           email: 'videocreator@three11motion.com',
           password: 'VideoPass123!'
         });
