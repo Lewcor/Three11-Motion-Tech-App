@@ -120,13 +120,21 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-async def check_generation_limit(user: User):
+async def check_generation_limit(user):
     """Check if user has exceeded daily generation limit"""
-    if user.tier in [UserTier.PREMIUM, UserTier.ADMIN, UserTier.SUPER_ADMIN, UserTier.UNLIMITED]:
+    # Handle both User object and dict
+    if isinstance(user, dict):
+        tier = user.get("tier", "free").upper()
+        daily_used = user.get("daily_generations_used", 0)
+    else:
+        tier = user.tier.value if hasattr(user.tier, 'value') else str(user.tier).upper()
+        daily_used = user.daily_generations_used
+    
+    if tier in ["PREMIUM", "ADMIN", "SUPER_ADMIN", "UNLIMITED"]:
         return True  # Premium, Admin, and Unlimited users have unlimited generations
     
     # Free users have daily limit
-    if user.daily_generations_used >= 10:  # Free limit is 10 per day
+    if daily_used >= 10:  # Free limit is 10 per day
         raise HTTPException(
             status_code=403, 
             detail="Daily generation limit reached. Upgrade to Premium for unlimited generations."
