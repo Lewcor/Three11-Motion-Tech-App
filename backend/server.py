@@ -278,7 +278,7 @@ async def generate_content(
         
         # Create generation result
         generation_result = GenerationResult(
-            user_id=current_user.id,
+            user_id=current_user["id"],
             category=request.category,
             platform=request.platform,
             content_description=request.content_description,
