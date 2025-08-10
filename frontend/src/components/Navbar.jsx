@@ -10,9 +10,23 @@ const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('access_token');
-    setIsAuthenticated(!!token);
+    // Check if user is authenticated on mount and on focus
+    const checkAuth = () => {
+      const token = localStorage.getItem('access_token');
+      setIsAuthenticated(!!token);
+    };
+    
+    checkAuth();
+    
+    // Listen for storage changes (when user logs in/out in another tab)
+    window.addEventListener('storage', checkAuth);
+    window.addEventListener('focus', checkAuth);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('focus', checkAuth);
+    };
   }, []);
 
   const handleLogout = () => {
