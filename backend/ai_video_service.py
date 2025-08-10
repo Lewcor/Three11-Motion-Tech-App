@@ -367,10 +367,12 @@ class AIVideoService:
             cursor = self.db.ai_videos.find(query).sort('created_at', -1).limit(20)
             projects = await cursor.to_list(length=20)
             
-            # Convert ObjectId to string for JSON serialization
+            # Convert ObjectId and datetime to JSON serializable formats
             for project in projects:
                 if '_id' in project:
                     del project['_id']
+                if 'created_at' in project and hasattr(project['created_at'], 'isoformat'):
+                    project['created_at'] = project['created_at'].isoformat()
             
             return projects
             
