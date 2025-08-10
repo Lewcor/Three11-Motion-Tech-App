@@ -292,7 +292,7 @@ async def generate_content(
         
         # Update user usage
         await db.users.update_one(
-            {"id": current_user.id},
+            {"id": current_user["id"]},
             {
                 "$inc": {
                     "daily_generations_used": 1,
