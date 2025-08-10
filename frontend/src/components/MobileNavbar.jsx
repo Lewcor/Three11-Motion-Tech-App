@@ -406,6 +406,16 @@ const MobileNavbar = () => {
                     >
                       Get Started
                     </Link>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('access_token');
+                        setIsOpen(false);
+                        window.location.href = '/';
+                      }}
+                      className="w-full h-10 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md text-sm font-medium transition-colors inline-flex items-center justify-center"
+                    >
+                      Logout
+                    </button>
                   </div>
                 </div>
 
