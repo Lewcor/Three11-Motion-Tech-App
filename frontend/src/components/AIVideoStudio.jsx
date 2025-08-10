@@ -422,11 +422,22 @@ const AIVideoStudio = () => {
                         <div className="grid gap-3">
                           {generatedVideo.scenes.map((scene, index) => (
                             <div key={index} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                              <div className="w-16 h-16 bg-gray-200 rounded-md flex-shrink-0 flex items-center justify-center">
-                                <ImageIcon className="w-6 h-6 text-gray-400" />
+                              <div className="w-16 h-16 bg-gray-200 rounded-md flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                {scene.image_url ? (
+                                  <img 
+                                    src={scene.image_url} 
+                                    alt={`Scene ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                ) : null}
+                                <ImageIcon className="w-6 h-6 text-gray-400" style={{display: scene.image_url ? 'none' : 'block'}} />
                               </div>
                               <div className="flex-1">
-                                <p className="text-sm font-medium">Scene {index + 1}</p>
+                                <p className="text-sm font-medium">Scene {scene.scene_number || (index + 1)}</p>
                                 <p className="text-sm text-gray-600 mt-1">{scene.description}</p>
                                 <p className="text-xs text-gray-500 mt-2">
                                   {scene.timestamp}s - {scene.duration}s duration
