@@ -77,7 +77,7 @@ const AuthPage = () => {
 
       if (response.ok) {
         // Store token and user info
-        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('access_token', data.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
         
         setSuccess(isLogin ? 'Login successful! Redirecting...' : 'Account created successfully! Redirecting...');
