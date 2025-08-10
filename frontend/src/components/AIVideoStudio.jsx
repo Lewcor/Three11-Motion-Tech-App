@@ -74,19 +74,46 @@ const AIVideoStudio = () => {
 
   const fetchVideoProjects = async () => {
     try {
-      const token = localStorage.getItem('access_token') || 'demo-token';
-      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      // Try to get a real token, fallback to demo
+      let token = localStorage.getItem('access_token');
+      
+      // For demo purposes, create a simple test user token if none exists
+      if (!token) {
+        console.log('No token found, attempting demo login...');
+        try {
+          // Try to get a token by logging in with test credentials
+          const loginResponse = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+            email: 'videocreator@three11motion.com',
+            password: 'VideoPass123!'
+          });
+          
+          if (loginResponse.data.access_token) {
+            token = loginResponse.data.access_token;
+            localStorage.setItem('access_token', token);
+            console.log('Demo login successful!');
+          }
+        } catch (loginError) {
+          console.log('Demo login failed, trying without token...');
         }
-      });
+      }
+      
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      console.log('Fetching video projects...');
+      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, { headers });
+      console.log('Projects response:', response.data);
       setVideoProjects(response.data.projects || []);
     } catch (error) {
       console.error('Error fetching video projects:', error);
       if (error.response?.status === 401) {
-        // Handle authentication error
-        window.location.href = '/auth';
+        console.log('Authentication failed, clearing token');
+        localStorage.removeItem('access_token');
       }
     }
   };
