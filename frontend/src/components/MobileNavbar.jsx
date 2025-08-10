@@ -8,6 +8,20 @@ import { Sparkles, Crown, Zap, Brain, Menu, X, Mic, TrendingUp, Shuffle, Target,
 const MobileNavbar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('access_token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    setIsAuthenticated(false);
+    setIsOpen(false);
+    window.location.href = '/';
+  };
 
   const navItems = [
     { 
