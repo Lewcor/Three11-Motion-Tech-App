@@ -159,7 +159,7 @@ const AIVideoStudio = () => {
 
       console.log('📝 Video generation payload:', payload);
       
-      const response = await axios.post(`${BACKEND_URL}/api/ai-video/generate`, payload, {
+      const response = await axios.post(`${BACKEND_URL}/ai-video/generate`, payload, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
