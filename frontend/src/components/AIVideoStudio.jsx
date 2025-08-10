@@ -91,6 +91,7 @@ const AIVideoStudio = () => {
 
     setLoading(true);
     try {
+      const token = localStorage.getItem('access_token') || 'demo-token';
       const payload = {
         title: videoTitle,
         script: videoScript,
@@ -101,7 +102,16 @@ const AIVideoStudio = () => {
         number_of_scenes: numberOfScenes
       };
 
-      const response = await axios.post(`${BACKEND_URL}/api/ai-video/generate`, payload);
+      console.log('Generating video with payload:', payload);
+      
+      const response = await axios.post(`${BACKEND_URL}/api/ai-video/generate`, payload, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Video generation response:', response.data);
       
       if (response.data.success) {
         setGeneratedVideo(response.data.video);
@@ -113,7 +123,12 @@ const AIVideoStudio = () => {
       }
     } catch (error) {
       console.error('Error generating video:', error);
-      toast.error(error.response?.data?.message || 'Failed to generate video');
+      if (error.response?.status === 401) {
+        toast.error('Authentication required. Please sign in.');
+        window.location.href = '/auth';
+      } else {
+        toast.error(error.response?.data?.detail || error.response?.data?.message || 'Failed to generate video');
+      }
     } finally {
       setLoading(false);
     }
