@@ -389,6 +389,8 @@ class AIVideoService:
             if video:
                 if '_id' in video:
                     del video['_id']
+                if 'created_at' in video and hasattr(video['created_at'], 'isoformat'):
+                    video['created_at'] = video['created_at'].isoformat()
                 return video
             return None
             
