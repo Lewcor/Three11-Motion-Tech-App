@@ -79,7 +79,7 @@ const AIVideoStudio = () => {
     if (token) {
       try {
         // Verify token by making a test request
-        await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
+        await axios.get(`${BACKEND_URL}/ai-video/projects`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         return token; // Token is valid
