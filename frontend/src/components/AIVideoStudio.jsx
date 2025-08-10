@@ -66,10 +66,20 @@ const AIVideoStudio = () => {
 
   const fetchVideoProjects = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`);
+      const token = localStorage.getItem('access_token') || 'demo-token';
+      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       setVideoProjects(response.data.projects || []);
     } catch (error) {
       console.error('Error fetching video projects:', error);
+      if (error.response?.status === 401) {
+        // Handle authentication error
+        window.location.href = '/auth';
+      }
     }
   };
 
