@@ -61,6 +61,14 @@ const AIVideoStudio = () => {
   ];
 
   useEffect(() => {
+    // Check for authentication token
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      // For demo purposes, create a temporary token or redirect to auth
+      console.log('No authentication token found');
+      // Uncomment to redirect to auth: window.location.href = '/auth';
+    }
+    
     fetchVideoProjects();
   }, []);
 
