@@ -18,7 +18,7 @@ class AIVideoService:
         
     async def initialize(self):
         """Initialize database connection"""
-        if not self.db:
+        if self.db is None:
             self.db = get_database()
 
     async def generate_video(self, request: dict) -> dict:
