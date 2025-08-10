@@ -78,8 +78,10 @@ class AIVideoService:
                 'preview_url': f'/api/ai-video/{video_id}/preview'
             }
             
-            # Store in database
-            await self.db.ai_videos.insert_one(video_project)
+            # Store in database (create a copy for storage that includes datetime)
+            video_project_for_db = video_project.copy()
+            video_project_for_db['created_at'] = datetime.utcnow()  # Store as datetime in DB
+            await self.db.ai_videos.insert_one(video_project_for_db)
             
             return {
                 'success': True,
