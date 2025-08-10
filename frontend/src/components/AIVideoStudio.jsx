@@ -387,6 +387,14 @@ const AIVideoStudio = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
+                    {/* Video Title & Info */}
+                    <div className="border-b pb-4">
+                      <h2 className="text-xl font-semibold">{generatedVideo.title}</h2>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Created on {generatedVideo.created_at ? new Date(generatedVideo.created_at).toLocaleString() : 'Just now'}
+                      </p>
+                    </div>
+
                     {/* Video Preview */}
                     <div className="bg-black rounded-lg aspect-video flex items-center justify-center">
                       {generatedVideo.preview_url ? (
