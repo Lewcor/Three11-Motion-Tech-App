@@ -72,50 +72,48 @@ const AIVideoStudio = () => {
     fetchVideoProjects();
   }, []);
 
-  const fetchVideoProjects = async () => {
-    try {
-      // Try to get a real token, fallback to demo
-      let token = localStorage.getItem('access_token');
-      
-      // For demo purposes, create a simple test user token if none exists
-      if (!token) {
-        console.log('No token found, attempting demo login...');
-        try {
-          // Try to get a token by logging in with test credentials
-          const loginResponse = await axios.post(`${BACKEND_URL}/api/auth/login`, {
-            email: 'videocreator@three11motion.com',
-            password: 'VideoPass123!'
-          });
-          
-          if (loginResponse.data.access_token) {
-            token = loginResponse.data.access_token;
-            localStorage.setItem('access_token', token);
-            console.log('Demo login successful!');
-          }
-        } catch (loginError) {
-          console.log('Demo login failed, trying without token...');
+  const ensureAuthentication = async () => {
+    let token = localStorage.getItem('access_token');
+    
+    // Check if token exists and is valid
+    if (token) {
+      try {
+        // Verify token by making a test request
+        await axios.get(`${BACKEND_URL}/api/ai-video/projects`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return token; // Token is valid
+      } catch (error) {
+        if (error.response?.status === 401) {
+          // Token is invalid, remove it
+          localStorage.removeItem('access_token');
+          token = null;
         }
       }
-      
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      console.log('Fetching video projects...');
-      const response = await axios.get(`${BACKEND_URL}/api/ai-video/projects`, { headers });
-      console.log('Projects response:', response.data);
-      setVideoProjects(response.data.projects || []);
-    } catch (error) {
-      console.error('Error fetching video projects:', error);
-      if (error.response?.status === 401) {
-        console.log('Authentication failed, clearing token');
-        localStorage.removeItem('access_token');
+    }
+    
+    // If no valid token, try to login with demo credentials
+    if (!token) {
+      try {
+        console.log('Attempting automatic authentication...');
+        const loginResponse = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+          email: 'videocreator@three11motion.com',
+          password: 'VideoPass123!'
+        });
+        
+        if (loginResponse.data.access_token) {
+          token = loginResponse.data.access_token;
+          localStorage.setItem('access_token', token);
+          console.log('✅ Automatic authentication successful!');
+          return token;
+        }
+      } catch (loginError) {
+        console.error('❌ Auto-login failed:', loginError.response?.data);
+        throw new Error('Authentication failed');
       }
     }
+    
+    throw new Error('No valid authentication token');
   };
 
   const generateVideo = async () => {
