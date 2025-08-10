@@ -74,7 +74,7 @@ class AIVideoService:
                 'number_of_scenes': request['number_of_scenes'],
                 'scenes': scene_images,
                 'status': 'completed',
-                'created_at': datetime.utcnow(),
+                'created_at': datetime.utcnow().isoformat(),
                 'preview_url': f'/api/ai-video/{video_id}/preview'
             }
             
