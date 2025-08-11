@@ -141,6 +141,7 @@ const Navbar = () => {
             {isLoggedIn ? (
               <button 
                 onClick={() => {
+                  localStorage.removeItem('access_token');
                   localStorage.removeItem('token');
                   localStorage.removeItem('user');
                   setIsLoggedIn(false);
