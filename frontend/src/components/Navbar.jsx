@@ -12,7 +12,7 @@ const Navbar = () => {
   
   useEffect(() => {
     // Check if user is logged in
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     setIsLoggedIn(!!token);
   }, []);
 
